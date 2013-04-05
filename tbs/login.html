@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+[onload;file=tbs/meta.txt]
+<script type="text/javascript" src="js/prototype151.js"></script>
+<script type="text/javascript" src="js/cchamp.js"></script>
+<script type="text/javascript">
+[var.js_all_errTbs;htmlconv=no]
+function chk(frm){
+	if(!chkUnit(frm)) {
+		alert_e(0);
+		return false;
+	} else {
+	    return true;
+	}
+}
+</script>
+<style type="text/css">
+body {
+	margin: 20px 15% 20px 15%;
+	border: 5px solid #C0C0C0;
+	background-color:#F0F0F0;
+	font-family: Verdana;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="css/bourse.css" />
+<title>Connexion</title></head>
+<body style="height: 200px;" onload="alert_e(0);">
+<div style="padding:10px">
+	<form method="post" action="index.php" name="fLogin" onsubmit="return chk(this)"><br />
+	<fieldset><legend>Connexion</legend>
+	[var.loginTbs;htmlconv=no]<br  /><br />
+	[var.pwdTbs;htmlconv=no]<br />
+	<div style="width:100%;text-align:center"><input type="submit" name="sbmt_login" value="Envoyer" /></div>
+	</fieldset>
+	</form>
+</div>
+</body></html>

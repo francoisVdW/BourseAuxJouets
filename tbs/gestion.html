@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+[onload;file=tbs/meta.txt]
+      <title>[var.bourseTbs] : Gestion</title>
+      <link rel="stylesheet" type="text/css" href="css/bourse.css" />
+      <style type="text/css">
+       #id_fact img {cursor:pointer;}
+	   #iul_gestion {margin-top:5px;}
+       #iul_gestion li {padding:6px}
+	   </style>
+	  <script type="text/javascript" src="js/prototype151.js"></script>
+	  <script type="text/javascript" src="js/cchamp.js"></script>
+	  <script type="text/javascript" >
+function assist_f(ori) {
+	if(ori=='NOM') {
+		var nom=$F('iin_nomf');
+		if(nom.length <= 2 ) return;
+		var param_rech="nom="+nom;
+	} else {
+		// SELECTIONNE critere de recherche
+		var num=$F('iin_numf');
+		var nom=$F('iin_nomf');
+		if(num.blank() && nom.blank()) return;
+		if(!num.blank()) var param_rech="num="+num;
+		else var param_rech="nom="+nom;
+  	}
+	new Ajax.Request('serv_ajax.php', {method:'post', parameters:"op=assistFact&id_bourse=[var.idBourseTbs]&"+param_rech, onComplete:trtAssistFact});
+}
+function trtAssistFact(req, json) {
+  	if (json.a_err) {
+     	$('id_assfact').hide();
+        alert(json.a_err);
+   } else {
+ 		if(json.match) {
+			$('itd_assist_f').update(json.data);
+            $('id_assfact').show();
+            window.setTimeout("$('id_assfact').hide()", 10000);
+   		} else {
+			$('itd_assist_f').update("&nbsp;<span style='color:red'>Aucune facture trouvée !</span>&nbsp;");
+            $('id_assfact').show();
+            window.setTimeout("$('id_assfact').hide()", 1500);
+	 	}
+	}
+}
+function go_fact(id_fact) {
+	var id = "999"
+	eval("page" + id + " = window.open('fact.php?idfacture="+id_fact+"','" + id + "', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=550,height=400');");
+}
+
+function assist_d(ori) {
+
+	if(ori=='NOM') {
+		var nom=$F('iin_nomd');
+		if(nom.length <= 2 ) return;
+		var param_rech="nom="+nom;
+	} else {
+		// SELECTIONNE critere de recherche
+		var num=$F('iin_numd');
+		var nom=$F('iin_nomd');
+		if(num.blank() && nom.blank()) return;
+		if(!num.blank()) var param_rech="num="+num;
+		else var param_rech="nom="+nom;
+  	}
+	new Ajax.Request('serv_ajax.php', {method:'post', parameters:"op=assistDepot&id_bourse=[var.idBourseTbs]&"+param_rech, onComplete:trtAssistDepot});
+}
+function trtAssistDepot(req, json) {
+  	if (json.a_err) {
+     	$('id_assfact').hide();
+        alert(json.a_err);
+   } else {
+ 		if(json.match) {
+			$('itd_assist_d').update(json.data);
+            $('id_assdepot').show();
+            window.setTimeout("$('id_assdepot').hide()", 10000);
+   		} else {
+			$('itd_assist_d').update("&nbsp;<span style='color:red'>Aucun dépot trouvé !</span>&nbsp;");
+            $('id_assdepot').show();
+            window.setTimeout("$('id_assdepot').hide()", 1500);
+	 	}
+	}
+}
+function go_depot(id_depot) {
+	// depot ou retrait ?
+	if($("ir_depot").checked) document.location.href="?st=[var..cst.S_FIN_DEPOT]&reprint=1&id_depot="+id_depot;
+	else document.location.href="?st=[var..cst.S_RETRAIT_SOLDE]&reprint=1&no_depot="+id_depot;
+}
+
+function repr_depot(){
+	$('id_fact').hide();
+	$('id_depot').show();
+	//return false;
+}
+
+function repr_fact(){
+	$('id_depot').hide();
+	$('id_fact').show();
+	//return false;
+}
+	  </script>
+</head>
+
+<body onload="$('id_fact').makePositioned();$('id_depot').makePositioned();">
+<div  class="menu">
+	<span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
+	<button onclick="document.location.href='?st=[var..cst.S_MAIN]'">Menu principal</button>
+</div>
+<h1>[var.bourseTbs]</h1>
+<h2>Utilisateur : <i>[var.participTbs]</i></h2>
+<div class="block"><ul id="iul_gestion">
+	<li><a href="?st=[var..cst.S_TABLBORD]" title="Tableau de bord en temps réel'">Tableau de bord</a></li>
+	<li><a href="?st=[var..cst.S_CCAISSE]" title="Tableau des comptes de caisses">Tableau : comptes des caisses</a></li>
+	<li><a href="?st=[var..cst.S_CRETRAIT]" title="Tableau pour la préparation des restitutions">Tableaux des restitutions</a></li>
+	<li><a href="?st=[var..cst.S_LST_ART]" title="Liste des articles">Liste des articles</a></li>
+	<br />
+	<li><a  href="javascript:repr_fact()">Re-imprimer une facture</a>
+	<div  id="id_fact" style="display:none">
+  	<form  id="if_fact" onsubmit="return false"><fieldset><legend>Facture</legend>
+		Nom du client : <input type="text" id="iin_nomf" maxlength="35" size="15" onkeyup="assist_f('NOM');$('iin_numf').value=''" onchange="this.value=this.value.clrText();" />
+		- ou n&deg; de facture : <input type="text" id="iin_numf" maxlength="5" size="3" onkeyup="$('iin_nomf').value=''" onchange="this.value=this.value.clrNum();" />
+		&nbsp;<img border="0" src="img/search_s.gif" onclick="assist_f('AUTO_SEL')" />
+		<div class="assist" id="id_assfact" style="top:0px;left:420px;display:none;"><table cellpadding="0" cellspacing="0"><tr><td bgcolor="Black" align="right"><img  src="img/close_s.gif" title="Fermer" onclick="$('id_assfact').hide()" /></td></tr><tr><td  id="itd_assist_f"></td></tr></table></div>
+  	</fieldset>
+	</form>
+	</div></li>
+	<li><a  href="javascript:repr_depot()">Re-imprimer un reçu de dépot ou bordereau de retrait</a>
+	<div id="id_depot" style="display:none">
+  	<form  id="if_depot" onsubmit="return false"><fieldset><legend>Dépot</legend>
+  	    Reçu de dépot<input type="radio" name="depot_retrait" checked="1" value="DEPOT" id="ir_depot" /> ou Bordereau de retrait<input type="radio" name="depot_retrait" value="RETRAIT" id="ir_retrait" />
+		<br />
+		Nom du déposant : <input type="text" id="iin_nomd" maxlength="35" size="15" onkeyup="assist_d('NOM');$('iin_numd').value=''" onchange="this.value=this.value.clrText();" />
+		- ou n&deg; de dépot : <input type="text" id="iin_numd" maxlength="5" size="3" onkeyup="$('iin_nomd').value=''" onchange="this.value=this.value.clrNum();" />
+		&nbsp;<img border="0" src="img/search_s.gif" onclick="assist_d('AUTO_SEL')" />
+		<div class="assist" id="id_assdepot" style="top:20px;left:430px;display:none;"><table cellpadding="0" cellspacing="0"><tr><td bgcolor="Black" align="right"><img  src="img/close_s.gif" title="Fermer" onclick="$('id_assfact').hide()" /></td></tr><tr><td  id="itd_assist_d"></td></tr></table></div>
+ 	</fieldset></form>
+	</div></li>
+	<br />
+	<li><a href="?st=[var..cst.S_FONDS_CAISSES]">Gestion fonds de caisse</a></li>
+	<li><a href="?st=[var..cst.S_DEVEROUILLAGE]">Déverouillage des caisses</a></li>
+	<li><a href="?st=[var..cst.S_GESTION_PARTICIPANTS]">Gestion des participants</a></li>
+	<li><a href="?st=[var..cst.S_INIT_BOURSE]" onclick="return confirm('Etes-vous sûr de vouloir réinitialiser ?')" style="font-size:0.9em">Reinitialisation de la Bourse</a></li>
+</ul></div>
+
+</body>
+</html>

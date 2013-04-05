@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+[onload;file=tbs/meta.txt]
+      <title>[var.bourseTbs] : Compte des caisse</title>
+      <link rel="stylesheet" type="text/css" href="css/bourse.css" />
+<style>
+ol {margin:0px;}
+ol li {
+  font-size:0.8em;
+  padding-left:10px;
+  margin-right:20px;
+  list-style-position:outside;
+}
+</style>
+</head>
+<body>
+<div class="menu">
+	<span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
+    <button onclick="document.location.href='?st=[var..cst.S_MAIN]'">Menu principal</button>&nbsp;&nbsp;
+    <button onclick="document.location.href='?st=[var.eGestionTbs]'">Menu gestion</button>
+    <button onclick="window.print();return false"> Imprimer </button>
+    <button onclick="window.open('xls.php?doc=cpt_caisse', 'id999');return false"> Export XLS </button>    
+</div>
+<h1>[var.bourseTbs]</h1>
+<div align="center">
+<h2>Compte des caisses</h2>
+	<div class="lst_art">
+		<span class="hd">
+		Caisse n&deg; <b>[caisseTbs.no_caisse;block=div;]</b><br />
+		</span>
+		<table border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<td>Nombre de ventes</td><td >[caisseTbs.nb_vente]</td>
+				<td>&nbsp;</td>
+			</tr><tr>
+				<td>Nombre d'articles</td><td >[caisseTbs.nb_article]</td>
+				<td>&nbsp;</td>
+			</tr><tr>
+				<td>Fond de caisse</td><td align="right">[caisseTbs.fond;frm='0 000,00';ifempty='0.00'] &euro;</td>
+				<td>&nbsp;</td>
+			</tr><tr>
+				<td>Espece</td><td align="right">[caisseTbs.esp;frm='0 000,00';ifempty='0.00'] &euro;</td>
+				<td>&nbsp;</td>
+			</tr><tr>
+				<td>Total espece</td><td>&nbsp;</td><td align="right">[caisseTbs.ttl_esp;frm='0 000,00';ifempty='0.00'] &euro;</td>
+			</tr><tr>
+				<td valign="top" class="chq">Liste des chèques</td><td class="chq">
+				<ol>
+					<li >[subTbs.mnt;block=li;p1=[caisseTbs.$];frm='0 000,00'] &euro;</li>
+				</ol>
+				<td>&nbsp;</td>
+				</td>
+			</tr><tr>
+				<td>Total chèques</td><td>&nbsp;</td><td align="right">[caisseTbs.chq;frm='0 000,00';ifempty='0.00'] &euro;</td>
+			</tr><!-- tr>
+				<td>Total autres</td><td align="right">[caisseTbs.autr;frm='0 000,00']  &euro;</td>
+			</tr--><tr>
+				<th><b>RESULTAT</b></th><th>&nbsp;</th><th align="right"><b>[caisseTbs.ttl;frm='0 000,00';ifempty='0.00']  &euro;</b></th>
+			</tr>
+		</table>
+	</div>
+</div>
+
+</body>
+</html>

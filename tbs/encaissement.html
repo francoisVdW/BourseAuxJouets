@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>Bourse : Caisse</title>
+    <link rel="stylesheet" type="text/css" href="css/bourse.css" />
+	<script type="text/javascript" src="js/prototype151.js"></script>
+	<script type="text/javascript" src="js/cchamp.js"></script>
+	<script type="text/javascript">
+	</script>
+</head>
+<body >
+<div class="menu">
+	<span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
+	<div id="ifermeture" style='position:absolute;width:300px;border:solid 2px black;background-color:Yellow;display:none;font-size:1.2em;padding:15px;'></div>
+	<button onclick="quit()"> Déconnexion </button>
+	<button onclick="to_menu()"> Menu principal </button>
+	<button onclick="raz()"> Annulation de la vente </button>
+</div>
+<h1>CAISSE : Cloture de la Vente</h1>
+<div class ="block"> 
+	<p>Date: [var.dateTbs] Vente: n&deg; [var.id_vente]</p>
+	<table class="list" id="ilist" border="0" cellpadding="2" cellspacing="2">
+		<tr><th>N&deg;</th><th width="45%">Description </th><th style="text-align:right">Prix</th></tr>
+		<tr>[articlesTbs.val;block=tr;htmlconv=no;magnet=tr]</tr>
+		<tr style="font-size:1.2em"><td colspan="2"><b>TOTAL</b></td><td align="right">[var.ttlTbs] &euro;</td></tr>
+	</table>
+</div>
+<div class="block" >
+	Encaisseemnt
+</div>
+</body></html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+[onload;file=tbs/meta.txt]
+      <title>[var.bourseTbs] : menu principal</title>
+  	  <script type="text/javascript" src="js/prototype151.js"></script>
+      <link rel="stylesheet" type="text/css" href="css/bourse.css" />
+	  <style type="text/css">
+	   #iErrClo a { color:White; font-weight:bold;text-decoration:none; }
+	   #iErrClo a:hover { background-color:black;}
+	   #iErrClo td {padding-left:5px}
+	   #iTblCaisse {border:2px dotted #A0A0A0;font-size:12px;margin-top:5px;margin-bottom:10px;}
+	   #iTblCaisse th {background-color:#909090;color:White;}
+	   #iTblCaisse td.detail {font-size:0.9em;}
+	  </style>
+	  <script type="text/javascript">
+	   function aide(typ) {
+		if(typ=='caisse')
+			var id = "999"
+			eval("page" + id + " = window.open('aide.php?typ="+typ+"','" + id + "', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=360,height=400');");
+			}
+	  </script>
+</head>
+
+<body>
+<div class="info" id="iErrClo" style="background-color:red;position:absolute;top:20%;left:30%">
+	<table border="0" cellpadding="2" cellspacing="0" width="100%">
+		<tr><th>Erreur de clôture</th><th align="right"><img src="img/close.gif" title="Fermer" onclick="$('iErrClo').hide();$('iWarn').show()" /></th></tr>
+        [var.alertClotureTbs;htmlconv=no;magnet=div]
+	 </table>
+</div>
+<h1>[var.bourseTbs]</h1>
+<h2>Utilisateur : <i>[var.participTbs]</i></h2>
+<div class="block"><ul>
+	<li id="a[var.mayDepotTbs;magnet=li]"><a href="?st=[var.eNouvDepotTbs]">Dépot</a></li>
+	<li id="b[var.mayCaisseTbs;magnet=li]">Caisses&nbsp;<img src="img/help.gif" border="0" style="cursor:pointer" title="Aide à propos des caisses" onclick="aide('caisse')">
+		<table border="0" cellspacing="0" cellpadding="3" id="iTblCaisse">
+		  <tr>
+		  	<td width="40"><b>n&deg; [caisseTbs.num_caisse;block=tr;]</b></td>
+		  	<td><button onclick="document.location.href='[caisseTbs.action;magnet=button]'">[caisseTbs.lib]</button>&nbsp;</td>
+		  	<td><img src="[caisseTbs.stat;]" border="0" /></td>
+			<td class="detail">[caisseTbs.info;ifempty=&nbsp;]</td>
+		  </tr>
+		</table>		
+	</li>
+	<li id="d[var.mayGestionTbs;magnet=li]"><a href="?st=[var..cst.S_CLOTURE_VENTE]" title="Cloture des ventes">Clôture des ventes</a></li><br />
+	<li><a href="?st=[var..cst.S_ARTICLE]" title="Recherche d'article, retour,...">Articles</a></li><br />
+	<li id="c[var.mayRetraitTbs;magnet=li]"><a href="?st=[var..cst.S_RETRAIT]">Restitution</a></li>
+	<li id="d[var.mayGestionTbs;magnet=li]"><a href="?st=[var..cst.S_GESTION]">Gestion</a></li>
+	<br />
+	<li><a href="?logout" style="color:red">Deconnexion</a></li>
+</ul>
+<div style="display:none" id='iWarn'><img  style="cursor:pointer" border='0' src='img/warn.gif' onclick='$("iErrClo").show()' /> Des erreurs de clôtures ont été détectées</div>
+</div>
+
+</body>
+</html>

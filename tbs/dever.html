@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+[onload;file=tbs/meta.txt]
+      <title>[var.bourseTbs] : Déverouillage des caisses</title>
+      <link rel="stylesheet" type="text/css" href="css/bourse.css" />
+	  <script type="text/javascript" src="js/prototype151.js"></script>
+	  <script type="text/javascript" >
+	  function unlock(id_log) {
+		if(confirm('Voulez-vous vraiment deverouiller cette caisse ?')) {
+			document.location.href = "?st=[var..cst.T_DEVEROUILLAGE]&id_log="+id_log;
+  			}
+      }
+	  </script>
+	  <style>
+	   table.t_caisse {
+		font-size:0.8em;
+		width:600px;
+		margin-left:auto;
+		margin-right:auto;
+		border:1px solid #D0D0D0;
+		}
+	  </style>
+</head>
+
+<body>
+<div  class="menu">
+	<span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
+	<button onclick="document.location.href='?st=[var..cst.S_MAIN]'">Menu principal</button>
+	<button onclick="document.location.href='?st=[var.eGestionTbs]'">Menu gestion </button>
+</div>
+<h1>Déverouillage de caisse</h1>
+<table border="0" cellspacing="0" cellpadding="3" class='t_caisse'>
+  <tr><th colspan="4">Etat des caisses</th></tr>
+  <tr><td width="40"><b>n&deg; [caisseTbs.num_caisse;block=tr;]</b></td><td><img src="[caisseTbs.stat;block=tr;htmlconv=no]" border="0" /></td><td class="detail">[caisseTbs.info;block=tr;htmlconv=no;ifempty=&nbsp;]</td><td>[caisseTbs.act;block=tr;htmlconv=no]</td></tr>
+  <tr bgcolor="#D0D0D0"><td width="40"><b>n&deg; [caisseTbs.num_caisse;block=tr;]</b></td><td><img src="[caisseTbs.stat;block=tr;htmlconv=no]" border="0" /></td><td class="detail">[caisseTbs.info;block=tr;htmlconv=no;ifempty=&nbsp;]</td><td>[caisseTbs.act;block=tr;htmlconv=no]</td></tr>
+</table>
+
+</body>
+</html>

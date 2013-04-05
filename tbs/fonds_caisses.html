@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+[onload;file=tbs/meta.txt]
+    <title>[var.nomBourseTbs] : Fond de caisse</title>
+    <link rel="stylesheet" type="text/css" href="css/bourse.css" />
+    <script type="text/javascript" src="js/prototype151.js"></script>
+	<script type="text/javascript" src="js/cchamp.js"></script>      
+    <script type="text/javascript">
+    function chk(form) {
+    	var v;
+    	var err =false;
+    	$$('form input').each(function(e){
+    		if(e.name.startsWith('fond')){ 
+	    		v = e.value;
+	    		if(!e.value.isAmt()){
+	    			alert("Montant invalide");
+	    			e.focus();
+	    			e.select();
+	    			err = true;
+					return false;
+				}						
+			}	
+    	})
+    	if(err) return false;
+    	return true;
+    }
+    </script>      <style type="text/css">
+		table.tabl_bord{
+			border:2px solid #A0A0A0;
+			font-size:0.9em;
+			margin-top:25px;
+			width:500px;
+			margin-left:auto;
+			margin-right:auto;
+		}
+		th {background-color:#E0E0E0;}
+		table.gauge {border:1px solid #606060;margin:10px;}
+		table.gauge td {color:White;font-weight:bold;text-align:center;}
+      </style>
+</head>
+
+<body >
+<div  class="menu">
+	<span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
+	<button onclick="document.location.href='?st=[var..cst.S_MAIN]'">Menu principal</button>
+	<button onclick="document.location.href='?st=[var.eGestionTbs]'">Menu gestion</button>
+</div>
+<h1>[var.nomBourseTbs] : Fond de caisse</h1>
+<div class="block">
+	<form method="post" action="index.php?st=[var..cst.S_FONDS_CAISSES]" onsubmit="return chk(this)">
+	<table align="center" border="0" id="it_caisse" class="tabl_bord">
+		<tr><th colspan="4">Caisses</th></tr>
+		<tr><th>n&deg;</th><th >&nbsp;</th><th align="left">Commenaire</th><th>Fonds</th></tr>
+	   	<tr><td><b>[caisseTbs.no_caisse;block=tr]</b></td>
+		   	<td><img  src='[caisseTbs.img;htmlconv=no]' border="0"/></td>
+		    <td>[caisseTbs.comment;htmlconv=no]</td>
+		    <td>[caisseTbs.input;htmlconv=no]</td>
+		</tr>
+	</table>
+	<div style="width:100%;text-align:center"><input type="submit" value="Valider" /></div>
+	</form>
+</div>
+
+</body>
+</html>

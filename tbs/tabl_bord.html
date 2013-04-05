@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+[onload;file=tbs/meta.txt]
+<meta http-equiv="refresh" content="120" />
+      <title>[var.nomBourseTbs] : Tableau de bord</title>
+      <link rel="stylesheet" type="text/css" href="css/bourse.css" />
+      <style type="text/css">
+		table.tabl_bord{
+			border:2px solid #A0A0A0;
+			font-size:0.9em;
+			margin-top:25px;
+			width:500px;
+			margin-left:auto;
+			margin-right:auto;
+		}
+		th {background-color:#E0E0E0;}
+		table.gauge {border:1px solid #606060;margin:10px;}
+		table.gauge td {color:White;font-weight:bold;text-align:center;}
+      </style>
+</head>
+
+<body >
+<div  class="menu">
+	<span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
+	<button onclick="document.location.href='?st=[var..cst.S_MAIN]'">Menu principal</button>
+	<button onclick="document.location.href='?st=[var.eGestionTbs]'">Menu gestion</button>
+</div>
+<h1>[var.nomBourseTbs]</h1>
+<p class="noprnt">Cette page se réactualise automatiquement toutes les 2 minutes.</p>
+<div class="block">
+
+	<table align="center" border="0" id="it_caisse" class="tabl_bord">
+		<tr><th colspan="3">Caisses</th></tr>
+		<tr><th>n&deg;</th><th >&nbsp;</th><th align="left">Commenaire</th></tr>
+	   	<tr><td><b>[caisseTbs.no_caisse;block=tr]</b></td>
+		   	<td><img  src='[caisseTbs.img;htmlconv=no]' border="0"/></td>
+		    <td>[caisseTbs.comment;htmlconv=no]</td>
+		</tr>
+	</table>
+
+	<table align="center" border="0" id="it_vente" class="tabl_bord">
+	<tr><th colspan="2">Vente des articles</th></tr>
+	<tr><td width="100">Vendus</td><td>[var.nbVendu] ([var.pcVenduTbs]%)</td></tr>
+	<tr><td width="100">Restants</td><td>[var.nbRestant] ([var.pcRestantTbs]%)</td></tr>
+	<tr><td width="100"><b>Total</b></td><td>[var.nbArt] atricles</td></tr>
+	<tr><td colspan="2" align="center">
+		<table align="center" width="80%" class="gauge" cellpadding="0" cellspacing="0">
+		 <tr><td bgcolor="#30A030" width="[var.pcVenduTbs]%">[var.pcVenduTbs;if [val]+=-30;then 'vendus [val]%';else '&nbsp;']</td><td bgcolor="#C0B030" width="[var.pcRestantTbs]%">[var.pcRestantTbs;if [val]+=-30;then 'restants [val]%']&nbsp;</td></tr>
+		</table>
+	</td></tr>
+	</table>
+
+	<table align="center" border="0" id="it_depot" class="tabl_bord">
+	<tr><th colspan="2">Dépots</th></tr>
+	<tr><td width="100">Soldés</td><td>[var.nbSolde] ([var.pcSoldeTbs]%)</td></tr>
+	<tr><td width="100">Restants</td><td>[var.nbDepotRestant] ([var.pcDepotRestantTbs]%)</td></tr>
+	<tr><td width="100"><b>Total</b></td><td>[var.nbDepot] dépots</td></tr>
+	<tr><td colspan="2" align="center">
+		<table align="center" width="80%" class="gauge" cellpadding="0" cellspacing="0">
+		 <tr><td bgcolor="#30A030" width="[var.pcSoldeTbs]%">[var.pcSoldeTbs;if [val]+=-30;then 'soldes [val]%';else '&nbsp;']</td><td bgcolor="#C0B030" width="[var.pcDepotRestantTbs]%">[var.pcDepotRestantTbs;if [val]+=-30;then 'restants [val]%']&nbsp;</td></tr>
+		</table>
+	</td></tr>
+	</table>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+[onload;file=tbs/meta.txt]
+    <title>[var.nomBourseTbs] : Gestion des participants</title>
+	<script type="text/javascript" src="js/prototype151.js"></script>
+	<script type="text/javascript" src="js/cchamp.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/bourse.css" />
+    <style type="text/css">
+    
+    </style>
+</head>
+<script type="text/javascript">
+[var.js_all_errTbs;htmlconv=no]
+
+function chk(frm){
+    [var.jsSuppTbs;htmlconv=no]
+	if(!chkUnit(frm)) {
+		alert_e(0);
+		return false;
+	} else {
+		var pwd = $('[var.idPwdTbs]')
+		if( pwd.value != $('[var.idPwd2Tbs]').value) {
+			alert("Le mot de passe et sa confirmation ne sont pas identiques !");
+			pwd.select();
+			pwd.focus();
+			return false;
+	 	}
+		return true;
+	}
+}
+
+var ena=false;
+function pwd()
+{
+	if(ena){
+		$("isp_pwd").hide();
+		$("[var.idPwdTbs]").disable();
+		$("[var.idPwd2Tbs]").disable();
+		$("[var.idPwdOldTbs]").disable();
+		ena=false;
+	} else {
+		$("[var.idPwdTbs]").enable();
+		$("[var.idPwd2Tbs]").enable();
+		$("[var.idPwdOldTbs]").enable();
+		$("isp_pwd").show();
+		ena=true;
+	}
+	return false;
+}
+ 
+function init() {
+  if(a_all_err.length) alert_e(0);
+}
+</script>
+
+<body onload="init()">
+<div  class="menu">
+	<span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
+	<button onclick="document.location.href='?st=[var..cst.S_MAIN]'">Menu principal</button>
+	<button onclick="document.location.href='?st=[var..cst.S_GESTION_PARTICIPANTS]'">Menu gestion</button>
+	<button onclick="document.location.href='?st=[var..cst.S_GESTION_PARTICIPANTS]'">Gestion des participants</button>
+</button>
+</div>
+<h1>[var.nomBourseTbs]<br />Gestion des participants : <span style="color:green">[var.h1Tbs]</span></h1>
+<div class="block">
+<form method="post" onsubmit="return chk(this)" action="?st=[var.eNextActionTbs;htmlconv=no]">
+	[var.nomTbs;htmlconv=no]<br />
+	[var.prenomTbs;htmlconv=no]<br />
+	[var.loginTbs;htmlconv=no]<br />
+	[var.pwdsTbs;htmlconv=no]<br />
+	[var.permTbs;htmlconv=no]<br />
+	[var.msgInfoTbs;htmlconv=no;magnet=br;mtype=*m]<br />
+	<div style="margin-top:12px;text-align:center;"><input type="submit" name="sbmtAdd" value="OK" /></div>
+</form>
+
+</div>
+
+</body>
+</html>

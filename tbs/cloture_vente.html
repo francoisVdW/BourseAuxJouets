@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!-- $Revision: 185 $ -->
+<head>
+[onload;file=tbs/meta.txt]
+      <title>[var.bourseTbs] : Déverouillage des caisses</title>
+      <link rel="stylesheet" type="text/css" href="css/bourse.css" />
+	  <script type="text/javascript" src="js/prototype151.js"></script>
+	  <script type="text/javascript" >
+	  function cloture() {
+		if(confirm('Voulez-vous vraiment cloturer les ventes ?')) {
+			document.location.href = "?st=[var..cst.T_CLOTURE_VENTE]";
+  			}
+      }
+	  </script>
+	  <style>
+	   table.t_caisse {
+		font-size:0.8em;
+		width:600px;
+		margin-left:auto;
+		margin-right:auto;
+		border:1px solid #D0D0D0;
+		}
+	   #iTblCaisse {border:2px dotted #A0A0A0;font-size:12px;margin-top:5px;margin-bottom:10px;}
+	   #iTblCaisse th {background-color:#909090;color:White;}
+	   #iTblCaisse td.detail {font-size:0.9em;}
+	  </style>
+</head>
+
+<body>
+<div  class="menu">
+	<span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
+	<button onclick="document.location.href='?st=[var..cst.S_MAIN]'">Menu principal</button>
+	<button onclick="document.location.href='?st=[var.eGestionTbs]'">Menu gestion </button>
+</div>
+<h1>Clôture des ventes</h1>
+<h2>Etat des caisses</h2>
+<table border="0" cellspacing="0" cellpadding="3" id="iTblCaisse" align="center">
+  <tr>
+  	<td width="40"><b>n&deg; [caisseTbs.num_caisse;block=tr;]</b></td>
+  	<td><img src="[caisseTbs.stat;]" border="0" /></td>
+	<td class="detail">[caisseTbs.info;ifempty=&nbsp;]</td>
+  </tr>
+</table>		
+
+
+<button id="ib[var.tbsBtnCloture;magnet=button]" onclick="cloture()">Clôturer les ventes</button>
+<button id="ib[var.tbsBtnListing;magnet=button]" onclick="window.open('list_retrait.php')">Listing</button>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+[onload;file=tbs/meta.txt]
+    <title>Bourse : Retrait des articles - solde</title>
+    <link rel="stylesheet" type="text/css" href="css/bourse.css" />
+	<script type="text/javascript" src="js/prototype151.js"></script>
+	<script type="text/javascript" src="js/cchamp.js"></script>
+	<script type="text/javascript" >
+	function to_menu() {
+		document.location.href="?st=[var..cst.S_MAIN]";
+	    return false;
+    }
+	function erreur(msg) {
+		var a=msg.split(';');
+		var s;
+		if (a.length>1) s=a[1];
+		else s=a[0];
+		alert(s);
+	}
+	function loading(msg) {
+		if(msg){
+			$('imsg').show();
+			$('itdmsg').update(msg);
+		} else $('imsg').hide();
+	}
+    function cloture() {
+        loading("Enregistrement en cours")
+	    var param="op=soldeDepot&no_depot=[var.noDepotTbs]&uid=[var.uidTbs]";
+	    new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespCloture});
+	}
+	function trtRespCloture(resp,json){
+		loading(false);
+	  	if (json.a_err) erreur(json.a_err);
+	  	else {
+	  	    // operation reussie
+	  	    $("iMsgClot").update("Dépot clôturé.");
+	  	    $("ibtn_clo").hide();
+	  	    $("ibtn_fin").update("Dépot suivant");
+		}
+	}
+	</script>
+</head>
+<body>
+<div class="menu">
+	<span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
+	<div id="imsg" style='position:absolute;width:300px;border:solid 2px #909090;background-color:#F0F0F0;display:none;font-size:1.2em;padding:15px;'><table border="0"><tr >
+		<td><img  border="0" src="img/loading.gif" /></td><td id='itdmsg'></td>
+	</tr></table></div>
+	<button onclick="to_menu()"> Menu principal </button>
+	<button onclick="document.location.href='?st=[var.eGestionTbs;magnet=button]'"> Menu Gestion </button>
+	<button onclick="window.print();return false;"> Imprimer </button>
+	<button onclick="document.location.href='?st=[var..cst.S_RETRAIT]'" id="ibtn_fin"> Autre dépôt </button>
+</div>
+<h2>Retrait des articles : solde du dépot n&deg;[var.noDepotTbs]</h2>
+<div  class="noscrn"><div class ="block">
+	<table width="600" align="center" border="0">
+	 <tr><th colspan="2">Solde du dépot n&deg;[var.noDepotTbs]</th></tr>
+	 <tr><td  colspan="2">&nbsp;</td></tr>
+	 <tr><td width="50%">[var.nomBourseTbs;htmlconv=no]<br />[var.nomAssocTbs;htmlconv=no;magnet=br;mtype=m*]</td><td width="50%">&nbsp; </td></tr>
+	 <tr><td>Date : [var.dateTbs] - Dépot N&deg; <b>[var.noDepotTbs]</b></td><td>&nbsp;</td></tr>
+	 <tr><td  colspan="2">&nbsp;</td></tr>
+	 <tr><td>&nbsp;</td><td>[var.coordDeposantTbs;htmlconv=no]</td></tr>
+	</table>
+</div></div>
+<div class ="block">
+	<p style="color:red"><b>[var.msgTbs;magnet=p]</b></p>
+	<table class="list" border="0" cellpadding="2" cellspacing="2">
+		<tr><th width="85">N&deg;</th><th width="80">&nbsp;</th><th>Description </th><th width="100">Prix</th></tr>
+		<tr>[articlesTbs.val;block=tr;htmlconv=no;]</tr>
+	</table>
+	<p id="iMsgClot"> </p>
+</div>
+
+<div id="[var.mayClotureTbs;magnet=div]" class="block" align="center">
+	<button onclick="return cloture()" id="ibtn_clo"> Cloturer </button>
+</div>
+
+</body></html>

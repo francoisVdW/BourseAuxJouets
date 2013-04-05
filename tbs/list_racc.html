@@ -1,0 +1,41 @@
+<html><head>
+[onload;file=tbs/meta.txt]
+<script type="text/javascript" src="js/prototype151.js"></script>
+<style type="text/css">
+body {
+	margin-top: 5%;
+	margin-left: 5%;
+	margin-right:5%;
+	font-family: Verdana;
+}
+th {
+  background-color:#404040;
+  color:White;
+  text-align:left;
+}
+td.gris {
+  background-color:#E0E0E0;
+}
+div.block {
+    padding:10px;
+	margin:5px;
+	border:2px solid #909090;
+}
+</style>
+<title>Bourse : aide</title>
+</head>
+<body style="height: 200px;">
+<div class="block">
+	<table align="center" border="0" width="90%">
+	  <tr><td colspan="2"><div style="font-size:1.2em;text-align:center;width:100%">Liste des descriptions pré-établies et de leurs raccourcis</div></td></tr>
+	  <tr><th>Raccourci</th><th >Description</th></tr>
+	  <tr><td>[raccTbs.raccourci;block=tr;ifempty=<i>Non défini</i>]</td><td>[raccTbs.description;block=tr]</td></tr>
+	  <tr><td class="gris">[raccTbs.raccourci;block=tr;ifempty=<i>Non défini</i>]</td><td class="gris">[raccTbs.description;block=tr]</td></tr>
+	</table>
+	<div style="width:90%;font-size:0.9em;margin-top:10px;">
+	Pour obtenir une description rapidement, il faut entrer dans la zone de saisie le raccourci suivi de '*'.<br />
+	Par exemple "PT*" donnera "Petit train".
+	</div>
+	<div align="center"><button onclick="window.close()">Fermer</div>
+</div>
+</body></html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+[onload;file=tbs/meta.txt]
+    <title>Bourse : Restitution des articles</title>
+    <link rel="stylesheet" type="text/css" href="css/bourse.css" />
+	<script type="text/javascript" src="js/prototype151.js"></script>
+	<script type="text/javascript" src="js/cchamp.js"></script>
+	<script type="text/javascript" >
+	[var.js_all_errTbs;htmlconv=no]
+	var noDepot=0;
+	
+	function loading(msg) {
+		if(msg) {
+			$('itdmsg').update(msg);
+			$("imsg").show();
+		} else $("imsg").hide();
+	}
+	function erreur(msg) {
+		a_all_err.clear();
+    	a_all_err.addItem(msg);
+    	alert_e(0);
+    	razForm();
+	}
+
+	function to_menu() {
+		document.location.href="?st=[var..cst.S_MAIN]";
+	    return false;
+    }
+	function razForm()
+	{
+		$("isaisie").reset();
+		$("[var.idNoDepotTbs]").focus();
+	}
+	function cherche()
+	{
+	    var idDep = $F('[var.idNoDepotTbs]');
+	    // recherche article
+	    if (idDep.blank()) {
+		  	$('[var.idNoDepotTbs]').focus();
+			  return false;
+ 		}
+	    if (!idDep.isNum()) {
+			alert("Numero de dépot invalide");
+			$('[var.idNoDepotTbs]').focus();
+			return false;
+		}
+		loading("Recherche dépot "+idDep+"...");
+	    var param="op=searchDepot&[var.nNoDepotTbs]="+idDep;
+	    new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespCherche});
+		return false;
+	}
+	function trtRespCherche(resp, json)
+	{
+		loading(false);
+	  	if (json.a_err) erreur(json.a_err);
+	  	else {
+          noDepot = json.[var.nNoDepotTbs];
+		  $("info_n_dep").update(noDepot);
+		  $("inom_depos").update(json.deposant) ;
+		  $("idate_depot").update(json.date_depot) ;
+		  $("iinfo").show() ;
+		  $("iconfirm").focus() ;
+  		}
+
+ 	}
+ 	function annul_dep(){ $("iinfo").hide(); noDepot=0; return false;}
+ 	function conf_dep() {
+	   if (noDepot) document.location.href="?st=[var..cst.S_RETRAIT_SOLDE]&no_depot="+noDepot;
+	   return false;
+  	}
+	</script>
+</head>
+<body onload="razForm();">
+<div class="menu">
+	<span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
+	<button onclick="to_menu()"> Menu principal </button>
+</div>
+<h1>Restitution des articles</h1>
+<div  class="noscrn">
+<div class ="block">
+	<table width="500" align="center" border="0">
+	 <tr><td>[var.nom_bourseTbs;htmlconv=no]<td><td>&nbsp; </td></tr>
+	 <tr>Date : [var.dateTbs] - Dépot N&deg;<b><span id="no_depot"> </span></b><td><td>&nbsp;</td></tr>
+	 <tr><td>&nbsp;</td><td id="icoord_cli"></td></tr>
+	</table>
+</div>
+</div>
+<!-- boite rech depot -->
+<div class="noprnt">
+<div class="block" >
+	<div id="imsg" style='position:absolute;width:300px;border:solid 2px #909090;background-color:#F0F0F0;display:none;font-size:1.2em;padding:15px;'><table border="0"><tr >
+		<td><img  border="0" src="img/loading.gif" /></td><td id='itdmsg'></td>
+	</tr></table></div>
+
+    <div id="iinfo"  class="info" style="display:none;">
+		<table border="0" cellpadding="2" cellspacing="0" width="100%">
+			<tr><th colspan="2">  Dépot trouvé</th><th align="right"><img src="img/close.gif" title="Annuler" onclick="annul_dep()" /></th></tr>
+			<tr bgcolor="#C0C0C0"><td >N&deg;</td><td >Nom</td><td>Date</td></tr>
+			<tr><td id="info_n_dep"></td><td id="inom_depos"> </td><td id="idate_depot"> </td></tr>
+			<tr><td colspan="3">&nbsp;</td></tr>
+			<tr><td colspan="3" style="border-top:1px solid black" align="center"><button onclick="conf_dep()" id="iconfirm"> OK </button><br /></td></tr>
+		</table>
+    </div>
+	<form id="isaisie" onsubmit="return cherche()">N&deg; Dépot : [var.noDepotTbs;htmlconv=no] <button class="btn" onclick="return cherche()"> Chercher ! </button>&nbsp;&nbsp;</form>
+</div>
+</div>
+
+
+</body></html>

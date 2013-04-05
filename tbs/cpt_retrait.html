@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+[onload;file=tbs/meta.txt]
+      <title>[var.bourseTbs] : Compte des restitutions ... après la vente</title>
+      <link rel="stylesheet" type="text/css" href="css/bourse.css" />
+</head>
+<body>
+<div class="menu">
+   	<span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
+<button onclick="document.location.href='?st=[var..cst.S_MAIN]'">Menu principal</button>&nbsp;&nbsp;
+    <button onclick="document.location.href='?st=[var.eGestionTbs]'">Menu gestion</button>
+    <button onclick="window.print();return false"> Imprimer </button>
+</div>
+<h1>[var.bourseTbs]</h1>
+<h2>Liste des articles à restituer</h2>
+<div align="center">
+	<div class="lst_art">
+		<span class="hd">
+		Dépôt n&deg; <b>[retraitTbs.iddepot;block=div]</b><br />
+		</span>
+		Déposant: <b>[retraitTbs.nom]</b><span> [retraitTbs.prenom;magnet=span]</span>
+		<div style='color:red;font-weight:bold;'>Déjà restitué le [retraitTbs.date_retrait;frm='dd-mm-yyyy hh:nn';magnet=div]</div>
+		<table border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<th width="70">N&deg;&nbsp;</th>
+				<th align="left">Description</th>
+			</tr>
+			<tr>
+				<td valign="top" style="background-color:[subTbs.code_couleur];">[subTbs.id;block=tr;p1=[retraitTbs.$];htmlconv=no]</td>
+				<td valign="top">[subTbs.description]</td>
+			</tr>
+			<tr class='ttl'>
+				<td>&nbsp;</td>
+				<td align="right">Articles à restituer : <b>[retraitTbs.ttl;magnet=tr]</b></td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+
+</body>
+</html>

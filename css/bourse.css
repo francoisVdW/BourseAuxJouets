@@ -1,0 +1,211 @@
+body {
+	font-family: Verdana, Arial;
+}
+
+h1 { font-size:1.5em;  color:#202020; }
+h2  { font-size:1.3em; color:#202020; }
+a, a:active, a:visited {color:blue;}
+a:hover {text-decoration:none; background-color:black; color:White;	}
+form {
+	font-size:13px;
+	background-color:#FFFFFF;
+}
+form p {
+	margin-top:2px;
+	margin-bottom:2px;
+	padding:0px;
+}
+form fieldset legend {
+	font-size:15px;
+	font-weight:bold;
+	color:black;
+}
+form label{
+   display: inline;
+   float: left;
+   width: 140px;
+   text-align:right;
+   padding-right:5px;
+}
+div.block {
+    padding:10px;
+	margin:5px;
+	border:2px solid #909090;
+}
+
+
+div.menu {
+    padding:10px;
+	margin:5px;
+	border:2px solid #808080;
+	background-color:#D0D0D0;
+}
+
+div.assist{
+	border:2px solid #606060;
+	position:absolute;
+	background-color:#E0E0E0;
+	padding:0px;
+}
+div.assist ul {
+   	list-style:inside circle;
+	margin:2px;
+	padding:0px
+}
+div.assist li {
+	background-color:White;
+ 	cursor:pointer;
+ 	margin:1px;
+}
+div.assist li:hover {
+  color:White;
+  background-color:#505050;
+}
+#ilistassist {
+  top:17px;
+  left:57px;
+}
+
+
+div.lst_art {
+  font-size:12px;
+  width:560px;
+  margin-bottom:15px;
+  text-align:left;
+  border:1px #606060 dotted;
+  padding:5px;
+}
+
+div.lst_art td.dep {
+  border: solid 1px #606060;
+}
+
+div.lst_art table {
+  font-size:10px;
+  background-color:White;
+  margin-left:40px;
+  width:500px;
+}
+
+div.lst_art table td {
+  border-bottom: solid 1px;
+}
+
+div.lst_art table th {
+  background-color: #606060;
+  color:White;
+  font-weight:bold;
+}
+
+div.lst_art span.hd {
+  width:100%;
+  font-weight:bold;
+  font-size:1.3em;
+  color:Black;
+}
+
+@media print {
+	div.lst_art {
+		page-break-inside:avoid;
+ 	}
+	div.lst_art table th {
+  		font-weight:bold;
+  		border:1px dotted #000;
+	}
+}
+
+
+
+
+table.list {
+    padding:10px;
+	margin:5px;
+	border:1px dotted black;
+	font : 13px "Lucida Console" "Courrier New" Courrier;
+	width:100%;
+}
+
+table.list tr{
+	background-color:#FFFFD0;
+}
+table.list th {
+  background-color:#909090;
+  color:white;
+  font-weight:bold;
+  text-align:left;
+}
+
+table.list button {
+  font-size:10px;
+}
+
+table.list img {
+  cursor:pointer;
+  border:0px none;
+  margin:2px;
+}
+
+form#isais_art, form#isais_art input, form#isais_art button,
+form#isaisie, form#isaisie input, form#isaisie button,
+form#ifpaye, form#ifpaye input, form#ifpaye button
+{
+  font-size:13px;
+  font-weight:bold;
+}
+
+
+div.info {
+    font : 13px "Lucida Console" "Courrier New" Courrier;
+	background-color:white;
+	border: solid 1px black;
+	width:460px;
+	position:absolute;
+}
+
+div.info th {
+	background-color:black;
+	font-weight:bold;
+	color:white;
+}
+
+div.info th img {
+  cursor:pointer;
+  border:0px none;
+}
+#somme {
+	font-size:1.5em;
+	border: 2px dotted #404040;
+	padding:2px;
+	margin:2px;
+	width:150px;
+	text-align:right;
+}
+#icouleur {
+	padding:2px;
+	position:absolute;
+	margin-left:3px;
+	margin-top:-2px;
+	background-color:White;
+	border:2px solid black;
+	width:81px;
+}
+
+#icouleur td {
+	cursor:pointer;
+}
+
+@media print {
+	h1 {display:none;}
+	.noprnt {display:none;}
+	.noscrn {display:block;}
+	button {display:none;}
+	table.list th{border:2px solid #B0B0B0}
+	table.list td{border-bottom:1px dotted #808080;}
+	div.menu {display:none;width:0px;height:0px;}
+	div.brk_after{page-break-after : always; } 
+}
+@media screen {
+	.noscrn {display:none;}
+	.noprnt {display:block;}
+	div.brk_after{}
+}
