@@ -7,108 +7,11 @@
  * @version $Revision: 469 $
  *
  */
-include_once 'fwlib/user.class.php';
-include_once 'fwlib/sql.class.php';
-require_once 'fwlib/log.inc.php';
-require_once 'inc/settings.php';
-include_once 'fwlib/fpdf/fpdf.php';
-
-
-/**
- * PDF
- * 
- * @package Bourse
- * @author François VAN DE WEERDT
- * @copyright 2009
- * @version $Revision: 469 $
- * @access public
- */
-class PDF extends FPDF
-{
-	private $nom_deposant;
-	private $tel_deposant;
-	private $no_depot;
-	/**
-	 * PDF::Header()
-	 * En-tête
-	 * 
-	 * @return void
-	 */
-	function Header()
-	{
-	    //Police Arial gras 15
-	    $this->SetFont('Arial','',12);
-	    //Titre
-	    $this->Cell(100,15,$_SESSION['bourse']['nom_assoc'].' - '.$_SESSION['bourse']['nom_bourse'].' - '.date('d/m/Y') ,0,0,'L');
-		$this->setXY(80,30);
-	    $this->SetFont('Arial','B',16);
-	    $this->Cell(0,10,"Dépôt N° {$this->no_depot}",1,2,'C');
-	    $this->SetFont('Arial','',15);
-		$this->MultiCell(0,8,"Déposant : {$this->nom_deposant}\nTél. {$this->tel_deposant}");
-		$this->setXY(0,50);
-		$this->SetFont('Arial','',10);
-		$this->Ln(20);
-	}
-	
-	
-	function NouveauDepot($no_depot, $nom, $prenom, $tel){
-		$this->no_depot = $no_depot;
-		$this->nom_deposant = $nom.(!empty($prenom)? ' '.$prenom:'');
-		$this->tel_deposant = preg_replace("/(\d{2})/","\$1 ", $tel);
-		$this->AddPage();
-	}
-	
-	//Tableau amélioré
-	/**
-	 * PDF::Table()
-	 * 
-	 * @param array $headers par Ex array( array('text'=> 'w'=> , 'align'=> 'col_name'=> ), ... )
-	 * @param array $data
-	 * @return void
-	 */
-	function Table($headers,$data, $trail)
-	{
-		$hdText = array();
-		$ttlW = 0;
-	    //En-tête
-		foreach($headers as $header) {
-			//Largeurs des colonnes
-			$ttlW += $header['w'];
-			$this->Cell($header['w'],7,$header['text'],1,0,'C');
-		}
-	
-	    $this->Ln();
-	    $this->SetFont('','',10);
-	    //Données
-	    foreach($data as $row)
-	    {
-			foreach($headers as $header) {
-				if(!empty($header['barre']) && !empty($row['barre'])) {
-					$this->SetDrawColor(130,130,130);
-					$y= $this->GetY();
-					$x1= $this->GetX();
-					$x2 = $x1 + $header['w'];
-					$this->Line($x1,$y+1, $x2, $y+6-1);
-					$this->Line($x1,$y+6-1, $x2, $y+1);
-					$this->SetDrawColor(0,0,0);
-				}
-				$this->Cell($header['w'],6,$row[$header['col']],'LR',0,$header['align']);
-			}	
-	        $this->Ln();
-	    }
-	    if(is_array($trail)) {
-			foreach($headers as $header) {
-		    	$this->Cell($header['w'],6,$trail[$header['col']],1,0,$header['align']);
-		    }	
-	    } else {	
-	    	//Trait de terminaison
-	    	$this->Cell($ttlW,0,'','T');
-	    }
-	    $this->Ln();
-	    $this->SetFont('','',12);	    
-	}
-}
-
+require 'fwlib/user.class.php';
+require 'fwlib/sql.class.php';
+require 'fwlib/log.inc.php';
+require 'inc/settings.php';
+require 'fwlib/bpdf.php';
 
 
 session_start();
@@ -158,10 +61,14 @@ $hd = array(
 
 
 //Instanciation de la classe dérivée
-$pdf=new PDF();
+$pdf=new bPDF();
+$pdf->setDestinataire(false); 
 
 foreach($aDepot as $depot) {
-	$pdf->NouveauDepot($depot['iddepot'], $depot['nom'], $depot['prenom'], $depot['tel']);  // Add pg
+  
+	$pdf->setDepot($depot['iddepot'], $depot['nom'], $depot['prenom'], $depot['tel']);  
+	$pdf->StartPageGroup();
+  $pdf->AddPage();  
 	/** liste des articles pour ce dépot
 	 */
  	$sql = "SELECT IF( IFNULL(article.vente_idvente,0)=0, 'N', IF(retour.comment IS NULL,'Y','R')) AS vendu, retour.comment AS motif_retour, 

@@ -9,7 +9,32 @@
  * @author FVdW
  */
 
+function ctrl_nom($post_var_name, $lbl='') 
+{
+    if(!empty($_POST[$post_var_name]))  {
+    	$v = trim($_POST[$post_var_name]);
+      if($v) return $v;
+    }
+    if(!$lbl) $lbl ="La variable $post_var_name";
+    echo "<html><body><h1>Erreur de données</h1>$lbl doit être spéifié<br><a href='?st='". S_MAIN ."'>Retour au menu</a></body></html>";
+    exit();     
+}
 
+function ctrl_num($post_var_name, $lbl='')
+{
+		if(!$lbl) $lbl ="La variable $post_var_name";
+    if(!empty($_POST[$post_var_name]))  {
+    	$v = trim($_POST[$post_var_name]);
+      if(is_numeric($v)) return $v; 
+      else {
+      	$msg = "n'est pas numérique";    
+      }
+    } else {                                             
+    	$msg = "doit être spéifié";
+    }
+   	echo "<html><body><h1>Erreur de données</h1>$lbl $msg<br><a href='?st='". S_MAIN ."'>Retour au menu</a></body></html>";        
+    exit();     
+}
 
 /** Verification droit "gestion"
  */
@@ -19,15 +44,11 @@ if($user->get_field('may_gestion') != 'T') {
 }
 
 /** Ctrl Post 
- */
-if(!is_numeric($_POST['marge'])) {
-	echo "<html><body><h1>Erreur de données</h1>_POST[marge] non numérique ({$_POST['marge']})<br><a href='?st='". S_MAIN ."'>Retour au menu</a></body></html>";
-	exit();    
-}
-if(!is_numeric($_POST['nombre_caisse'])) {
-	echo "<html><body><h1>Erreur de données</h1>_POST[nombre_caisse] non numérique ({$_POST['nombre_caisse']})<br><a href='?st='". S_MAIN ."'>Retour au menu</a></body></html>";
-	exit();    
-}
+ */   
+$marge = ctrl_num('marge', 'La marge');
+$nb_caisse = ctrl_num('nombre_caisse', 'La nombre de caisses');
+$nom_assoc = ctrl_nom('nom_assoc', 'Le nom de l\'association');
+$nom_bourse = ctrl_nom('nom_bourse', 'Le nom de la bourse');
  
   
 /** Controle pwd
@@ -66,9 +87,21 @@ if(!empty($_POST['ventes'])) {
 }    
 if(!empty($_POST['nom_bourse'])){
     $nom = $db->quote($_POST['nom_bourse']);
+    $nom_assoc = $db->quote($nom_assoc);
+    $adr_assoc = $db->quote($_POST['adr_assoc']);
+    $nom_bourse = $db->quote($nom_bourse);
     $msg_fin_depot = $db->quote($_POST['msg_fin_depot']);
-    $sql = "UPDATE bourse SET date_cloture_ventes=NULL, nom_bourse=$nom, marge={$_POST['marge']}, nombre_caisse={$_POST['nombre_caisse']}, fond_de_caisses='', msg_fin_depot=$msg_fin_depot WHERE idbourse={$_SESSION['bourse']['idbourse']} LIMIT 1;";
-    // echo $sql."\n<br>";
+    
+    $sql = "UPDATE bourse SET 
+    	date_cloture_ventes=NULL,
+      nom_assoc=$nom_assoc,
+      adr_assoc=$adr_assoc,
+      nom_bourse=$nom_bourse, 
+      marge=$marge, 
+      nombre_caisse=$nb_caisse, 
+      fond_de_caisses='', 
+      msg_fin_depot=$msg_fin_depot 
+    WHERE idbourse={$_SESSION['bourse']['idbourse']} LIMIT 1;";   
     $n = $db->query($sql);
 } 
 

@@ -6,8 +6,17 @@
  *
  */
 
-define ('DB_HOST', 'localhost');
-define ('DB_NAME', 'bourse');
-define ('DB_USER', 'root');
-define ('DB_PWD', '');
+
+// Paramètres d'accès à la DB mysql
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'baj');
+define('DB_USER', 'root');
+define('DB_PWD', '');
+
+// Si on veut produire des PDF pour les bons de dépôts et facture 
+//    --> définir PDF_DIR : string path des fichiers PDF
+//        NOTE : PDF_DIR doit se terminer par  '/'  
+// Si on veut utiliser les impression depuis les pages HTML
+//    --> définir PDF_DIR : 0 (ou False)  OU NE PAS DEFINIR
+define('PDF_DIR', './spool_pdf/');     
 ?>

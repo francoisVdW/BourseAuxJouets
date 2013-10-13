@@ -10,7 +10,7 @@
 		}
 	  </style>
 </head>
-<body>
+<body onload="[var.onloadTbs;htmlconv=no]">
 <div  class="noprnt" align="center" ><button onclick="window.print()">Imprimer</button>&nbsp;&nbsp;<button onclick="window.close()">Fermer</button></div>
 <div class="block" style="width:600px;padding:10px">
 	<table width="100%" align="center" border="0">
@@ -38,7 +38,8 @@
 		<tr><th width="60">n&deg; </th> <th>Description</th><th width="30">Q<sup>té</sup></th><th width="80">Prix</th></tr>
 		<tr><td>[articlesTbs.depot_iddepot;block=tr]-[articlesTbs.idarticle]</td><td>[articlesTbs.description]</td><td>1</td><td align="right">[articlesTbs.prix_vente;frm=0,00] &euro;</td></tr>
 		<tr><td colspan="3"><b>TOTAL</b></td><td align="right"><b>[var.ttlTbs;frm=0,00] &euro;</b></td></tr>
-	</table>
+	</table>  
+  <p>TVA non applicable, article 293B du CGI.</p>
 	<br  />
 </div>
 

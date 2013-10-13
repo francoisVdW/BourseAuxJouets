@@ -220,7 +220,7 @@ class Cdb
 		}
 		
 		// analyse de la requete pour retour du resultat de l'operation
-		list($kw, $void) = split("[ \r\n\t]+",ltrim(strtolower($sql)," \r\n\t"),2);
+		list($kw, $void) = preg_split('/[ \r\n\t]+/',ltrim(strtolower($sql)," \r\n\t"),2);
 		switch($kw) {
 			case 'show':
 			case 'select':
@@ -336,7 +336,7 @@ class Cdb
 	        case 'string':
 	        default:
 				$str = preg_replace('/(SELECT\s.*\sFROM\s|RENAME\s|INSERT\sINTO\s|UPDATE\s.*\sSET\s|DELETE\s+FROM\s|DROP\s+TABLE\s|\/\*)/msi','',$str);
-				// 2nd protectoin contre injection
+				// 2nd protection contre injection
 				$injections = array('>','<','=','?','\\','&','|','-','+','$','#','*');
 				$str = str_replace($injections, '', $str);
 				return "'".addslashes($str)."'";

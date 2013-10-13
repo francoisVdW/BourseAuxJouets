@@ -22,7 +22,7 @@ if($user->get_field('may_gestion') != 'T') {
 	exit();
 }
 
-if(is_array($_POST['fond'])) {
+if(isset($_POST['fond']) &&  is_array($_POST['fond'])) {
 	
 	$aFonds = array();
 	foreach($_POST['fond'] as $no=>$val) {

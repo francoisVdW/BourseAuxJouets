@@ -11,7 +11,9 @@
  
 /** recupère les info de bourse courante pour TBS
  */
- 
+                                                         
+$nom_assocTbs = $_SESSION['bourse']['nom_assoc']; 
+$adr_assocTbs = $_SESSION['bourse']['adr_assoc'];
 $nom_bourseTbs = $_SESSION['bourse']['nom_bourse'];
 $marge = $_SESSION['bourse']['marge'];
 $nombre_caisse = $_SESSION['bourse']['nombre_caisse'];

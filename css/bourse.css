@@ -141,8 +141,12 @@ table.list button {
 
 table.list img {
   cursor:pointer;
-  border:0px none;
-  margin:2px;
+  border:1px solid transparent;
+  margin:1px;
+}
+table.list img:hover {
+  border-color:black;
+  background-color:#fff;
 }
 
 form#isais_art, form#isais_art input, form#isais_art button,
