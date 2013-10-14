@@ -38,6 +38,7 @@ CREATE TABLE `bourse` (
   `idbourse` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `nom_bourse` varchar(50) DEFAULT NULL,
   `nom_assoc` varchar(50) DEFAULT NULL COMMENT 'Raison Sociale de l''assoc.',
+  `adr_assoc` tinytext COMMENT 'Adresse Assoc (pour Factures)',
   `date_deb` datetime DEFAULT NULL,
   `date_fin` datetime DEFAULT NULL,
   `date_cloture_ventes` datetime DEFAULT NULL,
@@ -45,7 +46,7 @@ CREATE TABLE `bourse` (
   `adresse_deposant` enum('MANDATORY','NONE','OPTION') NOT NULL DEFAULT 'OPTION' COMMENT 'adresse deposant requise ?',
   `nombre_caisse` int(3) unsigned NOT NULL DEFAULT '1',
   `fond_de_caisses` varchar(255) DEFAULT NULL COMMENT 'array no_caisse=mnt; par Ex 1:10;2=20;3=10',
-  `msg_fin_depot` text COMMENT 'Texte imprimé en bas des recus de depots',
+  `msg_fin_depot` tinytext COMMENT 'Texte imprimé en bas des recus de depots',
   PRIMARY KEY (`idbourse`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
