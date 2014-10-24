@@ -63,6 +63,7 @@ CREATE TABLE `deposant` (
   `adresse2` varchar(25) DEFAULT NULL,
   `cp` char(5) DEFAULT NULL,
   `commune` varchar(25) DEFAULT NULL,
+  `email` VARCHAR(255) DEFAULT NULL,
   `idbourse` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`iddeposant`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;

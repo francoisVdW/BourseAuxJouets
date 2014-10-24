@@ -163,8 +163,8 @@ if(defined('PDF_DIR') && PDF_DIR) {
     // Signature déposant
     $pdf->SetFont('','I',9);
     $pdf->setX(120);
-    $pdf->SetDrawColor(130);
-    $pdf->multiCell(80,6,"Signature du déposant\n\n\n\n\n\n", 1, 'L');
+    $pdf->SetDrawColor(80);
+    $pdf->multiCell(80,6,"Signature du vendeur\n\n\n\n\n\n", 1, 'L');
     $pdf->SetDrawColor(0);
     $pdf->ln();
     $pdf->SetFont('','',10);

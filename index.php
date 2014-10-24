@@ -6,11 +6,11 @@
  *
  */
 
-require_once 'fwlib/tbs_class_php5.php';
-require_once 'fwlib/user.class.php';
-require_once 'fwlib/sql.class.php';
-require_once 'fwlib/log.inc.php';
-require_once 'inc/settings.php';
+require 'fwlib/tbs_class_php5.php';
+require 'fwlib/user.class.php';
+require 'fwlib/sql.class.php';
+require 'fwlib/log.inc.php';
+require 'inc/settings.php';
 
 
 /** Etats stables
@@ -19,7 +19,7 @@ define ('S_MAIN', 1);
 define ('S_NOUV_DEPOT', 2);
 define ('S_CAISSE', 3);
 define ('S_RETRAIT', 4);
-define ('S_DEPOT_ART', 5);
+define ('S_DEPOT_ART', 5);            
 define ('S_FIN_DEPOT',6);
 define ('S_RETRAIT_SOLDE',7);
 define ('S_GESTION',8);
@@ -102,8 +102,8 @@ $user = new User(DB_HOST, DB_NAME, DB_USER, DB_PWD);
 if (!isset($_SESSION['logged']) || !$_SESSION['logged'] || !$user->uid) {
 	/** Si pas connecte : <form> de login puis ctrl
 	*/
-    require_once 'inc/login_form.inc.php';
-	/** Recuperation parametrage bourse (idbourse) aprs connexion validee
+    require 'inc/login_form.inc.php';
+	/** Recuperation parametrage bourse (idbourse) apres connexion validee
 	*/
 	$sql = "SELECT * FROM bourse WHERE idbourse=".$user->get_field('bourse_idbourse');
 	$n = $db->query($sql);
@@ -150,7 +150,7 @@ $aErr = array();
 */
 switch($st) {
 	case T_SAUV_DEPOSANT:
-	    require_once 'inc/utl_deposant.inc.php';
+	    require 'inc/utl_deposant.inc.php';
 	    $id_deposant = sav_deposant();
 	    if($id_deposant !== FALSE) $st = S_DEPOT_ART;
 	    else $st = S_NOUV_DEPOT;
@@ -159,7 +159,7 @@ switch($st) {
 	    /** Supprime une vente pour laquelle il n'y a pas d'articles
 		 * Uniquement si user->uid correspond à la vente + ...
 	    */
-	    require_once 'inc/utl_caisse.inc.php';
+	    require 'inc/utl_caisse.inc.php';
 	    annul_vente();
 		header("Location: index.php");
 	    exit();
@@ -167,7 +167,7 @@ switch($st) {
 	    /** Supprime un depot pour lequel il n'y a pas d'articles
 		 * Uniquement si user->uid correspond au depot + ...
 	    */
-	    require_once 'inc/utl_caisse.inc.php';
+	    require 'inc/utl_caisse.inc.php';
 	    annul_depot();
 			    
 		header("Location: index.php");
@@ -176,7 +176,7 @@ switch($st) {
   case T_DEVEROUILLAGE:
 		/** Deverouille une caisse
 		*/
-	    require_once 'inc/utl_caisse.inc.php';
+	    require 'inc/utl_caisse.inc.php';
 	    deverouille_caisse();
 		$st = S_DEVEROUILLAGE;
 		break;
@@ -184,7 +184,7 @@ switch($st) {
 	case T_INS_PART:
 	    /** Ajout d'un participant
 	    */
-	    require_once 'inc/utl_gest_part.inc.php';
+	    require 'inc/utl_gest_part.inc.php';
 		if (insert_part())  $st = S_GESTION_PARTICIPANTS;
 		else $st = S_EDIT_PART;
 	    break;
@@ -192,13 +192,13 @@ switch($st) {
 	case T_UPD_PART:
 	    /** MaJ d'un participant
 	    */
-	    require_once 'inc/utl_gest_part.inc.php';
+	    require 'inc/utl_gest_part.inc.php';
 	    if (update_part()) $st = S_GESTION_PARTICIPANTS;
 	    else $st = S_EDIT_PART;
 	    break;
 	    
 	case T_DEL_PART:
-	    require_once 'inc/utl_gest_part.inc.php';
+	    require 'inc/utl_gest_part.inc.php';
 	    delete_part();
 		$st = S_GESTION_PARTICIPANTS;
 		break;
@@ -206,8 +206,8 @@ switch($st) {
 	case T_CLOTURE_VENTE:
 		/** cloture les ventes
 		*/
-	    require_once 'inc/utl_caisse.inc.php';
-	    require_once 'inc/caisse.class.php';
+	    require 'inc/utl_caisse.inc.php';
+	    require 'inc/caisse.class.php';
 	    cloture_vente();
 		$st = S_CLOTURE_VENTE;
 		break;
@@ -215,7 +215,7 @@ switch($st) {
 	case T_REINIT:
         /** Re-Initialisation de la db 
         */
-        require_once 'inc/reinit.inc.php';
+        require 'inc/reinit.inc.php';
         $st = S_MAIN;
         break;
 }
@@ -294,9 +294,8 @@ switch($st) {
 $TBS = new clsTinyButStrong;
 $TBS->LoadTemplate("tbs/$sFile.html") ;
 // pour eventuels TBS->mergeBlock()
-if (is_file("inc/$sFile.inc.php")) require_once "inc/$sFile.inc.php";
+if (is_file("inc/$sFile.inc.php")) include("inc/$sFile.inc.php");
 
 $TBS->Show(TBS_OUTPUT) ;
 // Fin pgm
 $db->close();
-?>

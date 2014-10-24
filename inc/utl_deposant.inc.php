@@ -18,6 +18,7 @@ require_once 'fwlib/cchamp.class.php';
 $nom	= new CChamp("NOM_O_deposant", '', 35);
 $prenom	= new CChamp("NOM_L_prenom", '', 25);
 $tel    = new CChamp("TEL_O_tel");
+$email  = new CChamp("EMAIL_L_email");
 switch ($_SESSION['bourse']['adresse_deposant']) {
 	case "MANDATORY":
 		$adr1   = new CChamp("TXT_O_adr1", '', 25);
@@ -42,7 +43,7 @@ switch ($_SESSION['bourse']['adresse_deposant']) {
 function sav_deposant()
 {
 	global $db;
-	global $nom, $prenom, $adr1, $adr2, $cp, $commune, $tel;
+	global $nom, $prenom, $adr1, $adr2, $cp, $commune, $tel, $email;
 	global $user;
 	global $aErr;
 	/** Acqusition et ctrl des données du _POST
@@ -54,14 +55,17 @@ function sav_deposant()
 	if (!$cp->chkPost()) $aErr[] = $cp->getErr();
 	if (!$commune->chkPost()) $aErr[] = $commune->getErr();
 	if (!$tel->chkPost()) $aErr[] = $tel->getErr();
+	if (!$email->chkPost()) $aErr[] = $email->getErr();       
+    
 	if(count($aErr)) {
 	    return FALSE;
 	}
 	
-	$sql = "INSERT INTO deposant (nom, prenom, tel, adresse, adresse2, cp, commune, idbourse)
+	$sql = "INSERT INTO deposant (nom, prenom, tel, email, adresse, adresse2, cp, commune, idbourse)
 		VALUES (".$nom->getDbVal().",
 		".$prenom->getDbVal().",
 		".$tel->getDbVal().",
+		".$email->getDbVal().",
 		".$adr1->getDbVal().",
 		".$adr2->getDbVal().",
 		".$cp->getDbVal().",

@@ -613,11 +613,7 @@ class CChamp {
 	    }
 	    break;
 	  case 'EMAIL':
-	    if (!preg_match('/^[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+'.
-	           '@'.
-	           '[-!#$%&\'*+\\/0-9=?A-Z^_`a-z{|}~]+\.'.
-	           '[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+$/',
-	           $v) ) {
+	    if (!preg_match('/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*$/', $v) ) {
 	      $this->err="Le format de cet e-mail est incorrect";
 	      return false;
 	    }

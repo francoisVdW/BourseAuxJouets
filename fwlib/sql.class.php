@@ -328,7 +328,7 @@ class Cdb
     * @param $string mixed Data to be quoted
     * @return mixed "NULL" string, quoted string or original data
     */
-    public function quote($str = null)
+    static public function quote($str = null)
     {
     	switch (strtolower(gettype($str))) {
 	        case 'null': return 'NULL';

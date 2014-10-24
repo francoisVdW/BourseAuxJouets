@@ -1,5 +1,4 @@
 <?php
-
 include('fwlib/fpdf/fpdf.php');
 
 
@@ -99,7 +98,7 @@ class bPDF extends FPDF
     // entete 
     $this->SetFont('Arial','',9);
     $this->SetTextColor(80);
-    $this->SetDrawColor(160);
+    $this->SetDrawColor(100);
     //Titre
     $this->Cell(165,7,"{$_SESSION['bourse']['nom_assoc']} - {$_SESSION['bourse']['nom_bourse']}", 'B', 0, 'L');
     // N° Page
@@ -112,7 +111,7 @@ class bPDF extends FPDF
         if($this->destinataire) {
             $this->setXY(10,25-3);
             $this->SetFont('','I',14);
-            $this->SetTextColor(100);	// gris
+            $this->SetTextColor(80);	// gris
             $this->Write(7,'Exempaire ');    
             $this->ln();
             $this->SetFont('','I',18);
@@ -124,12 +123,17 @@ class bPDF extends FPDF
         $this->SetFont('Arial','B',16);
         $this->Cell(0,10,"Dépôt N° {$this->no_depot}",1,2,'C'); 
         if($this->GroupPageNo() < 2) { 
-            // Nom deposant, adresse & Tel
+            // Nom deposant, adresse & Tel              
+            if (!empty($this->adr_deposant))
+            	$addr = $this->adr_deposant . "\n";
+            else $addr = '';
+            $addr .= "Tél. : {$this->tel_deposant}";
+            
             $this->SetFont('','',14);
             $this->MultiCell(0,8,"Déposant : {$this->nom_deposant}");               
             $this->SetFont('','',12);                             
             $this->setX(80);
-            $this->MultiCell(0,7,($this->adr_deposant? $this->adr_deposant:'')."\nTél. : {$this->tel_deposant}");
+            $this->MultiCell(0, 7, $addr);
         }      		                		        
       } else {
         // entete Facture
@@ -168,8 +172,8 @@ class bPDF extends FPDF
 		$hdText = array();
 		$ttlW = 0;
                              
-    $this->SetDrawColor(130);
-	  //En-tête
+    	$this->SetDrawColor(100);
+	  	//En-tête
 		foreach($headers as $header) {
 			//Largeurs des colonnes
 			$ttlW += $header['w'];
@@ -182,14 +186,14 @@ class bPDF extends FPDF
 	    if(!empty($data)) foreach($data as $row)
 	    {
           foreach($headers as $header) {
+          	$x1= $this->GetX();
+            $this->Cell($header['w'],6, $row[$header['col']],'LRB',0,$header['align']);
             if(!empty($header['barre']) && !empty($row['barre'])) {
-              $y= $this->GetY();
-              $x1= $this->GetX();
+              $y= $this->GetY();              
               $x2 = $x1 + $header['w'];
               $this->Line($x1,$y+1, $x2, $y+6-1);
               $this->Line($x1,$y+6-1, $x2, $y+1);
-            }
-            $this->Cell($header['w'],6,$row[$header['col']],'LRB',0,$header['align']);
+            }            
           }	
 	        $this->Ln();
 	    }

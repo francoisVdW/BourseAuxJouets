@@ -1,6 +1,8 @@
 # FVdW
 log/
 sql/
+printed_pdf/
+spool_pdf/
 
 #################
 ## Eclipse

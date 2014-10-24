@@ -21,6 +21,7 @@ require_once 'inc/utl_deposant.inc.php';
 $nomTbs = $nom->printFieldEx('Nom');
 $prenomTbs = $prenom->printFieldEx('Prénom');
 $telTbs = $tel->printFieldEx('Téléphone');
+$emailTbs = $email->printFieldEx('e-mail');
 
 switch ($_SESSION['bourse']['adresse_deposant']) {
 	case "OPTION":

@@ -13,6 +13,9 @@ define('DB_NAME', 'baj');
 define('DB_USER', 'root');
 define('DB_PWD', '');
 
+//
+// Listing pour restitution / solde : imprimer exemplaire Assoc + exemplaire Deposant (inc/list_retrait.php)
+define('LIST_RETRAIT_NB_EX',2);  // 1 ou 2
 // Si on veut produire des PDF pour les bons de dépôts et facture 
 //    --> définir PDF_DIR : string path des fichiers PDF
 //        NOTE : PDF_DIR doit se terminer par  '/'  
