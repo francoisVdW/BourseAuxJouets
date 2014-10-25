@@ -339,7 +339,7 @@ function ajax_rech_desc()
 		$aRetValue['a_err'] = "/; POST[pat] invalide (voir log)";
 		logInfo("ajax_rech_desc(): _POST['pat'] vide ou non defini [{$_POST['pat']}]",__FILE__,__LINE__);
 	} else {
-		$pat = mysql_escape_string(utf8_decode(trim($_POST['pat'])));
+		$pat = str_replace("'", "\\'", utf8_decode(trim($_POST['pat'])));
 	
 		// recherche simple
 		$sql = "SELECT idarticle, description, vente_idvente FROM article WHERE description like '$pat%'";		

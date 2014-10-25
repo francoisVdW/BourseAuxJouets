@@ -25,19 +25,19 @@
 <body>
 <div class="info" id="iErrClo" style="background-color:red;position:absolute;top:20%;left:30%">
 	<table border="0" cellpadding="2" cellspacing="0" width="100%">
-		<tr><th>Erreur de clôture</th><th align="right"><img src="img/close.gif" title="Fermer" onclick="$('iErrClo').hide();$('iWarn').show()" /></th></tr>
+		<tr><th>Erreur de cl&ocirc;ture</th><th align="right"><img src="img/close.gif" title="Fermer" onclick="$('iErrClo').hide();$('iWarn').show()" /></th></tr>
         [var.alertClotureTbs;htmlconv=no;magnet=div]
 	 </table>
 </div>
 <h1>[var.bourseTbs]</h1>
 <h2>Utilisateur : <i>[var.participTbs]</i></h2>
 <div class="block main">
-    <fieldset><legend>Dépot</legend>
-        <p id="a[var.mayDepotTbs;magnet=li]"><a href="?st=[var.eNouvDepotTbs]">Enregistrer des dépots</a></p>
+    <fieldset><legend>D&eacute;p&ocirc;t</legend>
+        <p id="a[var.mayDepotTbs;magnet=p]"><a href="?st=[var.eNouvDepotTbs]">Enregistrer des d&eacute;pots</a></p>
     </fieldset>
 
     <fieldset><legend>Vente</legend>
-        <p id="b[var.mayCaisseTbs;magnet=li]">Caisses&nbsp;<img src="img/help.gif" border="0" style="cursor:pointer" title="Aide à propos des caisses" onclick="aide('caisse')">
+        <p id="b[var.mayCaisseTbs;magnet=p]">Caisses&nbsp;<img src="img/help.gif" border="0" style="cursor:pointer" title="Aide à propos des caisses" onclick="aide('caisse')">
             <table border="0" cellspacing="0" cellpadding="3" id="iTblCaisse">
               <tr>
                 <td width="40"><b>n&deg; [caisseTbs.num_caisse;block=tr;]</b></td>
@@ -47,7 +47,7 @@
               </tr>
             </table>		
         </p>
-        <p id="d[var.mayGestionTbs;magnet=li]"><a href="?st=[var..cst.S_CLOTURE_VENTE]" title="Cloture des ventes">Clôture des ventes &amp; listing</a></p>
+        <p id="d[var.mayGestionTbs;magnet=p]"><a href="?st=[var..cst.S_CLOTURE_VENTE]" title="Cloture des ventes">Cl&ocirc;ture des ventes &amp; listing</a></p>
     </fieldset>
 
     <fieldset><legend>Articles</legend>
@@ -55,7 +55,7 @@
     </fieldset>
 
     <fieldset><legend>Restitution</legend>
-        <p id="c[var.mayRetraitTbs;magnet=li]"><a href="?st=[var..cst.S_RETRAIT]">Restitution</a></p>
+        <p id="c[var.mayRetraitTbs;magnet=p]"><a href="?st=[var..cst.S_RETRAIT]">Restitution</a></p>
     </fieldset>
 
     <fieldset><legend>Gestion de l'application</legend>
@@ -64,7 +64,7 @@
     
 	<p><a href="?logout" style="color:red">D&eacute;connexion</a></p>
 
-<div style="display:none" id='iWarn'><img  style="cursor:pointer" border='0' src='img/warn.gif' onclick='$("iErrClo").show()' /> Des erreurs de clôtures ont été détectées</div>
+<div style="display:none" id='iWarn'><img  style="cursor:pointer" border='0' src='img/warn.gif' onclick='$("iErrClo").show()' /> Des erreurs de cl&ocirc;tures ont &eacute;t&eacute; d&eacute;tect&eacute;es</div>
 </div>
 </body>
 </html>
