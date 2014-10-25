@@ -35,7 +35,7 @@ define ('S_FICHE_ART', 17);
 define ('S_CLOTURE_VENTE', 18);
 define ('S_INIT_BOURSE',19);
 define ('S_FONDS_CAISSES',20);
-
+define ('S_LST_RETOUR',21);
 /** Etats transitoires
 */
 define ('T_SAUV_DEPOSANT',51);
@@ -272,6 +272,10 @@ switch($st) {
 	case S_LST_ART:
 		$sFile = 'lst_art';
 		break;
+	case S_LST_RETOUR:
+		$sFile = 'lst_retour';
+		break;
+	
 	case S_FICHE_ART:
 		$sFile ='fiche_art';
 		break;

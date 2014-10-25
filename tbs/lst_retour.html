@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+[onload;file=tbs/meta.txt]
+<title>[var.bourseTbs] : Liste des retours</title>
+<link rel="stylesheet" type="text/css" href="css/bourse.css" />
+<style type="text/css">
+
+</style>
+</head>
+
+<body>
+<div class="menu">
+	<span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
+    <button onclick="document.location.href='?st=[var..cst.S_MAIN]'">Menu principal</button>&nbsp;&nbsp;
+    <button onclick="document.location.href='?st=[var.eGestionTbs]'">Menu gestion</button>&nbsp;&nbsp;
+    <button onclick="window.print();return false"> Imprimer </button>
+    <!-- button onclick="window.open('xls.php?doc=lst_art', 'id999');return false"> Export XLS </button -->        
+</div>
+<h1>[var.bourseTbs]</h1>
+
+<div align="center">
+<h2>Liste des retours</h2>
+	<div class="lst_art">
+	<table border="0" cellpadding="0" cellspacing="0">   
+    <!-- n = [var.nTbs;magnet=table] -->
+	<tr>
+		<th width="60">N&deg; article</th>
+		<th align="left">Description</th>
+		<th align="right" width="60">P.A.</th>
+		<th align="right" width="60">P.V.</th>        
+		<th align="center" width="50">N&deg; caisse</th>
+        <th width="100">Date retour</th>        
+	</tr>
+	<tr>
+		<td valign="top"><b>[main.depot_iddepot;block=tr;]-[main.idarticle]</b></td>
+		<td valign="top">[main.description;htmlconv=no]<br /><span style="font-size:1.5em;color:red">&rarr;</span>&nbsp;[main.comment;htmlconv=no]</td>
+		<td valign="top" align="right">[main.prix_achat;frm='0.00'] &euro;</td>
+		<td valign="top" align="right">[main.prix_vente;frm='0.00'] &euro;</td>   
+		<td valign="top" align="center">[main.no_caisse]</td>        
+		<td valign="top" align="right">[main.date;frm='dd/mm/yy hh:nn']</td>
+	</tr>
+	</table><br />
+    <p>Total : [var.nTbs;ifempty=0] retour(s)</p>
+	</div>
+</div>
+</body></html>

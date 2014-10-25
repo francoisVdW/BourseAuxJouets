@@ -96,25 +96,14 @@ function retour_vente($idArt)
         return array('ok'=>false, 'msg'=>'Le motif de l\'annualtion de la vente doit être renseigné');
     }
     $motif = $db->quote(substr($_POST['TXT_O_comment'],0,250));
-    $sql = "INSERT INTO retour (participant_idparticipant, date, comment) VALUES ({$user->uid}, Now(), $motif)";
-    $id = $db->query($sql);
-    if(!$id) {
-        logInfo("Erreur SQL : sql=$sql",__FILE__,__LINE__);
-        return array('ok'=>false, 'msg'=>'Erreur 1');
-    } 
-    $sql = "UPDATE article SET retour_idretour=$id WHERE idarticle=$idArt";
-    $n= $db->query($sql);
-    if($n != 1) {
-        logInfo("Erreur SQL : n=$n, sql=$sql",__FILE__,__LINE__);
-        return array('ok'=>false, 'msg'=>'Erreur 2');
-    }
-    // MaJ caisse : décaisse le montant de la vente
+   
+    
     //  1 - retrouve le prix de vente de l'article
     $sql = 'SELECT prix_vente FROM article WHERE idarticle='.$idArt;                
-    $rec= $db->select_one($sql);
+    $rec = $db->select_one($sql);
     if (empty($rec)) {                                       
         logInfo("Erreur SQL : article non trouvé ! sql=$sql",__FILE__,__LINE__);
-        return array('ok'=>false, 'msg'=>'Erreur 3');
+        return array('ok'=>false, 'msg'=>'Erreur 1');
     }
     $prix_vente = $rec['prix_vente']; 
     //  2 - retrouve la vente
@@ -122,17 +111,32 @@ function retour_vente($idArt)
     $rec= $db->select_one($sql);
     if (empty($rec)) {                                       
         logInfo("Erreur SQL : article non trouvé ! sql=$sql",__FILE__,__LINE__);
+        return array('ok'=>false, 'msg'=>'Erreur 2');
+    }
+    $new_mnt_esp = $rec['mnt_esp'] - $prix_vente; // MaJ caisse : décaisse le montant de la vente
+    $no_caisse = $rec['no_caisse'];  
+    // 3 - Debiter la caisse : vente négative 
+    $sql = "UPDATE vente SET mnt_esp = $new_mnt_esp WHERE idvente={$rec['idvente']}";            		
+    $n = $db->query($sql);
+    if($n != 1) {
+        logInfo("Erreur SQL : n=$n, sql=$sql",__FILE__,__LINE__);
+        return array('ok'=>false, 'msg'=>'Erreur 3');
+    }
+    //  4 -Conserver la trace du retour     
+    $sql = "INSERT INTO retour (participant_idparticipant, date, no_caisse, prix_vente, comment) VALUES ({$user->uid}, Now(), $no_caisse, $prix_vente, $motif)";
+    $id = $db->query($sql);
+    if(!$id) {
+        logInfo("Erreur SQL : sql=$sql",__FILE__,__LINE__);
         return array('ok'=>false, 'msg'=>'Erreur 4');
     }
-    // 3 - Debiter la caisse : vente négative
-    $new_mnt_esp = $rec['mnt_esp'] - $prix_vente;  
-    $sql = "UPDATE vente SET mnt_esp = $new_mnt_esp WHERE idvente={$rec['idvente']}";            		
-    $n= $db->query($sql);
+    //  5 - MaJ de l'article                
+ 	$sql = "UPDATE article SET retour_idretour=$id WHERE idarticle=$idArt";
+    $n = $db->query($sql);
     if($n != 1) {
         logInfo("Erreur SQL : n=$n, sql=$sql",__FILE__,__LINE__);
         return array('ok'=>false, 'msg'=>'Erreur 5');
-    }   
-	$msg = "Vente annulée, retirez ".sprintf('%.02f €', $prix_vente)." en espèces de la caisse n° {$rec['no_caisse']}";
+    }    
+	$msg = "Vente annulée, retirez ".sprintf('%.02f €', $prix_vente)." en espèces de la caisse n° {$no_caisse}";
 	return array('ok'=>true, 'msg'=>$msg);	    
 }
 

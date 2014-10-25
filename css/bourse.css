@@ -69,7 +69,7 @@ div.assist li:hover {
 
 div.lst_art {
   font-size:12px;
-  width:560px;
+  width:760px;
   margin-bottom:15px;
   text-align:left;
   border:1px #606060 dotted;
@@ -83,8 +83,8 @@ div.lst_art td.dep {
 div.lst_art table {
   font-size:10px;
   background-color:White;
-  margin-left:40px;
-  width:500px;
+  margin-left:3%;
+  width:94%;
 }
 
 div.lst_art table td {

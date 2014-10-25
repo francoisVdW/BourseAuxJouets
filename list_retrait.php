@@ -23,9 +23,9 @@ function pdf_depot($pdf, $depot, $nbArticle, $dbData, $signature=false)
 {
     // Format tableau
     $hd = array( 
-        array('text'=>'N°', 'w'=>20, 'align'=>'L', 'col'=>0, 'barre'=>true), 	// id Article 
+        array('text'=>'N°', 'w'=>15, 'align'=>'L', 'col'=>0, 'barre'=>true), 	// id Article 
         array('text'=>'', 'w'=>13, 'align'=>'L', 'col'=>1),				// etat
-        array('text'=>'Description', 'w'=>140, 'align'=>'L', 'col'=>2),	// desc + motif retour
+        array('text'=>'Description', 'w'=>145, 'align'=>'L', 'col'=>2),	// desc + motif retour
         array('text'=>'Prix Net', 'w'=>17, 'align'=>'R', 'col'=>3),	// prix
     );
 
@@ -52,7 +52,7 @@ function pdf_depot($pdf, $depot, $nbArticle, $dbData, $signature=false)
 					$prix = '';
 					break;
 				case 'R':
-					$etat ='Retourné';
+					$etat ='Retour.';
 					$desc = $row['description'].' - Motif: '. $row['motif_retour'];
 					$prix = '';
 					break;					
@@ -126,7 +126,7 @@ $db->open();
 $sql = "SELECT depot.*, deposant.nom, deposant.prenom, deposant.tel FROM depot 
 LEFT JOIN deposant ON depot.deposant_iddeposant=deposant.iddeposant
 WHERE IFNULL(date_retrait, '') = ''
-AND bourse_idbourse={$_SESSION['bourse']['idbourse']}"; 
+AND bourse_idbourse={$_SESSION['bourse']['idbourse']} ORDER BY iddepot"; 
 $n = $db->query($sql);
 if (!$n) {
 	exit("<html><body><h1>Erreur de donnée</h1>Aucun dépots à lister !....<!-- \n$sql\n--><br><br><center><button onclick='window.close()'>FERMER</button></center></body></html>");

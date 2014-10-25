@@ -160,6 +160,8 @@ DROP TABLE IF EXISTS `retour`;
 CREATE TABLE `retour` (
   `idretour` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `participant_idparticipant` int(10) unsigned NOT NULL,
+  `prix_vente` float NOT NULL,
+  `no_caisse` int(3) unsigned NOT NULL,
   `date` datetime NOT NULL,
   `comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`idretour`)
