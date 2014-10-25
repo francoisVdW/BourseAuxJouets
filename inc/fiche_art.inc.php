@@ -32,7 +32,7 @@ function rech_art($idArt)
 	
 	$sql = "SELECT a.code_couleur, a.description, a.idarticle, a.prix_achat, a.prix_vente, 
 	d.date_depot, d.date_retrait, d.iddepot, d.date_retrait,
-	dd.nom, dd.prenom, dd.tel,
+	dd.nom, dd.prenom, dd.tel, dd.email,
 	v.date_vente, p1.nom AS part_vente, v.idvente,
 	p2.nom AS part_depot,
 	p3.nom AS part_retrait,
@@ -62,6 +62,7 @@ AND d.idparticipant_depot=p2.idparticipant";
     $aRetValue['nom_depos'] = $r['nom'];
     $aRetValue['prenom_depos'] = $r['prenom']? $r['prenom']:'';
     $aRetValue['tel_depos'] = $r['tel']? $r['tel']:'';    
+    $aRetValue['email_depos'] = $r['email']? $r['email']:'';    
     $aRetValue['px_vente'] = $r['prix_vente'];
     $aRetValue['px_achat'] = $r['prix_achat'];
     $aRetValue['no_depot'] = $r['iddepot']? $r['iddepot']:'';
@@ -80,6 +81,61 @@ AND d.idparticipant_depot=p2.idparticipant";
     
     return $aRetValue;	
 }
+
+/**
+ * retour_vente()
+ * Annulation d'une vente par un retour
+ *    
+ * @return array ('ok'=>true/false, 'msg'=>'')
+ */
+function retour_vente($idArt)
+{
+	global $db, $user;
+           
+    if (empty($_POST['TXT_O_comment'])) {
+        return array('ok'=>false, 'msg'=>'Le motif de l\'annualtion de la vente doit être renseigné');
+    }
+    $motif = $db->quote(substr($_POST['TXT_O_comment'],0,250));
+    $sql = "INSERT INTO retour (participant_idparticipant, date, comment) VALUES ({$user->uid}, Now(), $motif)";
+    $id = $db->query($sql);
+    if(!$id) {
+        logInfo("Erreur SQL : sql=$sql",__FILE__,__LINE__);
+        return array('ok'=>false, 'msg'=>'Erreur 1');
+    } 
+    $sql = "UPDATE article SET retour_idretour=$id WHERE idarticle=$idArt";
+    $n= $db->query($sql);
+    if($n != 1) {
+        logInfo("Erreur SQL : n=$n, sql=$sql",__FILE__,__LINE__);
+        return array('ok'=>false, 'msg'=>'Erreur 2');
+    }
+    // MaJ caisse : décaisse le montant de la vente
+    //  1 - retrouve le prix de vente de l'article
+    $sql = 'SELECT prix_vente FROM article WHERE idarticle='.$idArt;                
+    $rec= $db->select_one($sql);
+    if (empty($rec)) {                                       
+        logInfo("Erreur SQL : article non trouvé ! sql=$sql",__FILE__,__LINE__);
+        return array('ok'=>false, 'msg'=>'Erreur 3');
+    }
+    $prix_vente = $rec['prix_vente']; 
+    //  2 - retrouve la vente
+    $sql = "SELECT vente.idvente, vente.no_caisse, vente.mnt_esp FROM vente INNER JOIN article ON (article.vente_idvente = vente.idvente) WHERE article.idarticle=$idArt";
+    $rec= $db->select_one($sql);
+    if (empty($rec)) {                                       
+        logInfo("Erreur SQL : article non trouvé ! sql=$sql",__FILE__,__LINE__);
+        return array('ok'=>false, 'msg'=>'Erreur 4');
+    }
+    // 3 - Debiter la caisse : vente négative
+    $new_mnt_esp = $rec['mnt_esp'] - $prix_vente;  
+    $sql = "UPDATE vente SET mnt_esp = $new_mnt_esp WHERE idvente={$rec['idvente']}";            		
+    $n= $db->query($sql);
+    if($n != 1) {
+        logInfo("Erreur SQL : n=$n, sql=$sql",__FILE__,__LINE__);
+        return array('ok'=>false, 'msg'=>'Erreur 5');
+    }   
+	$msg = "Vente annulée, retirez ".sprintf('%.02f €', $prix_vente)." en espèces de la caisse n° {$rec['no_caisse']}";
+	return array('ok'=>true, 'msg'=>$msg);	    
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //
 //        M A I N  (  )
@@ -122,40 +178,37 @@ if(!is_numeric($idArt))  {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  Opération	
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 if(isset($_GET['op'])) {
 	$op = trim($_GET['op']);
 } else $op=false;
 
+
+$sTbsMsg = '';
 switch($op) {
 	case 'updDescArt':
 		$desc = $db->quote(substr($_POST['TXT_O_desc'],0,250));
 		if(!$desc) break;
 		$sql = "UPDATE article SET description=$desc WHERE idarticle=$idArt";
-		$db->query($sql);
-		break;
+		$db->query($sql);        
+		break;  
+        
 	case 'retourVente':
-		$motif = $db->quote(substr($_POST['TXT_O_comment'],0,250));
-		if(!$motif) break;
-		$sql = "INSERT INTO retour (participant_idparticipant, date, comment) VALUES ({$user->uid}, Now(), $motif)";
-		$id = $db->query($sql);
-		if(!$id) {
-			logInfo("Erreur SQL : sql=$sql",__FILE__,__LINE__);
-		} else {
-			$sql = "UPDATE article SET retour_idretour=$id WHERE idarticle=$idArt";
-			$n= $db->query($sql);
-			if($n != 1) {
-				logInfo("Erreur SQL : n=$n, sql=$sql",__FILE__,__LINE__);
-			}			
-		}
+    	$ret_annul = retour_vente($idArt);        
+        if (!$ret_annul['ok']) {
+        	$r['a_err'] = $ret_annul['msg'];            
+        } 
+		$sTbsMsg = $ret_annul['msg'];        
 		break;
+        
 	case 'setColArt':
 		$col = $db->quote($_GET['col']);
 		if(!$col) break;
 		$sql = "UPDATE article SET code_couleur=$col WHERE idarticle=$idArt";
 		$db->query($sql);
 		break;
+        
 }
-
 
 
 $r = rech_art($idArt);
@@ -163,8 +216,12 @@ if(isset($r['a_err'])) {
 	// Exit !
 	exit("<html><body onload='parent.loading(false);parent.alert(\"{$r['a_err']}\")'><b><span style='color:red'>Erreur : </span>{$r['a_err']}</b></body></html>");
 }
+
+
 $description->default_val = $r['desc_art'];
 $comment->default_val = '';
+
+
 
 // Couleurs
 $sTblCouleurs ='<table width="100%" border="0" cellspacing="2"><tr>';
@@ -191,6 +248,5 @@ while($cnt < 3) {
   $cnt++;
 }
 $sTblCouleurs .= "</tr></table>\n";
-
 
 ?>

@@ -34,7 +34,13 @@
 	}
 	function displ_annul(){
 		$('ifannul').show();
-	}
+	}  
+    function alert_msg() {
+    	var msg = "[var.sTbsMsg;htmlconv=no;]";
+        if (!msg.blank()) {
+        	alert(msg);
+        }
+    }
 	</script>
 	<style>
 	table.info_art {
@@ -54,7 +60,7 @@
 	</style>	
 </head>
 
-<body onload="if(typeof parent.loading=='function')parent.loading(false);">
+<body onload="if(typeof parent.loading=='function')parent.loading(false);alert_msg()">
 	<table border="0" class='info_art'>
 		<tr>
 			<th>N° article</th><td id="no_art" style="background-color:[var.r.code_couleur]">[var.r.no_art]</td>
@@ -77,17 +83,19 @@
 			</div>
 			</td>
 		</tr><tr>
-			<th>Nom déposant</th><td width="170">[var.r.nom_depos]&nbsp;</td>
-			<th>Prénom</th><td width="170">[var.r.prenom_depos]&nbsp;</td>
-			<th>Téléphone</th><td width="170">[var.r.tel_depos]&nbsp;</td>
-		</tr><tr>
+			<th>Déposant</th>
+            <td colspan="5">
+            	[var.r.nom_depos]&nbsp; [var.r.prenom_depos]<br />
+                <span>Téléphone: [var.r.tel_depos;magnet=span]</span>  <span>email: [var.r.email_depos;magnet=span]</span>
+            </td>
+        </tr><tr>
 			<th>Prix de vente</th><td >[var.r.px_vente] &euro;</td>
 			<th>Prix d'achat</th><td >[var.r.px_achat] &euro;</td>
 			<td colspan="2">&nbsp;</td>
 		</tr><tr>
-			<th>N° Dépôt</th><td>[var.r.no_depot]</td>
-			<th>Date</th><td>[var.r.date_depot;htmlconv=no]</td>
-			<th>Par</th><td>[var.r.part_depot]</td>
+			<th style="width: 110px">N° Dépôt</th><td style="width: 100px">[var.r.no_depot]</td>
+			<th style="width: 110px">Date</th><td style="width: 170px">[var.r.date_depot;htmlconv=no]</td>
+			<th style="width: 110px">Par</th><td style="width: 170px">[var.r.part_depot]</td>
 		</tr><tr>
 			<th>N° Vente</th><td>[var.r.no_vente]&nbsp;</td>
 			<th>Date</th><td>[var.r.date_vente;htmlconv=no]&nbsp;</td>
