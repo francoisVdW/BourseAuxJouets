@@ -31,27 +31,40 @@
 </div>
 <h1>[var.bourseTbs]</h1>
 <h2>Utilisateur : <i>[var.participTbs]</i></h2>
-<div class="block"><ul>
-	<li id="a[var.mayDepotTbs;magnet=li]"><a href="?st=[var.eNouvDepotTbs]">Dépot</a></li>
-	<li id="b[var.mayCaisseTbs;magnet=li]">Caisses&nbsp;<img src="img/help.gif" border="0" style="cursor:pointer" title="Aide à propos des caisses" onclick="aide('caisse')">
-		<table border="0" cellspacing="0" cellpadding="3" id="iTblCaisse">
-		  <tr>
-		  	<td width="40"><b>n&deg; [caisseTbs.num_caisse;block=tr;]</b></td>
-		  	<td><button onclick="document.location.href='[caisseTbs.action;magnet=button]'">[caisseTbs.lib]</button>&nbsp;</td>
-		  	<td><img src="[caisseTbs.stat;]" border="0" /></td>
-			<td class="detail">[caisseTbs.info;ifempty=&nbsp;]</td>
-		  </tr>
-		</table>		
-	</li>
-	<li id="d[var.mayGestionTbs;magnet=li]"><a href="?st=[var..cst.S_CLOTURE_VENTE]" title="Cloture des ventes">Clôture des ventes</a></li><br />
-	<li><a href="?st=[var..cst.S_ARTICLE]" title="Recherche d'article, retour,...">Articles</a></li><br />
-	<li id="c[var.mayRetraitTbs;magnet=li]"><a href="?st=[var..cst.S_RETRAIT]">Restitution</a></li>
-	<li id="d[var.mayGestionTbs;magnet=li]"><a href="?st=[var..cst.S_GESTION]">Gestion</a></li>
-	<br />
-	<li><a href="?logout" style="color:red">Deconnexion</a></li>
-</ul>
+<div class="block main">
+    <fieldset><legend>Dépot</legend>
+        <p id="a[var.mayDepotTbs;magnet=li]"><a href="?st=[var.eNouvDepotTbs]">Enregistrer des dépots</a></p>
+    </fieldset>
+
+    <fieldset><legend>Vente</legend>
+        <p id="b[var.mayCaisseTbs;magnet=li]">Caisses&nbsp;<img src="img/help.gif" border="0" style="cursor:pointer" title="Aide à propos des caisses" onclick="aide('caisse')">
+            <table border="0" cellspacing="0" cellpadding="3" id="iTblCaisse">
+              <tr>
+                <td width="40"><b>n&deg; [caisseTbs.num_caisse;block=tr;]</b></td>
+                <td><button onclick="document.location.href='[caisseTbs.action;magnet=button]'">[caisseTbs.lib]</button>&nbsp;</td>
+                <td><img src="[caisseTbs.stat;]" border="0" /></td>
+                <td class="detail">[caisseTbs.info;ifempty=&nbsp;]</td>
+              </tr>
+            </table>		
+        </p>
+        <p id="d[var.mayGestionTbs;magnet=li]"><a href="?st=[var..cst.S_CLOTURE_VENTE]" title="Cloture des ventes">Clôture des ventes &amp; listing</a></p>
+    </fieldset>
+
+    <fieldset><legend>Articles</legend>
+        <p><a href="?st=[var..cst.S_ARTICLE]" title="Recherche d'article, retour,...">Recherche d'article, retour,...</a></p>
+    </fieldset>
+
+    <fieldset><legend>Restitution</legend>
+        <p id="c[var.mayRetraitTbs;magnet=li]"><a href="?st=[var..cst.S_RETRAIT]">Restitution</a></p>
+    </fieldset>
+
+    <fieldset><legend>Gestion de l'application</legend>
+        <p id="d[var.mayGestionTbs;magnet=fieldset]"><a href="?st=[var..cst.S_GESTION]">Gestion</a></p>
+    </fieldset>
+    
+	<p><a href="?logout" style="color:red">D&eacute;connexion</a></p>
+
 <div style="display:none" id='iWarn'><img  style="cursor:pointer" border='0' src='img/warn.gif' onclick='$("iErrClo").show()' /> Des erreurs de clôtures ont été détectées</div>
 </div>
-
 </body>
 </html>

@@ -85,7 +85,7 @@ function pdf_depot($pdf, $depot, $nbArticle, $dbData, $signature=false)
         $pdf->setXY($x, $y+5);	// positionne texte 'Signature...'
         $pdf->SetFont('Arial','',9);           
         $pdf->SetTextColor(100); 
-        $pdf->Cell(60,0, 'Signature du déposant');
+        $pdf->Cell(60,0, 'Signature du vendeur');
         $pdf->SetTextColor(0);
     } else {
         // centrer

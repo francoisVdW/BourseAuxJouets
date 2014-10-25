@@ -115,7 +115,27 @@ div.lst_art span.hd {
 }
 
 
+fieldset {
+	border:2px solid #444;           
+	-webkit-border-radius: 4px;
+	border-radius: 4px;             
+    padding:6px;
+	-webkit-box-shadow: 3px 3px 3px 4px #888;
+	box-shadow: 3px 3px 3px 4px #888;
+    margin:6px 6px 20px 6px;        
+}
 
+fieldset.main {
+	min-width: 200px;
+    min-height: 70px;
+}
+
+legend {
+	font-size:1.1em;
+    font-weight:bold;   
+    background-color: #fff;
+    padding:4px;
+}
 
 table.list {
     padding:10px;
