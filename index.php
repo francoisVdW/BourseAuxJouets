@@ -6,9 +6,11 @@
  *
  */
 
+session_start();
+
 require 'fwlib/tbs_class_php5.php';
-require 'fwlib/user.class.php';
 require 'fwlib/sql.class.php';
+require 'fwlib/user.class.php';
 require 'fwlib/log.inc.php';
 require 'inc/settings.php';
 
@@ -80,7 +82,6 @@ function lect_participant($id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-session_start();
 /** déconnexion demandée
 */
 if(isset($_GET['logout'])) {
@@ -94,10 +95,10 @@ if(isset($_GET['logout'])) {
 $db = new Cdb(DB_HOST, DB_NAME, DB_USER, DB_PWD);
 $db->open();
 
-
 /** Connexion et ctrl login/pwd - Session
 */
-$user = new User(DB_HOST, DB_NAME, DB_USER, DB_PWD);
+//$user = new User(DB_HOST, DB_NAME, DB_USER, DB_PWD);
+$user = new User($db);
 
 if (!isset($_SESSION['logged']) || !$_SESSION['logged'] || !$user->uid) {
 	/** Si pas connecte : <form> de login puis ctrl
@@ -296,6 +297,8 @@ switch($st) {
 
 // sortie HTML
 $TBS = new clsTinyButStrong;
+$TBS->SetOption('methods_allowed', true);
+
 $TBS->LoadTemplate("tbs/$sFile.html") ;
 // pour eventuels TBS->mergeBlock()
 if (is_file("inc/$sFile.inc.php")) include("inc/$sFile.inc.php");

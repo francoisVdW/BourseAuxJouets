@@ -97,7 +97,10 @@ function pdf_depot($pdf, $depot, $nbArticle, $dbData, $signature=false)
 }
 
 
-
+/** ouverture de la DB
+*/
+$db = new Cdb(DB_HOST, DB_NAME, DB_USER, DB_PWD);
+$db->open();
 
 /** Connexion et ctrl login/pwd - Session
 */
@@ -105,7 +108,7 @@ if (!isset($_SESSION['logged']) || !$_SESSION['logged']) {
 	echo "<html><body><h1>Erreur :</h1>Vous n'êtes pas connecté ! <br /><center><button onclick='window.close()'>FERMER</button></center></body></html>";
 	exit();
 }
-$user = new User(DB_HOST, DB_NAME, DB_USER, DB_PWD);
+$user = new User($db);
 
 /** Ctrl droits
 */
@@ -113,11 +116,6 @@ if($user->get_field('may_gestion') != 'T') {
 	echo "<html><body><h1>Erreur de droits</h1>Vous n'avez pas accès aux <b><i>Factures</i></b><br><center><button onclick='window.close()'>FERMER</button></center></body></html>";
 	exit();
 }
-
-/** ouverture de la DB
-*/
-$db = new Cdb(DB_HOST, DB_NAME, DB_USER, DB_PWD);
-$db->open();
 
 
 /**

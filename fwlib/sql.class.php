@@ -66,7 +66,7 @@ class Cdb
 	private $rec_per_page = 10;
 	private $last_errno = 0;
 	private $transaction = false;
-	private $debug=false;
+	private $debug=false;      
     
     
     function __get($name) {
@@ -100,13 +100,13 @@ class Cdb
    */
 	private function error($msg, $line=0) 
 	{
-		$this->last_errno = mysql_errno($this->link);
+		$this->last_errno = mysqli_errno($this->link);
 		$this->sErr = $msg;
 		$fn = "error.log";
 		if($this->link){
-			$sInfoMySQL = "MySQL errno: ".mysql_errno($this->link).' -> '.mysql_error($this->link)."\nlink=".print_r($this->link,1);
+			$sInfoMySQL = "MySQL errno: ".mysqli_errno($this->link).' -> '.mysqli_error($this->link)."\nlink=".print_r($this->link,1);
 		} else {
-			$sInfoMySQL = 'MySQL error: '.@mysql_error();
+			$sInfoMySQL = 'MySQL error: '.@mysqli_error();
 		} 	
 		$msg = rtrim($msg, "\n");
 		$s = "\n--- ".date("d/m/Y H:i:s ").($line? __FILE__.':'.$line:'')."\n{$msg}\n{$sInfoMySQL}\n";
@@ -144,9 +144,9 @@ class Cdb
    * Cdb::open() Etablissement de la connexion avec la DB
    *
    * @param bool $fatal : false does'nt die if any SQL error, true die if any error 
-   * @return void
+   * @return bool success
    */
-	function open($fatal=false) {
+	function open($fatal=false) { 
 		if(!$this->host) {
 			$this->fatal = true;
 			$this->error(__METHOD__."() host name not defined");
@@ -158,16 +158,25 @@ class Cdb
     	$this->typeOfRequest = self::REQ_NONE;
     	$this->data = array();		
 
+    	if($this->link) return true; // deja connecte
+		if(!$this->link = mysqli_connect($this->host,$this->user,$this->pass,$this->bdd)) {
+			$this->fatal = true;
+			$this->error(__METHOD__."Erreur de connexion mysqli à {$this->host} DB {$this->bdd} ".mysqli_error($this->link), __LINE__);
+			return false;	
+		}		
+		/*        
     	if(!$this->link = mysql_connect($this->host,$this->user,$this->pass,true)) {
 			$this->fatal = true;
 			$this->error(__METHOD__."Error connecting to {$this->host}", __LINE__);
-			return false;	// not used
+			return false;	
 		}
       	if (!mysql_select_db($this->bdd,$this->link)) {
 			$this->fatal = true;
-			$this->error(__METHOD__."() Error selecting ".$this->bdd, __LINE__);
-			return false;	// not used
-    	}
+			$this->error(__METHOD__."() Error selecting ".$this->bdd, __LINE__);          
+			return false;	
+    	}   
+        */    
+        return true; // OK
     }
     
     
@@ -186,9 +195,16 @@ class Cdb
 		}
 		//execute the query
 		if($this->debug) echo '<hr>'.__METHOD__."() SQL = <br />[<tt style='background-color:#FFFF60'>$query</tt>]<br />";
+/*
 		if (!$res = mysql_query($query,$this->link)) {
 			// case of error
 			$this->error(__METHOD__."() Error executing query\n\$query=[$query]\n", __LINE__);
+			return false;
+		}
+*/        
+		if (!$res = mysqli_query($this->link, $query)) {
+			// case of error
+			$this->error(__METHOD__."() Erreur mysqli à l'execution'\n\$query=[$query]\n", __LINE__);
 			return false;
 		}
 		$this->last_errno = 0; 
@@ -212,8 +228,11 @@ class Cdb
 		$res = $this->do_mysql_query($sql);
 		if($res === false) {
 			if($this->transaction) {
-				// si transaction en cour ... RollBack
+				// si transaction en cours ... RollBack
+/*                
 				mysql_query('ROLLBACK',$this->link);
+*/
+				mysqli_rollback($this->link);                
 				$this->transaction = false;
 			}
 			return false;	
@@ -223,19 +242,29 @@ class Cdb
 		list($kw, $void) = preg_split('/[ \r\n\t]+/',ltrim(strtolower($sql)," \r\n\t"),2);
 		switch($kw) {
 			case 'show':
-			case 'select':
+			case 'select': 
+/*            
 				$nb=@mysql_num_rows($res);
+*/				
+				$nb = mysqli_num_rows($res);                
 				if($nb) {
-				    // recuperation info colonnes
+				    // recuperation info colonnes  
+/*                    
 				    $nb_fields = mysql_num_fields($res);
-  					for($i = 0; $i < $nb_fields; $i++) {
+*/
+					$nb_fields = mysqli_field_count($this->link);                    
+  					for($i = 0; $i < $nb_fields; $i++) { 
+/*                    
   					    $this->col_info[] = array('name'=>mysql_field_name($res, $i), 'len'=>mysql_field_len($res, $i), 'type'=>mysql_field_type($res,$i));
+*/                        
+                    	$o = mysqli_fetch_field_direct ($res , $i);   
+  					    $this->col_info[] = array('name'=>$o->name, 'len'=>$o->length, 'type'=>$o->type);
 					}
 				    // copie des données
-					while ($row = mysql_fetch_assoc($res)) {
+					while ($row = mysqli_fetch_assoc($res)) {
 						$this->data[] = $row;
 					}
-					mysql_free_result($res);
+					mysqlI_free_result($res);
 
 				} 
 				
@@ -245,15 +274,15 @@ class Cdb
 			case 'insert':
 				$this->typeOfRequest = self::REQ_INSERT;
 				// retourne last ID
-				return mysql_insert_id($this->link);
+				return mysqli_insert_id($this->link);
 			case 'update':
 				$this->typeOfRequest = self::REQ_UPDATE;
 				// retourne nbr rec MaJ
-				return mysql_affected_rows($this->link);
+				return mysqli_affected_rows($this->link);
 			case 'delete':
 				$this->typeOfRequest = self::REQ_DELETE;
 				// retourne nbr rec effacés
-				return mysql_affected_rows($this->link);
+				return mysqli_affected_rows($this->link);
 			default:
 				$this->typeOfRequest = self::REQ_NONE;
 				return true;
@@ -282,11 +311,14 @@ class Cdb
 				
 		$res = $this->do_mysql_query($sql);
 		if($res === false) return false;
-		$nb=@mysql_num_rows($res);
+		$nb=@mysqli_num_rows($res);
 		$this->typeOfRequest = self::REQ_SELECT;
 		if(!$nb) return array();
 		// Attention, si +sieurs résultats, ne retourne QUE le 1er
+/*        
 		$this->data[0] = mysql_fetch_assoc($res);
+*/
+		$this->data[0] = mysqli_fetch_assoc($res);        
 		return $this->data[0];
 	}
 
@@ -301,8 +333,8 @@ class Cdb
 	{
 		$res = $this->do_mysql_query("SHOW COLUMNS FROM `$table` LIKE '$field'");
 		if($res === false) return false;
-		if(mysql_num_rows($res) > 0) {
-        	list(,$fields) = mysql_fetch_row($res);
+		if(mysqli_num_rows($res) > 0) {
+        	list(,$fields) = mysqli_fetch_row($res);
         	if (preg_match('/[\(]([^\)]+)[\)]/', $fields, $regs)) {
           		return explode(",",str_replace("'","",$regs[1]));
         	} 
@@ -316,7 +348,7 @@ class Cdb
     public function close() {
     	if($this->transaction) $this->commit_transaction();
       	if($this->link) {
-        	@mysql_close($this->link);
+        	@mysqli_close($this->link);
         	$this->link=0;
       	}
     }
@@ -409,10 +441,10 @@ class Cdb
 		$res = $this->do_mysql_query($query_cnt);
 		if($res === false) return false;
 
-		if(mysql_num_rows($res) != 1) {
-			$this->error(__METHOD__." La requete [$query_cnt] a retourne ".mysql_num_rows($res)." rec.",__LINE__);
+		if(mysqli_num_rows($res) != 1) {
+			$this->error(__METHOD__." La requete [$query_cnt] a retourne ".mysqli_num_rows($res)." rec.",__LINE__);
 		}
-		$row = mysql_fetch_assoc($res);
+		$row = mysqli_fetch_assoc($res);
 		$ttl_rec = $row['cnt'];
 
 		if($ttl_rec <= $this->rec_per_page) {
@@ -429,12 +461,12 @@ class Cdb
 		$res = $this->do_mysql_query("$query LIMIT $offset,{$this->rec_per_page}");
 		if($res === false) return false;
 		$this->data = array();
-		$nb=@mysql_num_rows($res);
+		$nb=@mysqli_num_rows($res);
 		if($nb) {
-			while ($row = mysql_fetch_assoc($res)) {
+			while ($row = mysqli_fetch_assoc($res)) {
 				$this->data[] = $row;				
 			}
-			mysql_free_result($res);					
+			mysqli_free_result($res);					
 		} 
 		$this->typeOfRequest = self::REQ_SELECT;
 		return new Cnav($query, $ttl_rec, $page, $last_page, $this->rec_per_page, $nb); 
@@ -447,8 +479,11 @@ class Cdb
    */
 	public function start_transaction()
 	{
-		if(!$this->transaction) {
+		if(!$this->transaction) {      
+/*        
 			$this->do_mysql_query('START transaction ');
+*/
+			mysqli_begin_transaction($this->link);            
 			$this->transaction = true;
 		}	
 	}
@@ -461,7 +496,10 @@ class Cdb
 	public function commit_transaction()
 	{
 		if($this->transaction) {
+/*        
 			$this->do_mysql_query('COMMIT');
+*/
+			mysqli_commit($this->link);            
 			$this->transaction = false;
 		}
 	}
@@ -474,7 +512,10 @@ class Cdb
 	public function rollback_transaction()
 	{
 		if($this->transaction) {
+/*
 			$this->do_mysql_query('ROLLBACK');
+*/
+			mysqli_rollback($this->link);                        
 			$this->transaction = false;
 		}
 	}

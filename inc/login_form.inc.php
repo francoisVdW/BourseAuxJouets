@@ -36,4 +36,3 @@ $TBS = new clsTinyButStrong ;
 $TBS->LoadTemplate('tbs/login.html') ;
 $TBS->Show(TBS_OUTPUT) ;
 exit();
-?>

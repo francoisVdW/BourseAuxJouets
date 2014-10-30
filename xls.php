@@ -26,13 +26,17 @@ require_once 'fwlib/out_xls.php';
 session_start();
 
 
+// ouverture de la DB
+$db = new Cdb(DB_HOST, DB_NAME, DB_USER, DB_PWD);
+$db->open();
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Connexion et ctrl login/pwd - Session
 if (!isset($_SESSION['logged']) || !$_SESSION['logged']) {
 	// Si pas connecte : Erreur
 	exit("<html><title>Erreur de connexion</title><body>Erreur : connexion invalide</body></html>");
 	}
-$user = new User(DB_HOST, DB_NAME, DB_USER, DB_PWD);
+$user = new User($db);
 if($user->get_field('may_gestion') != 'T') {
 	exit("<html><title>Erreur de connexion</title><body><h1>Erreur de droits</h1>Vous n'avez pas acces au tableau de bord</body></html>");
 }
@@ -47,9 +51,6 @@ if(!isset($_REQUEST['doc'])) {
 $doc = trim($_REQUEST['doc']);// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// ouverture de la DB
-$db = new Cdb(DB_HOST, DB_NAME, DB_USER, DB_PWD);
-$db->open();
 
 
 $aFondsCaisses = null;

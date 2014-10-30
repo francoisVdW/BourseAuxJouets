@@ -43,7 +43,8 @@ class User {
 	var $uid = 0; 	// the current user's id
 	var $cookie=0;
 	var $fields=array();
-	private $dbHost, $dbName, $dbUser, $dbPwd;
+	// private $dbHost, $dbName, $dbUser, $dbPwd;
+    private $cdb=false;
 	
 	/**
     *  Constructeur de classe :
@@ -51,7 +52,8 @@ class User {
 	 * Positionne les var de _SESSION
 	 *
 	 * A controler : _SESSION[logged]
-   	*/
+   	*/ 
+    /*
 	function User($dbHost, $dbName, $dbUser, $dbPwd)
 	{
 		$this->dbHost=$dbHost;
@@ -64,13 +66,28 @@ class User {
 		} elseif (isset($_COOKIE['mtwebLogin']) ) {
 			$this->_checkRemembered($_COOKIE['mtwebLogin']);
 		}
-	}
+	}    
+*/    
+    function User(&$cdb) 
+    {
+    	$this->cdb = $cdb;
+		$this->date = gmdate("'Y-m-d'");
+			if (isset($_SESSION['logged']) && $_SESSION['logged']) {
+			$this->_checkSession();
+		} elseif (isset($_COOKIE['mtwebLogin']) ) {
+			$this->_checkRemembered($_COOKIE['mtwebLogin']);
+		}
+    }
 
 	/**
    	* Wrapper pour requete SQL
 	*/
 	function _query($query)
-	{
+	{          
+    	$n = $this->cdb->query($query);
+        if ($n) return $this->cdb->data;
+    	else return array();                                          
+    /*
     	if(!$link = @mysql_connect($this->dbHost,$this->dbUser,$this->dbPwd, true)) {
 			$this->error(__METHOD__."() Error connecting to {$this->dbHost}", __LINE__);
 		}
@@ -111,7 +128,8 @@ class User {
 			return false;			
 		}
 		@mysql_close($link);
-		return $ret;
+		return $ret;    
+        */
 	}
 	private function error($s) {echo "<hr><pre>$s</pre><hr>";}
 	/**  
@@ -281,7 +299,7 @@ class User {
 	* @param array $row
 	*/
 	function _read_fields(&$row)
-	{
+	{                              
 	    $this->fields = array();
 	    foreach($row as $k => $v) {
 	        if(in_array($k, array(UID_FLD, 'login', 'pwd', 'session', 'cookie', 'ip'))) {
@@ -324,5 +342,4 @@ class User {
 		$_SESSION['cookie'] = FALSE;
 		$_SESSION['logged'] = FALSE;
 	}
-} 
-?>
+}

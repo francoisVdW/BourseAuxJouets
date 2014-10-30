@@ -22,13 +22,19 @@ require 'fwlib/bpdf.php';
 
 session_start();
 
+
+/** ouverture de la DB
+*/
+$db = new Cdb(DB_HOST, DB_NAME, DB_USER, DB_PWD);
+$db->open();
+
 /** Connexion et ctrl login/pwd - Session
 */
 if (!isset($_SESSION['logged']) || !$_SESSION['logged']) {
 	echo "<html><body><h1>Erreur :</h1>Vous n'êtes pas connecté ! <br /><center><button onclick='window.close()'>FERMER</button></center></body></html>";
 	exit();
 }
-$user = new User(DB_HOST, DB_NAME, DB_USER, DB_PWD);
+$user = new User($db);
 
 /** Ctrl droits
 */
@@ -44,11 +50,6 @@ $idfacture = $_GET['idfacture'];
 if(!is_numeric($idfacture)) logFatal("\$idfactrue invalide [$idfacture]",__FILE__,__LINE__);
 
 
-
-/** ouverture de la DB
-*/
-$db = new Cdb(DB_HOST, DB_NAME, DB_USER, DB_PWD);
-$db->open();
 
 /** Recupère le n° et date vente + info facture
 */
