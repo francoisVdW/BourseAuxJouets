@@ -4,7 +4,7 @@
 DROP FUNCTION IF EXISTS etat_caisse;
 DELIMITER $$
 
-CREATE FUNCTION `bourse`.`etat_caisse`(p_id_bourse INT, p_no_caisse INT)
+CREATE FUNCTION `etat_caisse`(p_id_bourse INT, p_no_caisse INT)
     RETURNS VARCHAR(50) DETERMINISTIC
     COMMENT 'ctrl caisse ret s=Etat;u=user_id;c=no_caisse;v=vente_id;l=login'
     BEGIN

@@ -1,0 +1,6 @@
+1 - Créez une base de données dans mysql.
+2 - Exécutez dans l'ordre les 3 scripts suivants
+	* struct_baj.sql  = création des tables
+	* sp_etat_caisse.sql = création d'une fonction SQL (pour l'état des caisses notamment)
+	* init.sql =  insertion des données minimales
+4 - Mettez à jour le fichier inc/settings.php avec les paramètres et le nom de la base de données
