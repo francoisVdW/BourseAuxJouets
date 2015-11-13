@@ -3,31 +3,31 @@
 <head>
 [onload;file=tbs/meta.txt]
       <title>[var.bourseTbs] : menu principal</title>
-  	  <script type="text/javascript" src="js/prototype151.js"></script>
+      <script type="text/javascript" src="js/prototype151.js"></script>
       <link rel="stylesheet" type="text/css" href="css/bourse.css" />
-	  <style type="text/css">
-	   #iErrClo a {color:red;font-weight:bold;text-decoration:none; }
-	   #iErrClo a:hover {color:White;background-color:black;}
-	   #iErrClo td {padding-left:5px}
-	   #iTblCaisse {border:2px dotted #A0A0A0;font-size:12px;margin-top:5px;margin-bottom:10px;}
-	   #iTblCaisse th {background-color:#909090;color:White;}
-	   #iTblCaisse td.detail {font-size:0.9em;}
-	  </style>
-	  <script type="text/javascript">
-	   function aide(typ) {
-		if(typ=='caisse')
-			var id = "999"
-			eval("page" + id + " = window.open('aide.php?typ="+typ+"','" + id + "', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=360,height=400');");
-			}
-	  </script>
+      <style type="text/css">
+       #iErrClo a {color:red;font-weight:bold;text-decoration:none; }
+       #iErrClo a:hover {color:White;background-color:black;}
+       #iErrClo td {padding-left:5px}
+       #iTblCaisse {border:2px dotted #A0A0A0;font-size:12px;margin-top:5px;margin-bottom:10px;}
+       #iTblCaisse th {background-color:#909090;color:White;}
+       #iTblCaisse td.detail {font-size:0.9em;}
+      </style>
+      <script type="text/javascript">
+       function aide(typ) {
+        if(typ=='caisse')
+            var id = "999"
+            eval("page" + id + " = window.open('aide.php?typ="+typ+"','" + id + "', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=360,height=400');");
+            }
+      </script>
 </head>
 
 <body>
 <div class="info" id="iErrClo" style="background-color:red;position:absolute;top:20%;left:30%">
-	<table border="0" cellpadding="2" cellspacing="0" width="100%">
-		<tr><th>Erreur de cl&ocirc;ture</th><th align="right"><img src="img/close.gif" title="Fermer" onclick="$('iErrClo').hide();$('iWarn').show()" /></th></tr>
+    <table border="0" cellpadding="2" cellspacing="0" width="100%">
+        <tr><th>Erreur de cl&ocirc;ture</th><th align="right"><img src="img/close.gif" title="Fermer" onclick="$('iErrClo').hide();$('iWarn').show()" /></th></tr>
         [var.alertClotureTbs;htmlconv=no;magnet=div]
-	 </table>
+     </table>
 </div>
 <h1>[var.bourseTbs]</h1>
 <h2>Utilisateur : <i>[var.participTbs]</i></h2>
@@ -45,12 +45,13 @@
                 <td><img src="[caisseTbs.stat;]" border="0" /></td>
                 <td class="detail">[caisseTbs.info;ifempty=&nbsp;]</td>
               </tr>
-            </table>		
+            </table>
         </p>
         <p id="d[var.mayGestionTbs;magnet=p]"><a href="?st=[var..cst.S_CLOTURE_VENTE]" title="Cloture des ventes">Cl&ocirc;ture des ventes &amp; listing</a></p>
     </fieldset>
 
     <fieldset><legend>Articles</legend>
+        <p><a href="?st=[var..cst.S_RECH_ART]" title="Recherche ">Recherche d'article</a></p>
         <p><a href="?st=[var..cst.S_ARTICLE]" title="Recherche d'article, retour,...">Recherche d'article, retour,...</a></p>
         <p><a href="?st=[var..cst.S_LST_RETOUR]" title="Liste des articles retournés">Liste des articles retournés</a></p>
     </fieldset>
@@ -62,8 +63,8 @@
     <fieldset><legend>Gestion de l'application</legend>
         <p id="d[var.mayGestionTbs;magnet=fieldset]"><a href="?st=[var..cst.S_GESTION]">Gestion</a></p>
     </fieldset>
-    
-	<p><a href="?logout" style="color:red">D&eacute;connexion</a></p>
+
+    <p><a href="?logout" style="color:red">D&eacute;connexion</a></p>
 
 <div style="display:none" id='iWarn'><img  style="cursor:pointer" border='0' src='img/warn.gif' onclick='$("iErrClo").show()' /> Des erreurs de cl&ocirc;tures ont &eacute;t&eacute; d&eacute;tect&eacute;es</div>
 </div>

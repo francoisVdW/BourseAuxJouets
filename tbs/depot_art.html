@@ -2,70 +2,80 @@
 <html>
 <head>
 [onload;file=tbs/meta.txt]
-	<style type="text/css">
-	 #[var.idPaTbs], #[var.idPvTbs] {width:80px;}
-	</style>
+    <style type="text/css">
+     #[var.idPaTbs], #[var.idPvTbs] {width:80px;}
+     tbody#ilist td {
+         padding: 0 5px;
+     }
+     tbody#ilist td.price {
+         text-align: right;
+     }
+     tbody#ilist td.price:after {
+         font-size:0.9em;
+         content:"€";
+     }
+    </style>
     <title>Bourse : dépot</title>
     <link rel="stylesheet" type="text/css" href="css/bourse.css" />
-	<script type="text/javascript" src="js/prototype151.js"></script>
-	<script type="text/javascript" src="js/cchamp.js"></script>
-	<script type="text/javascript">
+    <script type="text/javascript" src="js/prototype151.js"></script>
+    <script type="text/javascript" src="js/cchamp.js"></script>
+    <script type="text/javascript">
     [var.js_all_errTbs;htmlconv=no]
     var nbArt=[var.nbArtTbs];
 
-	function loading(msg) {
-		if(msg) {
-			$('itdmsg').update(msg);
-			$("imsg").show();
-		} else $("imsg").hide();
-	}
-	function rnd(m) {
-	    m = Math.round(m*100);
-	    if(!m) return "0"
-	    var s = m.toString();
-	    if (s.length < 2) s = "00"+s;
-	    else if (s.length < 3) s = "0"+s;
-	    return s.substr(0,s.length-2)+"."+s.substr(s.length-2);
- 	}
- 	function erreur(msg) {
- 		a_all_err.clear();
+    function loading(msg) {
+        if(msg) {
+            $('itdmsg').update(msg);
+            $("imsg").show();
+        } else $("imsg").hide();
+    }
+    function rnd(m) {
+        m = Math.round(m*100);
+        if(!m) return "0"
+        var s = m.toString();
+        if (s.length < 2) s = "00"+s;
+        else if (s.length < 3) s = "0"+s;
+        return s.substr(0,s.length-2)+"."+s.substr(s.length-2);
+    }
+    function erreur(msg) {
+        a_all_err.clear();
         a_all_err.addItem(msg);
         alert_e(0);
-  	}
-	function to_menu() {
-		if(nbArt){
-			if(!confirm("Des articles ont été enregistrés!\nVoulez-vous fermer cette page")) return false;
-  		}
-		document.location.href="?st=[var..cst.S_MAIN]";
-	}
-	function cloture() {
-      	// verifie que les champs iTXT_O_desc & iMNT_O_pv sont vide
-		if($F('iTXT_O_desc') || $F('iMNT_O_pv') && $F('iMNT_O_pv') != "0.00" && $F('iMNT_O_pv') != "0") {
-			alert("Une saisie d'article est en cours\nValidez la saisie par OK ou Annulez avant de Cloturer");
-			return false;
-	  	}
-	  	// Verifie qu'il y a au moins 1 article
-		if(!nbArt){
-			if(confirm("Aucun article n'a été enregistré!\nFermer cette page")) document.location.href="?st=[var..cst.S_MAIN]";
-			else return false;
-  		}
-		document.location.href="?st=[var.eFinDepotTbs]&id_depot=[var.id_depot]";
-		return false; // inutile !?
-	}
+    }
+    function to_menu() {
+        if(nbArt){
+            if(!confirm("Des articles ont été enregistrés!\nVoulez-vous fermer cette page")) return false;
+        }
+        document.location.href="?st=[var..cst.S_MAIN]";
+    }
+    function cloture() {
+        // verifie que les champs iTXT_O_desc & iMNT_O_pv sont vide
+        if($F('iTXT_O_desc') || $F('iMNT_O_pv') && $F('iMNT_O_pv') != "0.00" && $F('iMNT_O_pv') != "0") {
+            alert("Une saisie d'article est en cours\nValidez la saisie par OK ou Annulez avant de Cloturer");
+            return false;
+        }
+        // Verifie qu'il y a au moins 1 article
+        if(!nbArt){
+            if(confirm("Aucun article n'a été enregistré!\nFermer cette page")) document.location.href="?st=[var..cst.S_MAIN]";
+            else return false;
+        }
+        document.location.href="?st=[var.eFinDepotTbs]&id_depot=[var.id_depot]";
+        return false; // inutile !?
+    }
 
-	function calc() {
-		var pa = $('[var.idPaTbs]');
-		var pv = $('[var.idPvTbs]');
-		var prix_achat=rnd(pv.value -(pv.value * [var.margeTbs]) );
-		pa.value = prix_achat;
-		$('isp_pa').update("Achat: "+prix_achat+" &euro;");
-		pv.value=rnd(pv.value);
-		return false;
-	}
+    function calc() {
+        var pa = $('[var.idPaTbs]');
+        var pv = $('[var.idPvTbs]');
+        var prix_achat=rnd(pv.value -(pv.value * [var.margeTbs]) );
+        pa.value = prix_achat;
+        $('isp_pa').update("Achat: "+prix_achat+" &euro;");
+        pv.value=rnd(pv.value);
+        return false;
+    }
 
-	function clr_form() {
-		$('[var.idPrev_id_artTbs]').value="";
-		$('[var.idCouleursTbs]').value = "";
+    function clr_form() {
+        $('[var.idPrev_id_artTbs]').value="";
+        $('[var.idCouleursTbs]').value = "";
         $('iBtnCoul').style.backgroundColor = "";
         $('icouleur').hide();
         with ($('isais_art')){reset(); scrollTo();}
@@ -74,196 +84,200 @@
         $('[var.idPvTbs]').value="0.00";
         $('isp_pa').update("&nbsp;")
         $('ilegend').update('Nouvel article');
- 	}
-	
-	function annul() {
-		var id_art=$F('[var.idPrev_id_artTbs]');
-		if(!id_art.blank()){
-		  // Update en cour
-		  var div=$('a'+id_art)
-		  div.style.backgroundColor="";
- 		}
- 		clr_form();
- 		return false;
-	}
-	
-	function list_art(json) {
-	  var bgcol="background-color:"+json.code_couleur;
-   	  return "<tr id=\"a"+json.id_art+"\"><td style=\""+bgcol+"\"><b>"+json.id_depot+"-"+json.id_art+"</b></td><td><img src='img/edit.gif' onclick='modif("+json.id_art+")' title='Modifier' /><img src='img/del.gif' onclick='suppr("+json.id_art+")' title='Supprimer' /></td><td>"+json.TXT_O_desc+"</td><td>"+json.HID_O_pa+"&euro;</td><td>"+json.MNT_O_pv+"&euro;</td></tr>";
- 	}
-	
-	function enreg() {
-	  	calc();
-	    var frm = $('isais_art');
-	    if (!chkUnit(frm)) {
-			alert_e(0);
-		} else {
-			loading("Enregistrement en cours")
-			if($('[var.idPrev_id_artTbs]').value.blank()){
-				[var.paramUpdaterInsTbs;htmlconv=no]
-				new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespIns});
-			} else {
-				[var.paramUpdaterUpdTbs;htmlconv=no]
-				new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespUpd});
-		  	}
-		}
-	    return false;
-	}
-	
-	function trtRespIns(req, json) {
-		loading(false);
-	  	if (json.a_err) erreur(json.a_err);
-		else {
-			var sArt = list_art(json);
+    }
+
+    function annul() {
+        var id_art=$F('[var.idPrev_id_artTbs]');
+        if(!id_art.blank()){
+          // Update en cour
+          var div=$('a'+id_art)
+          div.style.backgroundColor="";
+        }
+        clr_form();
+        return false;
+    }
+
+    function list_art(json) {
+      var bgcol="background-color:"+json.code_couleur;
+      return "<tr id=\"a"+json.id_art+"\"><td style=\""+bgcol+"\"><b>"+json.id_depot+"-"+json.id_art+"</b></td><td class='price'>"+json.MNT_O_pv+"</td><td>"+json.TXT_O_desc+"</td><td class='price'>"+json.HID_O_pa+"</td><td><img src='img/edit.gif' onclick='modif("+json.id_art+")' title='Modifier' /><img src='img/del.gif' onclick='suppr("+json.id_art+")' title='Supprimer' /></td></tr>";
+    }
+
+    function enreg() {
+        calc();
+        var frm = $('isais_art');
+        if (!chkUnit(frm)) {
+            alert_e(0);
+        } else {
+            loading("Enregistrement en cours")
+            if($('[var.idPrev_id_artTbs]').value.blank()){
+                [var.paramUpdaterInsTbs;htmlconv=no]
+                new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespIns});
+            } else {
+                [var.paramUpdaterUpdTbs;htmlconv=no]
+                new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespUpd});
+            }
+        }
+        return false;
+    }
+
+    function trtRespIns(req, json) {
+        loading(false);
+        if (json.a_err) erreur(json.a_err);
+        else {
+            var sArt = list_art(json);
             var x = new Insertion.Bottom("ilist", sArt);
             nbArt = nbArt+1;
             clr_form();
-  		}
-	}
-	
-	/* Prepare form pour Modif */
-	function modif(id){
-		annul(); // pour eventuelles autre modif en cours
-		loading("Recherche...");
-		var div=$('a'+id);
-		div.scrollTo();
-		div.style.backgroundColor="#80D0FF";
-		/* lecture des donnees dans la DB */
-		new Ajax.Request('serv_ajax.php', {method:'post', parameters:"op=readArt&id_art="+id, onComplete:trtRespRead});
-	    return false;
- 	}
-	
-	function trtRespRead(req, json) {
+        }
+    }
+
+    /* Prepare form pour Modif */
+    function modif(id){
+        annul(); // pour eventuelles autre modif en cours
+        loading("Recherche...");
+        var div=$('a'+id);
+        div.scrollTo();
+        div.style.backgroundColor="#80D0FF";
+        /* lecture des donnees dans la DB */
+        new Ajax.Request('serv_ajax.php', {method:'post', parameters:"op=readArt&id_art="+id, onComplete:trtRespRead});
+        return false;
+    }
+
+    function trtRespRead(req, json) {
         loading(false);
-	  	if (json.a_err) erreur(json.a_err);
-		else {
-			clr_form();
-			$('[var.idDescTbs]').value=json.TXT_O_desc;
-			$('[var.idPaTbs]').value=json.MNT_O_pa;
-			$('[var.idPvTbs]').value=json.MNT_O_pv;
-			$('[var.idPrev_id_artTbs]').value=json.id_art;
-			$('iBtnCoul').style.backgroundColor = json.code_couleur;
-			$('[var.idCouleursTbs]').value = json.code_couleur;
-			$('ilegend').update('Modification article n&deg '+json.id_art);
-		}
-	}
-	
-	function trtRespUpd(req, json) {
+        if (json.a_err) erreur(json.a_err);
+        else {
+            clr_form();
+            $('[var.idDescTbs]').value=json.TXT_O_desc;
+            $('[var.idPaTbs]').value=json.MNT_O_pa;
+            $('[var.idPvTbs]').value=json.MNT_O_pv;
+            $('[var.idPrev_id_artTbs]').value=json.id_art;
+            $('iBtnCoul').style.backgroundColor = json.code_couleur;
+            $('[var.idCouleursTbs]').value = json.code_couleur;
+            $('ilegend').update('Modification article n&deg '+json.id_art);
+        }
+    }
+
+    function trtRespUpd(req, json) {
         loading(false);
-	  	if (json.a_err) erreur(json.a_err)
-		else {
-			var sArt = list_art(json);
-			var div=$('a'+json.id_art);
-			div.replace(sArt);
-			// alert("Modification enregistrée");
-			clr_form();
-  		}
-	}
-	
-	function suppr(id){
-		var div=$('a'+id);
-		div.scrollTo();
-		div.style.backgroundColor="#FF3000";
-		if(confirm("Voulez-vous vraiment supprimer cet article ?")) {
-	       loading("Supression en cours")
+        if (json.a_err) erreur(json.a_err)
+        else {
+            var sArt = list_art(json);
+            var div=$('a'+json.id_art);
+            div.replace(sArt);
+            // alert("Modification enregistrée");
+            clr_form();
+        }
+    }
+
+    function suppr(id){
+        var div=$('a'+id);
+        div.scrollTo();
+        div.style.backgroundColor="#FF3000";
+        if(confirm("Voulez-vous vraiment supprimer cet article ?")) {
+           loading("Supression en cours")
             new Ajax.Request('serv_ajax.php', {method:'post', parameters:"op=delArt&id_art="+id, onComplete:trtRespDel});
-  		} else {
+        } else {
             div.style.backgroundColor="";
             $("isais_art").scrollTo();
             $('[var.idDescTbs]').focus();
-		}
-	  return false;
-	}
-	
-	function trtRespDel(req, json) {
- 		loading(false);
-	  	if (json.a_err) erreur(json.a_err)
-		else {
-			var div=$('a'+json.id_art);
-			div.remove();
+        }
+      return false;
+    }
+
+    function trtRespDel(req, json) {
+        loading(false);
+        if (json.a_err) erreur(json.a_err)
+        else {
+            var div=$('a'+json.id_art);
+            div.remove();
             nbArt = nbArt-1;
             var frm=$("isais_art");
-			$('[var.idPrev_id_artTbs]').value="";
-			alert("Article effacé");
-			clr_form();
-  		}
- 	}
-	
- 	function setCol(coul) {
+            $('[var.idPrev_id_artTbs]').value="";
+            alert("Article effacé");
+            clr_form();
+        }
+    }
+
+    function setCol(coul) {
         $('[var.idCouleursTbs]').value = coul;
         $('iBtnCoul').style.backgroundColor = coul;
         $('icouleur').hide();
-		$('[var.idDescTbs]').focus();
-	}
-	 
-	//	Idea by:  Nic Wolfe (Nic@TimelapseProductions.com)
-	// Web URL:  http://fineline.xs.mw
-	// This script and many more are available free online at
-	// The JavaScript Source!! http://javascript.internet.com
-	function popUp(URL) {
-	var id = "999"
-	eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=360,height=400');");
-	}	
-	</script>
+        $('[var.idDescTbs]').focus();
+    }
+
+    //  Idea by:  Nic Wolfe (Nic@TimelapseProductions.com)
+    // Web URL:  http://fineline.xs.mw
+    // This script and many more are available free online at
+    // The JavaScript Source!! http://javascript.internet.com
+    function popUp(URL) {
+        var id = "999"
+        eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=360,height=400');");
+    }
+    </script>
 </head>
 <body onload="$('[var.idDescTbs]').focus();$('ispdesc').makePositioned();">
 <div class="menu">
-	<span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
-	<button onclick="to_menu()"> Menu principal </button>
+    <span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
+    <button onclick="to_menu()"> Menu principal </button>
 </div>
 <h1>DEPOT n&deg;[var.id_depot]: Saisie des articles</h1>
 <div class="block">
-	<table  border="0" cellpadding="2" cellspacing="0" style="width:80%" align="center" >
-	<tr><th colspan="2" style="background-color:#A0A0A0">Coordonnées du déposant</th></tr>
-	<tr><td width="25%">Nom</td><td><b>[var.nomTbs;htmlconv=no]</b> [var.prenomTbs;htmlconv=no]</td></tr>
-	<tr><td valign="top">Adresse</td><td>[var.adr1Tbs;htmlconv=no;magnet=tr]<br  />
-		[var.adr2Tbs;htmlconv=no;magnet=br;mtype=*m]<br />
-		[var.cpTbs;htmlconv=no;magnet=br;mtype=*m] [var.communeTbs;]<br />
-	</td></tr>
-	<tr><td>Tél.</td><td>[var.telTbs;htmlconv=no;magnet=tr]</td></tr>
-	</table>
+    <table  border="0" cellpadding="2" cellspacing="0" style="width:80%" align="center" >
+    <tr><th colspan="2" style="background-color:#A0A0A0">Coordonnées du déposant</th></tr>
+    <tr><td width="25%">Nom</td><td><b>[var.nomTbs;htmlconv=no]</b> [var.prenomTbs;htmlconv=no]</td></tr>
+    <tr><td valign="top">Adresse</td><td>[var.adr1Tbs;htmlconv=no;magnet=tr]<br  />
+        [var.adr2Tbs;htmlconv=no;magnet=br;mtype=*m]<br />
+        [var.cpTbs;htmlconv=no;magnet=br;mtype=*m] [var.communeTbs;]<br />
+    </td></tr>
+    <tr><td>Tél.</td><td>[var.telTbs;htmlconv=no;magnet=tr]</td></tr>
+    </table>
 </div>
 <br />
 <div class="block">
-	<table class="list" border="0" cellspacing="1" cellpadding="2">
-	<tbody id="ilist">
-		<tr><th width="75">N&deg;</th><th width="50">&nbsp;</th><th>Description </th><th width="90">Achat</th><th width="90">Vente</th></tr>
-		<tr>[articlesTbs.val;block=tr;htmlconv=no;magnet=tr]</tr>
-	</tbody>	
-	</table>
-	<form name="sais_art" id="isais_art"><fieldset ><legend id="ilegend">Nouvel article</legend>
-	<table border="0">
-	    <tr>
-			<td >
-				<div id="imsg" style='position:absolute;width:300px;border:solid 2px #909090;background-color:#F0F0F0;display:none;font-size:1.2em;padding:15px;'><table border="0"><tr >
-					<td><img  border="0" src="img/loading.gif" /></td><td id='itdmsg'></td>
-				</tr></table></div>
-				<span id="ispdesc">Desc [var.descTbs;htmlconv=no;]
-		  		</span>
-			</td>
-		</tr><tr>
-		    <td >				
-		    	Prix de Vente: [var.pvTbs;htmlconv=no;] &euro;&nbsp;
-		    	<img src="img/calc.gif" onclick="return calc()" title="Calculer" border="0" style="cursor:pointer"/>&nbsp;&nbsp;
-				<span id="isp_pa">&nbsp;&nbsp;</span>
-			</td>
-		</tr><tr>
-			<td>
-				<div id="icouleur" style="display:none;">[var.sTblCouleurs;htmlconv=no;]</div>
-				<button id="iBtnCoul" onclick="$('icouleur').toggle();return false">Couleur</button>
-			</td>
-		</tr><tr>
-		    <td align="center">
-				<button onclick="return enreg()" style="font-weight:bold;color:green;" tabindex="3">OK</button>&nbsp;&nbsp;
-				<button onclick="return annul()" style="color:red;">Annuler</button>&nbsp;&nbsp;
-			</td>
-		</tr><tr>
-		</tr>
-	</table>
-	</fieldset>[var.prev_id_artTbs;htmlconv=no][var.couleursTbs;htmlconv=no]</form>
-	<div align="center">
-		<button onclick="return cloture()" style="font-size:1.2em"> Cloture du dépot </button>
-	</div>
+    <table class="list" border="0" cellspacing="1" cellpadding="2">
+    <tbody id="ilist">
+        <tr>
+            <th style="width:90px;">N&deg;</th>
+            <th style="width:90px;font-size:0.9em">Prix vente</th>
+            <th>Description </th>
+            <th style="width:90px;font-size:0.9em">Prix achat</th>
+            <th style="width:90px;">&nbsp;</th>
+        </tr>
+        <tr>[articlesTbs.val;block=tr;htmlconv=no;magnet=tr]</tr>
+    </tbody>
+    </table>
+    <form name="sais_art" id="isais_art"><fieldset ><legend id="ilegend">Nouvel article</legend>
+    <table border="0">
+        <tr>
+            <td style="width:400px">
+                <div id="imsg" style='position:absolute;width:300px;border:solid 2px #909090;background-color:#F0F0F0;display:none;font-size:1.2em;padding:15px;'><table border="0"><tr >
+                    <td><img  border="0" src="img/loading.gif" /></td><td id='itdmsg'></td>
+                </tr></table></div>
+                <span id="ispdesc">Description [var.descTbs;htmlconv=no;]
+                </span>
+            </td>
+            <td style="text-align:center" rowspan="3" >
+                <button onclick="return enreg()" style="font-weight:bold;color:green;" tabindex="3"><img src="img/check.gif" alt="" title="" /> OK</button>&nbsp;&nbsp;
+                <button onclick="return annul()" style="color:red;"><img src="img/close_delete.gif" alt="" title="" /> Annuler</button>&nbsp;&nbsp;
+            </td>
+        </tr><tr>
+            <td >
+                Prix de Vente: [var.pvTbs;htmlconv=no;] &euro;&nbsp;
+                <img src="img/calc.gif" onclick="return calc()" title="Calculer" border="0" style="cursor:pointer"/>&nbsp;&nbsp;
+                <span id="isp_pa">&nbsp;&nbsp;</span>
+            </td>
+        </tr><tr>
+            <td>
+                <div id="icouleur" style="display:none;">[var.sTblCouleurs;htmlconv=no;]</div>
+                <button id="iBtnCoul" onclick="$('icouleur').toggle();return false">Couleur</button>
+            </td>
+        </tr>
+    </table>
+    </fieldset>[var.prev_id_artTbs;htmlconv=no][var.couleursTbs;htmlconv=no]</form>
+    <div align="center">
+        <button onclick="return cloture()" style="font-size:1.2em"> Cloture du dépot </button>
+    </div>
 </div>
 [var.paTbs;htmlconv=no;]
 </body></html>

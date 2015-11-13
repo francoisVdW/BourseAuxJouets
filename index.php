@@ -21,7 +21,7 @@ define ('S_MAIN', 1);
 define ('S_NOUV_DEPOT', 2);
 define ('S_CAISSE', 3);
 define ('S_RETRAIT', 4);
-define ('S_DEPOT_ART', 5);            
+define ('S_DEPOT_ART', 5);
 define ('S_FIN_DEPOT',6);
 define ('S_RETRAIT_SOLDE',7);
 define ('S_GESTION',8);
@@ -38,6 +38,7 @@ define ('S_CLOTURE_VENTE', 18);
 define ('S_INIT_BOURSE',19);
 define ('S_FONDS_CAISSES',20);
 define ('S_LST_RETOUR',21);
+define ('S_RECH_ART',22);
 /** Etats transitoires
 */
 define ('T_SAUV_DEPOSANT',51);
@@ -67,13 +68,13 @@ function getCChampAjaxParam($cchamp)
  */
 function lect_participant($id)
 {
-	global $db;
-  	$sql = "SELECT nom, prenom FROM participant WHERE idparticipant=$id";
-  	$n = $db->query($sql);
-  	if($n != 1) {
-	 	logFatal("lect_participant($id) : query retourne $n\n\$ql=$sql", __FILE__,__LINE__);
-   	}
-   	return trim($db->data[0]['prenom'].' '.$db->data[0]['nom']);
+    global $db;
+    $sql = "SELECT nom, prenom FROM participant WHERE idparticipant=$id";
+    $n = $db->query($sql);
+    if($n != 1) {
+        logFatal("lect_participant($id) : query retourne $n\n\$ql=$sql", __FILE__,__LINE__);
+    }
+    return trim($db->data[0]['prenom'].' '.$db->data[0]['nom']);
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //
@@ -85,9 +86,9 @@ function lect_participant($id)
 /** déconnexion demandée
 */
 if(isset($_GET['logout'])) {
-	session_destroy();
-	header("Location: index.php");
-	exit();
+    session_destroy();
+    header("Location: index.php");
+    exit();
 }
 
 /** ouverture de la DB
@@ -101,37 +102,37 @@ $db->open();
 $user = new User($db);
 
 if (!isset($_SESSION['logged']) || !$_SESSION['logged'] || !$user->uid) {
-	/** Si pas connecte : <form> de login puis ctrl
-	*/
+    /** Si pas connecte : <form> de login puis ctrl
+    */
     require 'inc/login_form.inc.php';
-	/** Recuperation parametrage bourse (idbourse) apres connexion validee
-	*/
-	$sql = "SELECT * FROM bourse WHERE idbourse=".$user->get_field('bourse_idbourse');
-	$n = $db->query($sql);
-	if($n != 1) exit("<html><body><h1>Erreur idbourse !</h1>\$n=$n<br><pre>sql=$sql</pre></body></html>");
-	$_SESSION['bourse'] = $db->data[0];
-	}
-	
+    /** Recuperation parametrage bourse (idbourse) apres connexion validee
+    */
+    $sql = "SELECT * FROM bourse WHERE idbourse=".$user->get_field('bourse_idbourse');
+    $n = $db->query($sql);
+    if($n != 1) exit("<html><body><h1>Erreur idbourse !</h1>\$n=$n<br><pre>sql=$sql</pre></body></html>");
+    $_SESSION['bourse'] = $db->data[0];
+    }
+
 $participTbs = ($user->get_field('prenom')? $user->get_field('prenom').' ':'').$user->get_field('nom');
 $bourseTbs = $_SESSION['bourse']['nom_bourse'];
 
 
 /** Var TBS communes
 */
-$eDepotArtTbs	= S_DEPOT_ART;
-$eNouvDepotTbs 	= S_NOUV_DEPOT;
+$eDepotArtTbs   = S_DEPOT_ART;
+$eNouvDepotTbs  = S_NOUV_DEPOT;
 $eFinDepotTbs   = S_FIN_DEPOT;
 
-$eGestionTbs	= S_GESTION;
+$eGestionTbs    = S_GESTION;
 
 $idBourseTbs    = $_SESSION['bourse']['idbourse'];
 $nom_bourseTbs  = $_SESSION['bourse']['nom_bourse'];
-$nomBourseTbs	= isset($_SESSION['bourse']['nom_bourse'])? $_SESSION['bourse']['nom_bourse']: '';
-$nomAssocTbs	= isset($_SESSION['bourse']['nom_assoc'])? $_SESSION['bourse']['nom_assoc']: '';
-$mayCaisseTbs 	= $user->get_field('may_caisse')=='T'?	true:false;
-$mayDepotTbs 	= $user->get_field('may_depot')=='T'?	true:false;
-$mayRetraitTbs 	= $user->get_field('may_retrait')=='T'?	true:false;
-$mayGestionTbs 	= $user->get_field('may_gestion')=='T'?	true:false;
+$nomBourseTbs   = isset($_SESSION['bourse']['nom_bourse'])? $_SESSION['bourse']['nom_bourse']: '';
+$nomAssocTbs    = isset($_SESSION['bourse']['nom_assoc'])? $_SESSION['bourse']['nom_assoc']: '';
+$mayCaisseTbs   = $user->get_field('may_caisse')=='T'?  true:false;
+$mayDepotTbs    = $user->get_field('may_depot')=='T'?   true:false;
+$mayRetraitTbs  = $user->get_field('may_retrait')=='T'? true:false;
+$mayGestionTbs  = $user->get_field('may_gestion')=='T'? true:false;
 
 $dateTbs = date('d/m/Y');
 
@@ -139,7 +140,7 @@ $dateTbs = date('d/m/Y');
 /** Preparation de la machine d'etats
  */
 if(isset($_REQUEST['st'])) {
-	$st = $_REQUEST["st"];
+    $st = $_REQUEST["st"];
 } else {
     $st = S_MAIN;
 }
@@ -150,71 +151,71 @@ $aErr = array();
 /** Etats transitoires
 */
 switch($st) {
-	case T_SAUV_DEPOSANT:
-	    require 'inc/utl_deposant.inc.php';
-	    $id_deposant = sav_deposant();
-	    if($id_deposant !== FALSE) $st = S_DEPOT_ART;
-	    else $st = S_NOUV_DEPOT;
-	    break;
-	case T_ANNULVENTE:
-	    /** Supprime une vente pour laquelle il n'y a pas d'articles
-		 * Uniquement si user->uid correspond à la vente + ...
-	    */
-	    require 'inc/utl_caisse.inc.php';
-	    annul_vente();
-		header("Location: index.php");
-	    exit();
-	case T_ANNULDEPOT:
-	    /** Supprime un depot pour lequel il n'y a pas d'articles
-		 * Uniquement si user->uid correspond au depot + ...
-	    */
-	    require 'inc/utl_caisse.inc.php';
-	    annul_depot();
-			    
-		header("Location: index.php");
-	    exit();
-	    
-  case T_DEVEROUILLAGE:
-		/** Deverouille une caisse
-		*/
-	    require 'inc/utl_caisse.inc.php';
-	    deverouille_caisse();
-		$st = S_DEVEROUILLAGE;
-		break;
-		
-	case T_INS_PART:
-	    /** Ajout d'un participant
-	    */
-	    require 'inc/utl_gest_part.inc.php';
-		if (insert_part())  $st = S_GESTION_PARTICIPANTS;
-		else $st = S_EDIT_PART;
-	    break;
+    case T_SAUV_DEPOSANT:
+        require 'inc/utl_deposant.inc.php';
+        $id_deposant = sav_deposant();
+        if($id_deposant !== FALSE) $st = S_DEPOT_ART;
+        else $st = S_NOUV_DEPOT;
+        break;
+    case T_ANNULVENTE:
+        /** Supprime une vente pour laquelle il n'y a pas d'articles
+         * Uniquement si user->uid correspond à la vente + ...
+        */
+        require 'inc/utl_caisse.inc.php';
+        annul_vente();
+        header("Location: index.php");
+        exit();
+    case T_ANNULDEPOT:
+        /** Supprime un depot pour lequel il n'y a pas d'articles
+         * Uniquement si user->uid correspond au depot + ...
+        */
+        require 'inc/utl_caisse.inc.php';
+        annul_depot();
 
-	case T_UPD_PART:
-	    /** MaJ d'un participant
-	    */
-	    require 'inc/utl_gest_part.inc.php';
-	    if (update_part()) $st = S_GESTION_PARTICIPANTS;
-	    else $st = S_EDIT_PART;
-	    break;
-	    
-	case T_DEL_PART:
-	    require 'inc/utl_gest_part.inc.php';
-	    delete_part();
-		$st = S_GESTION_PARTICIPANTS;
-		break;
-		
-	case T_CLOTURE_VENTE:
-		/** cloture les ventes
-		*/
-	    require 'inc/utl_caisse.inc.php';
-	    require 'inc/caisse.class.php';
-	    cloture_vente();
-		$st = S_CLOTURE_VENTE;
-		break;
-	
-	case T_REINIT:
-        /** Re-Initialisation de la db 
+        header("Location: index.php");
+        exit();
+
+  case T_DEVEROUILLAGE:
+        /** Deverouille une caisse
+        */
+        require 'inc/utl_caisse.inc.php';
+        deverouille_caisse();
+        $st = S_DEVEROUILLAGE;
+        break;
+
+    case T_INS_PART:
+        /** Ajout d'un participant
+        */
+        require 'inc/utl_gest_part.inc.php';
+        if (insert_part())  $st = S_GESTION_PARTICIPANTS;
+        else $st = S_EDIT_PART;
+        break;
+
+    case T_UPD_PART:
+        /** MaJ d'un participant
+        */
+        require 'inc/utl_gest_part.inc.php';
+        if (update_part()) $st = S_GESTION_PARTICIPANTS;
+        else $st = S_EDIT_PART;
+        break;
+
+    case T_DEL_PART:
+        require 'inc/utl_gest_part.inc.php';
+        delete_part();
+        $st = S_GESTION_PARTICIPANTS;
+        break;
+
+    case T_CLOTURE_VENTE:
+        /** cloture les ventes
+        */
+        require 'inc/utl_caisse.inc.php';
+        require 'inc/caisse.class.php';
+        cloture_vente();
+        $st = S_CLOTURE_VENTE;
+        break;
+
+    case T_REINIT:
+        /** Re-Initialisation de la db
         */
         require 'inc/reinit.inc.php';
         $st = S_MAIN;
@@ -224,75 +225,78 @@ switch($st) {
 /** Etats stables
 */
 switch($st) {
-	case S_NOUV_DEPOT:
-	    $sFile = 'deposant';
-	    break;
-	case S_DEPOT_ART:
-	    $sFile = 'depot_art';
-	    break;
-	case S_FIN_DEPOT:
-	    $sFile = 'fin_depot';
-	    break;
-	case S_CAISSE:
-	    $sFile = 'caisse';
-	    break;
-	case S_RETRAIT:
-	    $sFile = 'retrait';
-	    break;
-	case S_RETRAIT_SOLDE:
-	    $sFile = 'retrait_solde';
-	    break;
-	case S_GESTION:
-	    $sFile = 'gestion';
-	    break;
-	case S_CCAISSE:
-	    $sFile = 'cpt_caisse';
-	    break;
-	case S_CRETRAIT:
-	    $sFile = 'cpt_retrait';
-	    break;
-	case S_TABLBORD:
-	    $sFile = 'tabl_bord';
-	    break;
-	case S_GESTION_PARTICIPANTS:
-	    $sFile = 'gest_part';
-	    break;
-	case S_EDIT_PART:
-	    $sFile = 'edit_part';
-	    break;
-	case S_DEVEROUILLAGE;
-	    $sFile = 'dever';
-	    break;
- 	case S_FONDS_CAISSES:
-	    $sFile = 'fonds_caisses';
-	    break;
+    case S_NOUV_DEPOT:
+        $sFile = 'deposant';
+        break;
+    case S_DEPOT_ART:
+        $sFile = 'depot_art';
+        break;
+    case S_FIN_DEPOT:
+        $sFile = 'fin_depot';
+        break;
+    case S_CAISSE:
+        $sFile = 'caisse';
+        break;
+    case S_RETRAIT:
+        $sFile = 'retrait';
+        break;
+    case S_RETRAIT_SOLDE:
+        $sFile = 'retrait_solde';
+        break;
+    case S_GESTION:
+        $sFile = 'gestion';
+        break;
+    case S_CCAISSE:
+        $sFile = 'cpt_caisse';
+        break;
+    case S_CRETRAIT:
+        $sFile = 'cpt_retrait';
+        break;
+    case S_TABLBORD:
+        $sFile = 'tabl_bord';
+        break;
+    case S_GESTION_PARTICIPANTS:
+        $sFile = 'gest_part';
+        break;
+    case S_EDIT_PART:
+        $sFile = 'edit_part';
+        break;
+    case S_DEVEROUILLAGE;
+        $sFile = 'dever';
+        break;
+    case S_FONDS_CAISSES:
+        $sFile = 'fonds_caisses';
+        break;
 
-	case S_ARTICLE:
-		$sFile = 'article';
-		break;
-	case S_LST_ART:
-		$sFile = 'lst_art';
-		break;
-	case S_LST_RETOUR:
-		$sFile = 'lst_retour';
-		break;
-	
-	case S_FICHE_ART:
-		$sFile ='fiche_art';
-		break;
+    case S_ARTICLE:
+        $sFile = 'article';
+        break;
+    case S_LST_ART:
+        $sFile = 'lst_art';
+        break;
+    case S_LST_RETOUR:
+        $sFile = 'lst_retour';
+        break;
 
-	case S_CLOTURE_VENTE:		
-		$sFile ='cloture_vente';
-		break;
+    case S_FICHE_ART:
+        $sFile ='fiche_art';
+        break;
+    case S_RECH_ART:
+        $sFile = 'rech_art';
+        break;
+
+    case S_CLOTURE_VENTE:
+        $sFile ='cloture_vente';
+        break;
 
     case S_INIT_BOURSE:
         $sFile = 'init_bourse';
         break;
-        
-	case S_MAIN:
-	default:
-	    $sFile = 'main';
-	    break;
+
+    case S_MAIN:
+    default:
+        $sFile = 'main';
+        break;
 }
 
 // sortie HTML

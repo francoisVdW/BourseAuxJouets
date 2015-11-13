@@ -4,121 +4,121 @@
 [onload;file=tbs/meta.txt]
     <title>Bourse : Caisse</title>
     <link rel="stylesheet" type="text/css" href="css/bourse.css" />
-	<script type="text/javascript" src="js/prototype151.js"></script>
-	<script type="text/javascript" src="js/cchamp.js"></script>
-	<script type="text/javascript" src="js/caisse.js"></script>
-	<script type="text/javascript" src="js/select.js"></script>
-	<script type="text/javascript">
-	[var.js_all_errTbs;htmlconv=no]
-	var jsonBak;
-	var nbArt=[var.nbArtTbs];
-	var mntTtl=[var.sommeTbs];
-	var idFact=0;
+    <script type="text/javascript" src="js/prototype151.js"></script>
+    <script type="text/javascript" src="js/cchamp.js"></script>
+    <script type="text/javascript" src="js/caisse.js"></script>
+    <script type="text/javascript" src="js/select.js"></script>
+    <script type="text/javascript">
+    [var.js_all_errTbs;htmlconv=no]
+    var jsonBak;
+    var nbArt=[var.nbArtTbs];
+    var mntTtl=[var.sommeTbs];
+    var idFact=0;
 
-	function to_menu() {
-		if(nbArt && !$('ibtn_annulvente').disabled) {
-			if(!confirm("Des articles ont été enregistrés!\nVoulez-vous annuler cette vente")) return false;
-			var txt="Annulation en cours...";
-		} else var txt="Fermeture en cours...";
+    function to_menu() {
+        if(nbArt && !$('ibtn_annulvente').disabled) {
+            if(!confirm("Des articles ont été enregistrés!\nVoulez-vous annuler cette vente")) return false;
+            var txt="Annulation en cours...";
+        } else var txt="Fermeture en cours...";
 
-		// annulation/fermeture vente
-  		loading(txt);
-	    var param="op=anVente&id_vente=[var.id_vente]&ret=menu&id_log=[var.id_log]";
-	    new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespAnnul});
-	    return true;
-	}
+        // annulation/fermeture vente
+        loading(txt);
+        var param="op=anVente&id_vente=[var.id_vente]&ret=menu&id_log=[var.id_log]";
+        new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespAnnul});
+        return true;
+    }
 
-	function raz() {
-		if(!nbArt) return false;
-		if(!confirm("Des articles ont été enregistrés!\nVoulez-vous annuler cette vente")) return false;
-		loading('Annulation en cours...')
-	    var param="op=anVente&id_vente=[var.id_vente]&ret=raz";
-	    new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespAnnul});
- 	}
-	
-	function trtRespAnnul(req, json) {
-		loading(false);
-	  	if (json.a_err) erreur(json.a_err);
-	  	else {
-			nbArt=0;
-			if (json.ret=='menu') document.location.href="?st=[var..cst.S_MAIN]";
-			else if (json.ret=='raz') document.location.href="?st=[var..cst.S_CAISSE]&id_vente=[var.id_vente]";
-		}
-	}
+    function raz() {
+        if(!nbArt) return false;
+        if(!confirm("Des articles ont été enregistrés!\nVoulez-vous annuler cette vente")) return false;
+        loading('Annulation en cours...')
+        var param="op=anVente&id_vente=[var.id_vente]&ret=raz";
+        new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespAnnul});
+    }
 
-	function aut_saisie(actif) {
-		var asup = document.getElementsByClassName('sup', $('ilist'));
-		// empeche 2nd appui sur btn 'chercher' & ''payer'
-		var abtn = document.getElementsByClassName('btn', $('isaisie'));
-		if(!actif) {
-			$('[var.idIdArtTbs]').disabled=true;
-			asup.invoke("hide");
-			abtn.invoke('hide');
-  		} else {
-			$('[var.idIdArtTbs]').disabled=false;
-			asup.invoke("show");
-			abtn.invoke('show');
-			$('bas').scrollTo();
-			$('[var.idIdArtTbs]').focus();
-	        $('iinfo').hide();
-			$('imode_pay').hide();
-			$('idata_fact').hide();
-		}
+    function trtRespAnnul(req, json) {
+        loading(false);
+        if (json.a_err) erreur(json.a_err);
+        else {
+            nbArt=0;
+            if (json.ret=='menu') document.location.href="?st=[var..cst.S_MAIN]";
+            else if (json.ret=='raz') document.location.href="?st=[var..cst.S_CAISSE]&id_vente=[var.id_vente]";
+        }
+    }
+
+    function aut_saisie(actif) {
+        var asup = document.getElementsByClassName('sup', $('ilist'));
+        // empeche 2nd appui sur btn 'chercher' & ''payer'
+        var abtn = document.getElementsByClassName('btn', $('isaisie'));
+        if(!actif) {
+            $('[var.idIdArtTbs]').disabled=true;
+            asup.invoke("hide");
+            abtn.invoke('hide');
+        } else {
+            $('[var.idIdArtTbs]').disabled=false;
+            asup.invoke("show");
+            abtn.invoke('show');
+            $('bas').scrollTo();
+            $('[var.idIdArtTbs]').focus();
+            $('iinfo').hide();
+            $('imode_pay').hide();
+            $('idata_fact').hide();
+        }
 }
 
-	function somme() {
-	    var param="op=sommeArt&id_vente=[var.id_vente]";
-	    new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespSomme});
-	}
-	
-
-	function cherche() {
-	    var idArt = $F('[var.idIdArtTbs]');
-	    // recherche article
-	    if (idArt.blank()) {
-		  	$('[var.idIdArtTbs]').focus();return false;
- 		}
-	    if (!idArt.isNum()) {
-			alert("Numero d'article invalide");$('[var.idIdArtTbs]').focus();return false;
-		}
-		loading("Recherche article n&deg;"+idArt+"...");
-	    var param="op=lockArt&id_vente=[var.id_vente]&id_art="+idArt;
-	    new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespLock});
-		return false;
-	}
+    function somme() {
+        var param="op=sommeArt&id_vente=[var.id_vente]";
+        new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespSomme});
+    }
 
 
-	function unlock(id_art, silent){
-		if (!silent)
-	    	if (!confirm('Retirer cet article de la vente ?')) return false;
-	    loading("Supression en cours")
-	    var param="op=unlockArt&id_vente=[var.id_vente]&id_art="+id_art;
-	    new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespUnlock});
-	}
+    function cherche() {
+        var idArt = $F('[var.idIdArtTbs]');
+        // recherche article
+        if (idArt.blank()) {
+            $('[var.idIdArtTbs]').focus();return false;
+        }
+        if (!idArt.isNum()) {
+            alert("Numero d'article invalide");$('[var.idIdArtTbs]').focus();return false;
+        }
+        loading("Recherche article n&deg;"+idArt+"...");
+        var param="op=lockArt&id_vente=[var.id_vente]&id_art="+idArt;
+        new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespLock});
+        return false;
+    }
+
+
+    function unlock(id_art, silent){
+        if (!silent)
+            if (!confirm('Retirer cet article de la vente ?')) return false;
+        loading("Supression en cours")
+        var param="op=unlockArt&id_vente=[var.id_vente]&id_art="+id_art;
+        new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespUnlock});
+    }
 
 
 
-  	function ctrl_paye(){
-		var chq=parseFloat($F('[var.idMntChqTbs]'));
-		var esp=parseFloat($F('[var.idMntEspTbs]'));
-		if(esp+chq != mntTtl) {
+    function ctrl_paye(){
+        var chq=parseFloat($F('[var.idMntChqTbs]'));
+        var esp=parseFloat($F('[var.idMntEspTbs]'));
+        if(esp+chq != mntTtl) {
             alert("Le total des modes de payenment\nne correspont pas à la somme de "+mntTtl+" euro.");
             $('ibtn_fin').disabled=true;
             $('[var.idMntEspTbs]').focus();
             return false;
-  		}
+        }
         $('ibtn_fin').disabled=false;
-		return false;
-   	}
-	function chk_vente(frm){
-    	if (!chkUnit(frm)) {
-			alert_e(0);
-			return false;
-		}
- 		aut_saisie(false);
-		var chq=parseFloat($F('[var.idMntChqTbs]'));
-		var esp=parseFloat($F('[var.idMntEspTbs]'));
-		if(esp+chq != mntTtl) {
+        return false;
+    }
+    function chk_vente(frm){
+        if (!chkUnit(frm)) {
+            alert_e(0);
+            return false;
+        }
+        aut_saisie(false);
+        var chq=parseFloat($F('[var.idMntChqTbs]'));
+        var esp=parseFloat($F('[var.idMntEspTbs]'));
+        if(esp+chq != mntTtl) {
             alert("Le total des modes de payenment\nne correspont pas à la somme de "+mntTtl+" euro.");
             $('ibtn_fin').disabled=true;
             return false;
@@ -127,174 +127,174 @@
         $('imode_pay').hide();
         // message d'attente
         loading("Enregistrement en cours...");
-	    var param="op=finVente&id_vente=[var.id_vente]&chq="+chq+"&esp="+esp;
-	    new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespFinVente});
-		return true;
+        var param="op=finVente&id_vente=[var.id_vente]&chq="+chq+"&esp="+esp;
+        new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespFinVente});
+        return true;
    }
-   	
-	function enreg_fact() {
-       	if (!chkUnit($('iffact'))) {
-			alert_e(0);
-			return false;
-		}
-		loading("Enregistrement de la facture...");
-	  	$('ibtn_enreg_fact').disabled=true;
 
-		if(idFact) {
-			// update
-		    var param="op=updFact&id_fact="+idFact;
-  		} else {
-			// insert
-		    var param="op=insFact";
-		}
-		param = param+[var.paramFactTbs;htmlconv=no];
-	    new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespFact});
- 	}
- 	
-	function trtRespFinVente(resp, json) {
-		loading(false);
-	  	if (json.a_err) {
-			erreur(json.a_err);
-		}
-		else {
-		  $('ibtn_annulvente').disabled=true;
-	      $('idsaisie').update("<p style='margin:5px;'>Vente n&deg;[var.id_vente] <b>Enregistrée</b></p><button onclick=\"document.location.href='?st=[var..cst.S_CAISSE]'\">Nouvelle vente</button>&nbsp;<button onclick='facture()'>Facture</button><br />");
-		}
-	}
-	// recherche article par sa descrition
-	function cherche_desc() {
-		var input = $('isp_cherchdesc'); 
-		input.toggle();
-		if(input.style.display != 'none') {
-			$('isel_rechdesc').hide();
-			$('iinp_rechdesc').value='';
-			input.focus();			
-		}
-	}
-	var searching=false;
-	function do_rechdesc(field) {
-		var v=field.value.clrText(1);
-		field.value = v;
-		if (v.length >= 4 && !searching) {
-			searching=true;
+    function enreg_fact() {
+        if (!chkUnit($('iffact'))) {
+            alert_e(0);
+            return false;
+        }
+        loading("Enregistrement de la facture...");
+        $('ibtn_enreg_fact').disabled=true;
+
+        if(idFact) {
+            // update
+            var param="op=updFact&id_fact="+idFact;
+        } else {
+            // insert
+            var param="op=insFact";
+        }
+        param = param+[var.paramFactTbs;htmlconv=no];
+        new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespFact});
+    }
+
+    function trtRespFinVente(resp, json) {
+        loading(false);
+        if (json.a_err) {
+            erreur(json.a_err);
+        }
+        else {
+          $('ibtn_annulvente').disabled=true;
+          $('idsaisie').update("<p style='margin:5px;'>Vente n&deg;[var.id_vente] <b>Enregistrée</b></p><button onclick=\"document.location.href='?st=[var..cst.S_CAISSE]'\" style=\"font-weight:bold\" ><img src=\"img/refresh.gif\" /> Nouvelle vente</button>&nbsp;<button onclick='facture()'><img src=\"img/printer.gif\" /> Facture</button><br />");
+        }
+    }
+    // recherche article par sa descrition
+    function cherche_desc() {
+        var input = $('isp_cherchdesc');
+        input.toggle();
+        if(input.style.display != 'none') {
+            $('isel_rechdesc').hide();
+            $('iinp_rechdesc').value='';
+            input.focus();
+        }
+    }
+    var searching=false;
+    function do_rechdesc(field) {
+        var v=field.value.clrText(1);
+        field.value = v;
+        if (v.length >= 4 && !searching) {
+            searching=true;
             var param="op=rechDesc&pat="+v+"&strict=1";
             new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespRDesc});
-  		} else {
-  			$('isel_rechdesc').hide();
-		  	// removeOption(sel, 1); // vide la select
-		}
- 	}
-	function trtRespRDesc(resp, json) {
-		searching=false;
-	  	if (json.a_err) {
-			erreur(json.a_err);
-		}
-		else {
-		  var a = json.opts.split(";;");
-		  var a_opt;
-		  var sel = $('isel_rechdesc');
-		  removeOption(sel, 1); // vide la select
-		  if(json.nb_opts) {
-		  	sel.show();
-		  	for (var i=0; i< json.nb_opts; i++) {
-				 a_opt=a[i].split("==");
-			 	appendOption(sel,a_opt[1], a_opt[0])
-		  	}
-		  } else {
-			id_sel.hide();
-		  }	
-		}
-	}
+        } else {
+            $('isel_rechdesc').hide();
+            // removeOption(sel, 1); // vide la select
+        }
+    }
+    function trtRespRDesc(resp, json) {
+        searching=false;
+        if (json.a_err) {
+            erreur(json.a_err);
+        }
+        else {
+          var a = json.opts.split(";;");
+          var a_opt;
+          var sel = $('isel_rechdesc');
+          removeOption(sel, 1); // vide la select
+          if(json.nb_opts) {
+            sel.show();
+            for (var i=0; i< json.nb_opts; i++) {
+                 a_opt=a[i].split("==");
+                appendOption(sel,a_opt[1], a_opt[0])
+            }
+          } else {
+            id_sel.hide();
+          }
+        }
+    }
 
-	function fill_id(sel) {
-		var f = $('[var.idIdArtTbs]');
-		if (!f) return;
-		var id = sel.options[sel.selectedIndex].value;
-		if (!id || id=="/" || id=="") return;
-		$('isp_cherchdesc').hide();
-		$('iinp_rechdesc').value='';
-		f.value = id;
-		cherche();
- 	}
-	</script>
+    function fill_id(sel) {
+        var f = $('[var.idIdArtTbs]');
+        if (!f) return;
+        var id = sel.options[sel.selectedIndex].value;
+        if (!id || id=="/" || id=="") return;
+        $('isp_cherchdesc').hide();
+        $('iinp_rechdesc').value='';
+        f.value = id;
+        cherche();
+    }
+    </script>
 </head>
 <body onload="aut_saisie(true);">
 
 <div class="menu">
-	<span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
-	<button onclick="to_menu()"> Menu principal </button>
-	<button onclick="raz()" id="ibtn_annulvente"> Annulation de la vente </button>
+    <span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
+    <button onclick="to_menu()"> Menu principal </button>
+    <button onclick="raz()" id="ibtn_annulvente"> Annulation de la vente </button>
 </div>
 <h1>CAISSE n&deg;[var.no_caisse] : Vente n&deg; [var.id_vente]</h1>
-<div class ="block"> 
-	<table class="list" border="0" cellpadding="2" cellspacing="2">
-	<tbody id="ilist">
+<div class ="block">
+    <table class="list" border="0" cellpadding="2" cellspacing="2">
+    <tbody id="ilist">
 
-		<tr><th width="85">N&deg;</th><th width="30">&nbsp;</th><th>Description </th><th width="100">Prix</th></tr>
-		<tr>[articlesTbs.val;block=tr;htmlconv=no;magnet=tr]</tr>
-	</tbody>
-	</table>
-	<table class="list" border="0" cellpadding="2" cellspacing="0">
-		<tr><td><b>TOTAL</b></td><td align="right"><span  id="somme">[var.sommeTbs] &euro; </span></td></tr>
-	</table>
+        <tr><th width="85">N&deg;</th><th width="30">&nbsp;</th><th>Description </th><th width="100">Prix</th></tr>
+        <tr>[articlesTbs.val;block=tr;htmlconv=no;magnet=tr]</tr>
+    </tbody>
+    </table>
+    <table class="list" border="0" cellpadding="2" cellspacing="0">
+        <tr><td><b>TOTAL</b></td><td align="right"><span  id="somme">[var.sommeTbs] &euro; </span></td></tr>
+    </table>
 </div>
 
 <div class="noprnt">
 <div class="block" >
-	<div id="imsg" style='position:absolute;width:300px;border:solid 2px #909090;background-color:#F0F0F0;display:none;font-size:1.2em;padding:15px;'><table border="0"><tr >
-		<td><img  border="0" src="img/loading.gif" /></td><td id='itdmsg'></td>
-	</tr></table></div>
+    <div id="imsg" style='position:absolute;width:300px;border:solid 2px #909090;background-color:#F0F0F0;display:none;font-size:1.2em;padding:15px;'><table border="0"><tr >
+        <td><img  border="0" src="img/loading.gif" /></td><td id='itdmsg'></td>
+    </tr></table></div>
 
     <div id="iinfo"  class="info" style="display:none;">
-		<table border="0" cellpadding="2" cellspacing="0" width="100%">
-			<tr><th colspan="2">  Article trouvé</th><th align="right"><img src="img/close.gif" title="Annuler" onclick="annul_art()" /></th></tr>
-			<tr bgcolor="#C0C0C0"><td >N&deg;</td><td >Description</td><td>Prix</td></tr>
-			<tr><td id="info_n_art"></td><td id="info_desc_art"> </td><td id="info_prix_art"> </td></tr>
-			<tr><td colspan="3">&nbsp;</td></tr>
-			<tr><td colspan="3" style="border-top:1px solid black" align="center"><button onclick="conf_art()" id="iconfirm"> OK </button><br /></td></tr>
-		</table>
+        <table border="0" cellpadding="2" cellspacing="0" width="100%">
+            <tr><th colspan="2">  Article trouvé</th><th align="right"><img src="img/close.gif" title="Annuler" onclick="annul_art()" /></th></tr>
+            <tr bgcolor="#C0C0C0"><td >N&deg;</td><td >Description</td><td>Prix</td></tr>
+            <tr><td id="info_n_art"></td><td id="info_desc_art"> </td><td id="info_prix_art"> </td></tr>
+            <tr><td colspan="3">&nbsp;</td></tr>
+            <tr><td colspan="3" style="border-top:1px solid black" align="center"><button onclick="conf_art()" id="iconfirm"><img src="img/check.gif" /> OK </button><br /></td></tr>
+        </table>
     </div>
     <div id="imode_pay" class="info" style="display:none">
-		<form id="ifpaye" onsubmit="return false">
-		<table border="0" cellpadding="2" cellspacing="0" width="100%">
-			<tr><th>Mode de payement pour <span id='isp_ttl'> </span> &euro;</th><th align="right"><img src="img/close.gif" title="Annuler" onclick="paye(false)" /></th></tr>
-			<tr>
-				<td >Espece&nbsp;[var.mntEspTbs;htmlconv=no] &euro;</td>
-				<td rowspan="1" valign="middle" align="center"><button onclick="return ctrl_paye()"> OK </button></td>
-			<tr></tr>
-				<td >Chèque&nbsp;[var.mntChqTbs;htmlconv=no] &euro;</td>
-			</tr><tr>
-			<td colspan="2" style="text-align:center;border-top:1px solid black">
-				<button onclick="chk_vente($('ifpaye'))" id="ibtn_fin">Fin de la vente</button><br />
-			</td></tr>
-		</table>
-    	</form>
+        <form id="ifpaye" onsubmit="return false">
+        <table border="0" cellpadding="2" cellspacing="0" width="100%">
+            <tr><th>Mode de payement pour <span id='isp_ttl'> </span> &euro;</th><th align="right"><img src="img/close.gif" title="Annuler" onclick="paye(false)" /></th></tr>
+            <tr>
+                <td >Espece&nbsp;[var.mntEspTbs;htmlconv=no] &euro;</td>
+                <td rowspan="1" valign="middle" align="center"><button onclick="return ctrl_paye()"><img src="img/check.gif" /> OK </button></td>
+            <tr></tr>
+                <td >Chèque&nbsp;[var.mntChqTbs;htmlconv=no] &euro;</td>
+            </tr><tr>
+            <td colspan="2" style="text-align:center;border-top:1px solid black">
+                <button onclick="chk_vente($('ifpaye'))" id="ibtn_fin"><img src="img/forward.gif" />Fin de la vente</button><br />
+            </td></tr>
+        </table>
+        </form>
     </div>
     <div id="idata_fact" class="info" style="display:none">
-		<form id="iffact" onsubmit="return false">
-		<table border="0" cellpadding="2" cellspacing="0" width="100%">
-			<tr><th colspan="2">Coordonnées du client</th><th align="right"><img src="img/close.gif" title="Fermer" onclick="$('idata_fact').hide()" /></th></tr>
-			<tr>
-				<td >Nom</td><td>[var.nomCliTbs;htmlconv=no]</td><td>&nbsp;</td>
-			<tr></tr>
-				<td >Adresse</td><td>[var.adr1Tbs;htmlconv=no]</td><td>&nbsp;</td>
-			</tr><tr>
-				<td >&nbsp;</td><td>[var.adr2Tbs;htmlconv=no]</td><td>&nbsp;</td>
-			</tr><tr>
-				<td >&nbsp;</td><td>[var.adr3Tbs;htmlconv=no]</td><td>&nbsp;</td>
-			</tr><tr>
-				<td >Code postal et ville</td><td>[var.adr4Tbs;htmlconv=no]</td><td>&nbsp;</td>
-			</tr><tr>
-				<td colspan="3" align="center"><button id="ibtn_enreg_fact" onclick="enreg_fact()">Valider</button>&nbsp;&nbsp;<button  id="ibtn_fact" style="display:none" onclick="print_fact()">Imprimer</button> <br /></td>
-			</tr>
-		</table>
-    	</form>
+        <form id="iffact" onsubmit="return false">
+        <table border="0" cellpadding="2" cellspacing="0" width="100%">
+            <tr><th colspan="2">Coordonnées du client</th><th align="right"><img src="img/close.gif" title="Fermer" onclick="$('idata_fact').hide()" /></th></tr>
+            <tr>
+                <td >Nom</td><td>[var.nomCliTbs;htmlconv=no]</td><td>&nbsp;</td>
+            <tr></tr>
+                <td >Adresse</td><td>[var.adr1Tbs;htmlconv=no]</td><td>&nbsp;</td>
+            </tr><tr>
+                <td >&nbsp;</td><td>[var.adr2Tbs;htmlconv=no]</td><td>&nbsp;</td>
+            </tr><tr>
+                <td >&nbsp;</td><td>[var.adr3Tbs;htmlconv=no]</td><td>&nbsp;</td>
+            </tr><tr>
+                <td >Code postal et ville</td><td>[var.adr4Tbs;htmlconv=no]</td><td>&nbsp;</td>
+            </tr><tr>
+                <td colspan="3" align="center"><button id="ibtn_enreg_fact" onclick="enreg_fact()">Valider</button>&nbsp;&nbsp;<button  id="ibtn_fact" style="display:none" onclick="print_fact()">Imprimer</button> <br /></td>
+            </tr>
+        </table>
+        </form>
     </div>
     <div id="idsaisie">
-		<form id="isaisie" autocomplete="off" onsubmit="return cherche()">N&deg; article : [var.idArtTbs;htmlconv=no] <button class="btn" onclick="return cherche()"> Chercher ! </button>&nbsp;&nbsp;<button class="btn" onclick="return paye(true);return false;"> Payer </button>&nbsp;&nbsp;
-			<button class="btn" onclick="cherche_desc();return false;"> ! </button> <span id="isp_cherchdesc" style="display:none"> Description <select style="position:absolute;margin-top:22px;witdh:150px;" id="isel_rechdesc" onchange="fill_id(this)"><option value="/" style="color#808080">Entrez la description</option></select><input type="text" value="" size="20" maxlength="200" id="iinp_rechdesc" style="witdh:150px" onkeyup="do_rechdesc(this)" /></span>
-		</form>
-	</div>
+        <form id="isaisie" autocomplete="off" onsubmit="return cherche()"><span style="font-size:1.3em">N&deg; article : [var.idArtTbs;htmlconv=no]</span> <button class="btn" onclick="return cherche()"><img src="img/forward.gif"> Chercher ! </button>&nbsp;&nbsp;<button class="btn" onclick="return paye(true);return false;"><img src="img/cash.gif" /> Payer </button>&nbsp;&nbsp;
+            <button class="btn" onclick="cherche_desc();return false;"><img src="img/search.gif" alt="Chercher par description" /></button> <span id="isp_cherchdesc" style="display:none"> Description <select style="position:absolute;margin-top:22px;witdh:150px;" id="isel_rechdesc" onchange="fill_id(this)"><option value="/" style="color#808080">Entrez la description</option></select><input type="text" value="" size="20" maxlength="200" id="iinp_rechdesc" style="witdh:150px" onkeyup="do_rechdesc(this)" /></span>
+        </form>
+    </div>
 </div>
 </div>
 <br/><br/><br/><br/><br/><br/>

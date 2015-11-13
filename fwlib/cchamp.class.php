@@ -804,7 +804,8 @@ class CChamp {
 	  case 'password':
 	    $fmt="onBlur='this.value=this.value.clrText();$onblur'";
 	    $sz_max="size=\"$size\" maxlength=\"$maxlen\"";
-	    $s .= "<input type=\"password\" name=\"".$this->name."\" id=\"{$this->id}\" value=\"$dflt\" $sz_max $more $fmt />";
+	    $attr = $this->obl? 'required="required"' :'';
+	    $s .= "<input type=\"password\" name=\"".$this->name."\" id=\"{$this->id}\" value=\"$dflt\" $sz_max $more $fmt $attr/>";
 	    break;
 
 	  // - - - - - - - - - - - - - - - - -
@@ -820,7 +821,8 @@ class CChamp {
 	        $rows = ceil($maxlen/56);
 					$cols = 56;
 				}
-	    $s .= "<textarea name=\"".$this->name."\" id=\"{$this->id}\" cols=\"$cols\" rows=\"$rows\" >$dflt</textarea>";
+	    $attr = $this->obl? 'required="required"' :'';
+	    $s .= "<textarea name=\"".$this->name."\" id=\"{$this->id}\" cols=\"$cols\" rows=\"$rows\" $attr>$dflt</textarea>";
 	    break;
 	  // - - - - - - - - - - - - - - - - -
 	  default:
@@ -836,9 +838,9 @@ class CChamp {
 	      case 'TXT':   $fmt .= "this.value=this.value.clrText();"; break;
 	    }
 	    $fmt .= $onblur.'"';
-
+	    $attr = $this->obl? 'required="required"' :'';
 	    $sz_max="size=\"$size\" maxlength=\"$maxlen\"";
-	    $s .= "<input type=\"text\" name=\"".$this->name."\" value=\"$dflt\" id=\"{$this->id}\" $sz_max $more $fmt />";
+	    $s .= "<input type=\"text\" name=\"".$this->name."\" value=\"$dflt\" id=\"{$this->id}\" $sz_max $more $fmt $attr />";
 	    break;
 	}
 	return $s;

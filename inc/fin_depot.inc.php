@@ -105,8 +105,9 @@ if (!$n) {
 	$msgTbs = "Il n'y a pas d'article enregistré pour ce dépot !";
 } else {
 	foreach($db->data as $r) {
-    	$pa = sprintf("%.02f &euro;", $r['prix_achat']);
-    	$articles[] = "<td><b>{$r['depot_iddepot']}-{$r['idarticle']}</b></td><td>".htmlentities($r['description'])."</td><td align='right'>{$pa}</td>";
+    	$pa = sprintf("%.02f &euro;", $r['prix_achat']);      // prix de cession
+        
+    	$articles[] = "<td><b>{$r['depot_iddepot']}-{$r['idarticle']}</b></td><td>".str_replace(array('à','é','è','ê','ë','î','ô','ù'), array('&agrave;','&eacute;','&egrave;','&ecric;','&euml;','&icirc;','&ocirc;','&ugrave;'), $r['description'])."</td><td align='right'>{$pa}</td>";
     }
 }
 

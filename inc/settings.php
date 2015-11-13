@@ -9,7 +9,7 @@
 
 // Paramètres d'accès à la DB mysql
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'bourse');
+define('DB_NAME', 'baj');
 define('DB_USER', 'root');
 define('DB_PWD', '');
 
@@ -25,8 +25,8 @@ define('LIST_RETRAIT_NB_EX',2);  // 1 ou 2
 //        NOTE 2 : Sous Unix/Linux veuillez à donner les droits d'accès à ce répertoire !
 // Si on veut utiliser les impression depuis le navigateur
 //    --> définir PDF_DIR : 0 (ou False)  OU NE PAS DEFINIR (en plaçant un # en tout début de ligne)
-# define('PDF_DIR', './spool_pdf/');     // crer des pdf dans le "votre bourse"/répertoire spool_pdf
-define('PDF_DIR', 0);     // impression directe depuis le navigateur
+define('PDF_DIR', './spool_pdf/');     // crer des pdf dans le "votre bourse"/répertoire spool_pdf
+#define('PDF_DIR', 0);     // impression directe depuis le navigateur
 
 
 // EoF
