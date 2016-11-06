@@ -5,7 +5,7 @@
  * @package CXLS
  * @author François VAN DE WEERDT
  * @copyright 2008
- * @version $Id: out_xls.php 469 2010-11-11 21:22:36Z francois $
+ * @version $Id$
  * @access public
  */
 class CXLS {

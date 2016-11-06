@@ -3,7 +3,7 @@
  * Include file: class User
  * 
  * @package User
- * @version $Revision: 187 $
+ * @version $Id$
  * @author unknown
  */
 if (defined("USER_CLASS_PHP")) return;

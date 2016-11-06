@@ -778,14 +778,17 @@ class CChamp {
 	    break;
 	  // - - - - - - - - - - - - - - - - -
 	  case 'radio':
+
 	    //$s="";
 	    foreach ($this->a_opt as $opt) {
-	      $v = $opt['val'];
-	      $s.= "<input type=\"radio\" name=\"".$this->name."\" value=\"$v\" id=\"".$this->name."_".$v."\"";
-	      $s.= ($dflt==$v)? " checked":"";
-	      $s.= " $more />".($opt['lbl']===false? $opt['val'] : $opt['lbl']);
-					$s .= '&nbsp;';
+			$v = $opt['val'];
+			$dom_id = $this->name."_".$v;
+			$s.= "<input type=\"radio\" name=\"{$this->name}\" value=\"$v\" id=\"{$dom_id}\"";
+			$s.= ($dflt==$v)? " checked":"";
+			$s.= " $more />".($opt['lbl']===false? $opt['val'] : $opt['lbl']);
+			$s .= '&nbsp;';
 	    }
+echo '<hr>'.$s.'<hr>';
 	    break;
 	  // - - - - - - - - - - - - - - - - -
 	  case 'checkbox' :
@@ -842,8 +845,8 @@ class CChamp {
 	    $sz_max="size=\"$size\" maxlength=\"$maxlen\"";
 	    $s .= "<input type=\"text\" name=\"".$this->name."\" value=\"$dflt\" id=\"{$this->id}\" $sz_max $more $fmt $attr />";
 	    break;
-	}
-	return $s;
+		}
+		return $s;
 	}
 		/**
 	* Produit une chaine HTML correspondant au controle demandé + formattage simple
@@ -862,6 +865,16 @@ class CChamp {
 	*/
 	function printFieldEx($label='',$more='',$onblur='') {
 		return "<label for=\"{$this->name}\">$label</label>".$this->printField($more,$onblur);
+	}
+
+	/**
+	 * Force la valeur à $val
+	 * 
+	 * @param mixed $val : la valeur à assigner
+	 */ 
+	function setVal($val)
+	{
+		$this->val = $val;
 	}
 
 	/**

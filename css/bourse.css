@@ -1,25 +1,25 @@
 body {
-	font-family: Verdana, Arial;
+    font-family: Verdana, Arial;
 }
 
 h1 { font-size:1.5em;  color:#202020; }
 h2  { font-size:1.3em; color:#202020; }
 a, a:active, a:visited {color:blue;}
-a:hover {text-decoration:none; background-color:black; color:White;	}
+a:hover {text-decoration:none; background-color:black; color:White; }
 form {
-	font-size:13px;
-	background-color:#FFFFFF;
+    font-size:13px;
+    background-color:#FFFFFF;
 }
 form p {
-	margin-top:2px;
-	margin-bottom:2px;
-	padding:0px;
+    margin-top:2px;
+    margin-bottom:2px;
+    padding:0px;
 }
 form fieldset legend {
-	font-size:15px;
-	font-weight:bold;
-	color:black;
-	background-color: transparent;
+    font-size:15px;
+    font-weight:bold;
+    color:black;
+    background-color: transparent;
 }
 form label{
    display: inline;
@@ -30,38 +30,38 @@ form label{
 }
 div.block {
     padding:10px;
-	margin:5px;
-	border:2px solid #909090;
-	-webkit-border-radius: 4px;
-	border-radius: 4px;
-	background-color:#f0f0f0;
+    margin:5px;
+    border:2px solid #909090;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    background-color:#f0f0f0;
 }
 
 
 div.menu {
     padding:10px;
-	margin:5px;
-	border:1px solid #a0a080;
-	background-color:#D0D0D0;
-	-webkit-border-radius: 4px;
-	border-radius: 4px;
+    margin:5px;
+    border:1px solid #a0a080;
+    background-color:#D0D0D0;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
 }
 
 div.assist{
-	border:2px solid #606060;
-	position:absolute;
-	background-color:#E0E0E0;
-	padding:0px;
+    border:2px solid #606060;
+    position:absolute;
+    background-color:#E0E0E0;
+    padding:0px;
 }
 div.assist ul {
-   	list-style:inside circle;
-	margin:2px;
-	padding:0px
+    list-style:inside circle;
+    margin:2px;
+    padding:0px
 }
 div.assist li {
-	background-color:White;
- 	cursor:pointer;
- 	margin:1px;
+    background-color:White;
+    cursor:pointer;
+    margin:1px;
 }
 div.assist li:hover {
   color:White;
@@ -111,49 +111,49 @@ div.lst_art span.hd {
 }
 
 @media print {
-	div.lst_art {
-		page-break-inside:avoid;
- 	}
-	div.lst_art table th {
-  		font-weight:bold;
-  		border:1px dotted #000;
-	}
+    div.lst_art {
+        page-break-inside:avoid;
+    }
+    div.lst_art table th {
+        font-weight:bold;
+        border:1px dotted #000;
+    }
 }
 
 
 fieldset {
-	border:2px solid #444;           
-	-webkit-border-radius: 4px;
-	border-radius: 4px;             
+    border:2px solid #444;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
     padding:6px;
-	-webkit-box-shadow: 3px 3px 3px 4px #888;
-	box-shadow: 3px 3px 3px 4px #888;
-    margin:6px 6px 20px 6px;        
+    -webkit-box-shadow: 2px 3px 2px 2px #aaa;
+    box-shadow: 2px 3px 2px 2px #aaa;
+    margin:6px 6px 20px 6px;
     background-color:#fff;
 }
 
 fieldset.main {
-	min-width: 200px;
+    min-width: 200px;
     min-height: 70px;
 }
 
 legend {
-	font-size:1.1em;
-    font-weight:bold;   
+    font-size:1.1em;
+    font-weight:bold;
     background-color: transparent;
     padding:4px;
 }
 
 table.list {
     padding:10px;
-	margin:5px;
-	border:1px dotted black;
-	font : 13px "Lucida Console" "Courrier New" Courrier;
-	width:100%;
+    margin:5px;
+    border:1px dotted black;
+    font : 13px "Lucida Console" "Courrier New" Courrier;
+    width:100%;
 }
 
 table.list tr{
-	background-color:#FFFFD0;
+    background-color:#FFFFD0;
 }
 table.list th {
   background-color:#909090;
@@ -176,8 +176,15 @@ table.list img:hover {
   background-color:#fff;
 }
 
+table.list img.no-action, table.list img.no-action:hover {
+  cursor:default;
+  border:none;
+  margin:none;
+}
+
+
 td {
-	background-color: White;
+    background-color: White;
 }
 
 form#isais_art, form#isais_art input, form#isais_art button,
@@ -191,16 +198,16 @@ form#ifpaye, form#ifpaye input, form#ifpaye button
 
 div.info {
     font : 13px "Lucida Console" "Courrier New" Courrier;
-	background-color:white;
-	border: solid 1px black;
-	width:460px;
-	position:absolute;
+    background-color:white;
+    border: solid 1px black;
+    width:460px;
+    position:absolute;
 }
 
 div.info th {
-	background-color:black;
-	font-weight:bold;
-	color:white;
+    background-color:black;
+    font-weight:bold;
+    color:white;
 }
 
 div.info th img {
@@ -208,40 +215,28 @@ div.info th img {
   border:0px none;
 }
 #somme {
-	font-size:1.5em;
-	border: 2px dotted #404040;
-	padding:2px;
-	margin:2px;
-	width:150px;
-	text-align:right;
-}
-#icouleur {
-	padding:2px;
-	position:absolute;
-	margin-left:3px;
-	margin-top:-2px;
-	background-color:White;
-	border:2px solid black;
-	width:81px;
+    font-size:1.5em;
+    border: 2px dotted #404040;
+    padding:2px;
+    margin:2px;
+    width:150px;
+    text-align:right;
 }
 
-#icouleur td {
-	cursor:pointer;
-}
 
 @media print {
-	h1 {display:none;}
-	.noprnt {display:none;}
-	.noscrn {display:block;}
-	button {display:none;}
-	table.list th{border:2px solid #B0B0B0}
-	table.list td{border-bottom:1px dotted #808080;}
-	div.menu {display:none;width:0px;height:0px;}
-	div.brk_after{page-break-after : always; } 
-	div.block {background-color:transparent;}
+    h1 {display:none;}
+    .noprnt {display:none;}
+    .noscrn {display:block;}
+    button {display:none;}
+    table.list th{border:2px solid #B0B0B0}
+    table.list td{border-bottom:1px dotted #808080;}
+    div.menu {display:none;width:0px;height:0px;}
+    div.brk_after{page-break-after : always; }
+    div.block {background-color:transparent;}
 }
 @media screen {
-	.noscrn {display:none;}
-	.noprnt {display:block;}
-	div.brk_after{}
+    .noscrn {display:none;}
+    .noprnt {display:block;}
+    div.brk_after{}
 }

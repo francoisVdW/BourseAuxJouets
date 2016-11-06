@@ -5,7 +5,7 @@
  * redesigned for PHP 5 (FVdW)  
  *
  * @package sql_class
- * @version $Revision: 469 $
+ * @version $Id$
  */
 
 /* - - - - - - - - - - - - - - - - - - - - - - -
@@ -195,13 +195,6 @@ class Cdb
 		}
 		//execute the query
 		if($this->debug) echo '<hr>'.__METHOD__."() SQL = <br />[<tt style='background-color:#FFFF60'>$query</tt>]<br />";
-/*
-		if (!$res = mysql_query($query,$this->link)) {
-			// case of error
-			$this->error(__METHOD__."() Error executing query\n\$query=[$query]\n", __LINE__);
-			return false;
-		}
-*/        
 		if (!$res = mysqli_query($this->link, $query)) {
 			// case of error
 			$this->error(__METHOD__."() Erreur mysqli à l'execution'\n\$query=[$query]\n", __LINE__);
@@ -229,9 +222,6 @@ class Cdb
 		if($res === false) {
 			if($this->transaction) {
 				// si transaction en cours ... RollBack
-/*                
-				mysql_query('ROLLBACK',$this->link);
-*/
 				mysqli_rollback($this->link);                
 				$this->transaction = false;
 			}
@@ -243,20 +233,11 @@ class Cdb
 		switch($kw) {
 			case 'show':
 			case 'select': 
-/*            
-				$nb=@mysql_num_rows($res);
-*/				
 				$nb = mysqli_num_rows($res);                
 				if($nb) {
 				    // recuperation info colonnes  
-/*                    
-				    $nb_fields = mysql_num_fields($res);
-*/
 					$nb_fields = mysqli_field_count($this->link);                    
   					for($i = 0; $i < $nb_fields; $i++) { 
-/*                    
-  					    $this->col_info[] = array('name'=>mysql_field_name($res, $i), 'len'=>mysql_field_len($res, $i), 'type'=>mysql_field_type($res,$i));
-*/                        
                     	$o = mysqli_fetch_field_direct ($res , $i);   
   					    $this->col_info[] = array('name'=>$o->name, 'len'=>$o->length, 'type'=>$o->type);
 					}
@@ -306,7 +287,7 @@ class Cdb
 		} 
 		// ajoute limite (si pas deja présente)
 		if(!preg_match('/\slimit\s[0-9]+/msi', $sql)) {
-			$sql .= ' LIMIT 0,1';
+			$sql .= ' LIMIT 1';
 		}
 				
 		$res = $this->do_mysql_query($sql);
@@ -315,9 +296,6 @@ class Cdb
 		$this->typeOfRequest = self::REQ_SELECT;
 		if(!$nb) return array();
 		// Attention, si +sieurs résultats, ne retourne QUE le 1er
-/*        
-		$this->data[0] = mysql_fetch_assoc($res);
-*/
 		$this->data[0] = mysqli_fetch_assoc($res);        
 		return $this->data[0];
 	}

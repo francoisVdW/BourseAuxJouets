@@ -3,7 +3,7 @@
  * Include file : Login des erreur
  *
  * @package bourse
- * @version $Revision: 187 $
+ * @version $Id$
  * @author FVdW
  * @filesource
  */
