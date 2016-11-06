@@ -5,18 +5,28 @@
     <title>[var.nomBourseTbs] : Gestion des participants</title>
 	<script type="text/javascript" src="js/prototype151.js"></script>
 	<script type="text/javascript" src="js/cchamp.js"></script>
+    <script type="text/javascript" src="js/sorttable.js"></script>
     <link rel="stylesheet" type="text/css" href="css/bourse.css" />
     <style type="text/css">
     table.t_part {
-		font-size:11px;
-	}
-    tr.alt {
-		background-color:#D0D0D0;
+		font-size:12px;
 	}
     table.t_part button {
 		font-size:12px;
 		width : 65px;
  	}
+	/* Sortable tables */
+	table.sortable thead {
+		cursor: default;
+		background-color:#444;
+		color:#fff;
+	}
+	table.sortable thead th:not(.sorttable_nosort):hover {
+		background-color:#000044;
+	}
+	table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
+		content: " \25B4\25BE" 
+	}
     </style>
 </head>
 <script type="text/javascript">
@@ -33,28 +43,36 @@ function supp(id){document.location.href="?st=[var..cst.S_EDIT_PART]&act=sup&idp
 </div>
 <h1>[var.nomBourseTbs]<br />Gestion des participants</h1>
 <div class="block">
-<table border="0" class="t_part" align="center">
-	<tr class='alt'><th width="120">Nom</th><th width="90">Prénom</th><th width="70">Nom de connexion</th><th>Permissions</th><td>&nbsp;</td></tr>
-	<tr ><td valign="top">[participantsTbs.nom;block=tr]</td><td valign="top">[participantsTbs.prenom]</td><td valign="top">[participantsTbs.login]</td>
-		<td><table id="it_perm">
-			<tr><td>Dépot</td><td>[participantsTbs.may_depot;if [val]==T;then OUI;else NON]</td></tr>
-			<tr><td>Caisse</td><td>[participantsTbs.may_caisse;if [val]==T;then OUI;else NON]</td></tr>
-			<tr><td>Restitution</td><td>[participantsTbs.may_retrait;if [val]==T;then OUI;else NON]</td></tr>
-			<tr><td>Gestion</td><td>[participantsTbs.may_gestion;if [val]==T;then OUI;else NON]</tr>
-			</table>
-		</td>
-		<td><button onclick="edit([participantsTbs.idparticipant])">Modifier</button><br  /><button onclick="supp([participantsTbs.idparticipant])">Supprimer</button></td>
-	</tr>
-	<tr class='alt'><td valign="top">[participantsTbs.nom;block=tr]</td><td valign="top">[participantsTbs.prenom]</td><td valign="top">[participantsTbs.login]</td>
-		<td><table id="it_perm">
-			<tr><td>Dépot</td><td>[participantsTbs.may_depot;if [val]==T;then OUI;else NON]</td></tr>
-			<tr><td>Caisse</td><td>[participantsTbs.may_caisse;if [val]==T;then OUI;else NON]</td></tr>
-			<tr><td>Restitution</td><td>[participantsTbs.may_retrait;if [val]==T;then OUI;else NON]</td></tr>
-			<tr><td>Gestion</td><td>[participantsTbs.may_gestion;if [val]==T;then OUI;else NON]</tr>
-			</table>
-		</td>
-		<td><button onclick="edit([participantsTbs.idparticipant])">Modifier</button><br  /><button onclick="supp([participantsTbs.idparticipant])">Supprimer</button></td>
-	</tr>	<tr><td colspan="5" align="center"><button onclick="document.location.href='?st=[var..cst.S_EDIT_PART]&act=add'">Ajouter</button></td></tr>
+<table border="0" class="t_part sortable" align="center">
+	<thead>
+		<tr>
+			<th style="width:130px;">Nom</th>
+			<th style="width:100px;">Prénom</th>
+			<th style="width:100px;">Nom de connexion</th>
+			<th style="width:130px;" class="sorttable_nosort">Permissions</th>
+			<th style="width:90px;" class="sorttable_nosort">&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr >
+			<td valign="top">[participantsTbs.nom;block=tr]</td>
+			<td valign="top">[participantsTbs.prenom]</td>
+			<td valign="top">[participantsTbs.login]</td>
+			<td><table id="it_perm">
+				<tr><td>Dépot</td><td>[participantsTbs.may_depot;if [val]==T;then OUI;else NON]</td></tr>
+				<tr><td>Caisse</td><td>[participantsTbs.may_caisse;if [val]==T;then OUI;else NON]</td></tr>
+				<tr><td>Restitution</td><td>[participantsTbs.may_retrait;if [val]==T;then OUI;else NON]</td></tr>
+				<tr><td>Gestion</td><td>[participantsTbs.may_gestion;if [val]==T;then OUI;else NON]</tr>
+				</table>
+			</td>
+			<td style="text-align:center">
+				<button onclick="edit([participantsTbs.idparticipant])">Modifier</button><br  /><button onclick="supp([participantsTbs.idparticipant])">Supprimer</button>
+			</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr><td colspan="5" align="center"><button onclick="document.location.href='?st=[var..cst.S_EDIT_PART]&act=add'">Ajouter</button></td></tr>
+	</tfoot>
 </table>
 </div>
 

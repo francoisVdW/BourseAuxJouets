@@ -14,7 +14,8 @@
     var nbArt=[var.nbArtTbs];
     var mntTtl=[var.sommeTbs];
     var idFact=0;
-
+	var hhStarted=[var.hhStartedTBS;ifempty=0];
+	var hhActive=0;
     function to_menu() {
         if(nbArt && !$('ibtn_annulvente').disabled) {
             if(!confirm("Des articles ont été enregistrés!\nVoulez-vous annuler cette vente")) return false;
@@ -29,7 +30,10 @@
     }
 
     function raz() {
-        if(!nbArt) return false;
+        if(!nbArt) {
+			document.location.href="?st=[var..cst.S_CAISSE]&id_vente=[var.id_vente]";
+			return false;
+		}
         if(!confirm("Des articles ont été enregistrés!\nVoulez-vous annuler cette vente")) return false;
         loading('Annulation en cours...')
         var param="op=anVente&id_vente=[var.id_vente]&ret=raz";
@@ -52,11 +56,11 @@
         var abtn = document.getElementsByClassName('btn', $('isaisie'));
         if(!actif) {
             $('[var.idIdArtTbs]').disabled=true;
-            asup.invoke("hide");
+            asup.invoke('hide');
             abtn.invoke('hide');
         } else {
             $('[var.idIdArtTbs]').disabled=false;
-            asup.invoke("show");
+            asup.invoke('show');
             abtn.invoke('show');
             $('bas').scrollTo();
             $('[var.idIdArtTbs]').focus();
@@ -64,13 +68,12 @@
             $('imode_pay').hide();
             $('idata_fact').hide();
         }
-}
+	}
 
     function somme() {
         var param="op=sommeArt&id_vente=[var.id_vente]";
         new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespSomme});
     }
-
 
     function cherche() {
         var idArt = $F('[var.idIdArtTbs]');
@@ -83,10 +86,14 @@
         }
         loading("Recherche article n&deg;"+idArt+"...");
         var param="op=lockArt&id_vente=[var.id_vente]&id_art="+idArt;
-        new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespLock});
+        if (hhActive) param += "&hh=1";
+        new Ajax.Request('serv_ajax.php', {
+                method:'post',
+                parameters:param,
+                onComplete:trtRespLock
+            });
         return false;
     }
-
 
     function unlock(id_art, silent){
         if (!silent)
@@ -95,8 +102,6 @@
         var param="op=unlockArt&id_vente=[var.id_vente]&id_art="+id_art;
         new Ajax.Request('serv_ajax.php', {method:'post', parameters:param, onComplete:trtRespUnlock});
     }
-
-
 
     function ctrl_paye(){
         var chq=parseFloat($F('[var.idMntChqTbs]'));
@@ -110,6 +115,7 @@
         $('ibtn_fin').disabled=false;
         return false;
     }
+
     function chk_vente(frm){
         if (!chkUnit(frm)) {
             alert_e(0);
@@ -171,6 +177,22 @@
             input.focus();
         }
     }
+
+    function show_desc() {
+        $("idiv_saie_l").hide();
+        $("idiv_saie_r").show();
+        $("isel_rechdesc").hide();
+        var input=$("iinp_rechdesc");
+        input.focus();
+        input.value = "";
+    }
+
+    function hide_desc() {
+        $("idiv_saie_l").show();
+        $("idiv_saie_r").hide();
+        var input = $('isp_cherchdesc');
+    }
+
     var searching=false;
     function do_rechdesc(field) {
         var v=field.value.clrText(1);
@@ -184,6 +206,7 @@
             // removeOption(sel, 1); // vide la select
         }
     }
+
     function trtRespRDesc(resp, json) {
         searching=false;
         if (json.a_err) {
@@ -211,12 +234,24 @@
         if (!f) return;
         var id = sel.options[sel.selectedIndex].value;
         if (!id || id=="/" || id=="") return;
-        $('isp_cherchdesc').hide();
-        $('iinp_rechdesc').value='';
+        hide_desc();
         f.value = id;
         cherche();
     }
+
+    function activate_hh(state) {
+		hhActive=state; 	// globale
+		$("idhh").hide();
+		$("iNUM_O_idart").focus();
+		if (hhActive) $("imghh").show();
+		else $("imgnohh").show();
+	}
     </script>
+    <style type="text/css">
+        form#isaisie input#iNUM_O_idart {
+            font-size:15px;
+        }
+    </style>
 </head>
 <body onload="aut_saisie(true);">
 
@@ -224,13 +259,13 @@
     <span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
     <button onclick="to_menu()"> Menu principal </button>
     <button onclick="raz()" id="ibtn_annulvente"> Annulation de la vente </button>
+    <span data="[var.hhStartedTBS;magnet=span]"><img src="img/hh.gif" id="imghh" style="display:none;margin-left: 10px; position: absolute;" /><img src="img/no_hh.gif" id="imgnohh" style="display:none;margin-left: 10px; position: absolute;" /></span>
 </div>
 <h1>CAISSE n&deg;[var.no_caisse] : Vente n&deg; [var.id_vente]</h1>
 <div class ="block">
     <table class="list" border="0" cellpadding="2" cellspacing="2">
     <tbody id="ilist">
-
-        <tr><th width="85">N&deg;</th><th width="30">&nbsp;</th><th>Description </th><th width="100">Prix</th></tr>
+        <tr><th style="width:85px">N&deg;</th><th style="width:30px">&nbsp;</th><th>Description </th><th style="width:130px">Prix</th></tr>
         <tr>[articlesTbs.val;block=tr;htmlconv=no;magnet=tr]</tr>
     </tbody>
     </table>
@@ -245,13 +280,55 @@
         <td><img  border="0" src="img/loading.gif" /></td><td id='itdmsg'></td>
     </tr></table></div>
 
+    <div id="idhh" class="info" data="[var.hhStartedTBS;magnet=div]" style="padding:8px">
+		<p><img src="img/hh.gif" />&nbsp;Activer le <em>Happy Hour</em> ?
+		<button onclick="activate_hh(true)"><img src="img/check.gif" >&nbsp;Oui</button>
+		&nbsp;
+		<button onclick="activate_hh(false)"><img src="img/stop.gif" >&nbsp;Non</button>
+		</p>
+	</div>
+
     <div id="iinfo"  class="info" style="display:none;">
+        <table border="0" cellpadding="2" cellspacing="4" width="100%">
+            <tr>
+				<th colspan="3" style="background-color:#208020">
+					Article trouvé <img src="img/close.gif" title="Annuler" onclick="annul_art()"  style="float:right;margin-right:6px"/>
+				</th>
+			</tr>
+            <tr style="background-color:#C0C0C0">
+				<td >N&deg;</td>
+				<td >Description</td><td>Prix</td>
+			</tr>
+            <tr>
+				<td id="info_n_art"></td><td id="info_desc_art"> </td>
+				<td><span id="info_prix_art"></span> <img src="img/hh.gif" style="display:none;margin-top:-10px" id="img_info_art_hh"></td>
+			</tr>
+            <tr>
+				<td colspan="3">&nbsp;</td>
+			</tr>
+            <tr>
+				<td colspan="3" style="border-top:1px solid black" align="center">
+					<button onclick="conf_art()" id="iconfirm"><img src="img/check.gif" /> OK </button><br />
+				</td>
+			</tr>
+        </table>
+    </div>
+    <div id="ivendu"  class="info" style="display:none;">
         <table border="0" cellpadding="2" cellspacing="0" width="100%">
-            <tr><th colspan="2">  Article trouvé</th><th align="right"><img src="img/close.gif" title="Annuler" onclick="annul_art()" /></th></tr>
-            <tr bgcolor="#C0C0C0"><td >N&deg;</td><td >Description</td><td>Prix</td></tr>
-            <tr><td id="info_n_art"></td><td id="info_desc_art"> </td><td id="info_prix_art"> </td></tr>
+            <tr><th colspan="3">  Article déjà vendu !<img src="img/close.gif" title="Annuler" onclick="$('ivendu').hide();$('iNUM_O_idart').focus();" style="float:right" /></th></tr>
+            <tr><td rowspan="2" style="vertical-align:middle;text-align:center;width:50px"><img src="img/warn.gif"></td><td style="width:80px">N&deg;</td><td >Description</td></tr>
+            <tr><td id="info_n_art_v"></td><td id="info_desc_art_v"> </td></tr>
             <tr><td colspan="3">&nbsp;</td></tr>
-            <tr><td colspan="3" style="border-top:1px solid black" align="center"><button onclick="conf_art()" id="iconfirm"><img src="img/check.gif" /> OK </button><br /></td></tr>
+            <tr><td colspan="3" style="border-top:1px solid black" align="center"><button onclick="$('ivendu').hide();$('iNUM_O_idart').focus();"><img src="img/refresh.gif" /> OK </button><br /></td></tr>
+        </table>
+    </div>
+    <div id="inotfound"  class="info" style="display:none;">
+        <table border="0" cellpadding="2" cellspacing="0" width="100%">
+            <tr><th colspan="3">  Article NON trouvé !<img src="img/close.gif" title="Annuler" onclick="$('inotfound').hide();$('iNUM_O_idart').focus();" style="float:right" /></th></tr>
+            <tr><td rowspan="2" style="vertical-align:middle;text-align:center;width:50px"><img src="img/warn.gif"></td><td id="info_txt"></td>
+            </tr>
+            <tr><td >&nbsp;</td></tr>
+            <tr><td colspan="3" style="border-top:1px solid black" align="center"><button onclick="$('inotfound').hide();$('iNUM_O_idart').focus();"><img src="img/refresh.gif" /> OK </button><br /></td></tr>
         </table>
     </div>
     <div id="imode_pay" class="info" style="display:none">
@@ -291,8 +368,19 @@
         </form>
     </div>
     <div id="idsaisie">
-        <form id="isaisie" autocomplete="off" onsubmit="return cherche()"><span style="font-size:1.3em">N&deg; article : [var.idArtTbs;htmlconv=no]</span> <button class="btn" onclick="return cherche()"><img src="img/forward.gif"> Chercher ! </button>&nbsp;&nbsp;<button class="btn" onclick="return paye(true);return false;"><img src="img/cash.gif" /> Payer </button>&nbsp;&nbsp;
-            <button class="btn" onclick="cherche_desc();return false;"><img src="img/search.gif" alt="Chercher par description" /></button> <span id="isp_cherchdesc" style="display:none"> Description <select style="position:absolute;margin-top:22px;witdh:150px;" id="isel_rechdesc" onchange="fill_id(this)"><option value="/" style="color#808080">Entrez la description</option></select><input type="text" value="" size="20" maxlength="200" id="iinp_rechdesc" style="witdh:150px" onkeyup="do_rechdesc(this)" /></span>
+        <form id="isaisie" autocomplete="off" onsubmit="return cherche()">
+            <div id="idiv_saie_l" style="">
+                <span style="font-size:1.3em">N&deg; article : [var.idArtTbs;htmlconv=no]</span>&nbsp;
+                <button class="btn" onclick="return cherche()"><img src="img/forward.gif"> Chercher ! </button>&nbsp;&nbsp;<button class="btn" onclick="return paye(true);return false;"><img src="img/cash.gif" /> Payer </button>&nbsp;&nbsp;
+                <button class="btn" onclick="show_desc();return false;"><img src="img/search.gif" alt="Chercher par description" /></button>
+            </div>
+            <div  id="idiv_saie_r" style="display:none">
+                <button class="btn" onclick="hide_desc();return false;"><img src="img/search.gif" alt="Chercher par description" /></button>
+                <span id="isp_cherchdesc">
+                    Description&nbsp;
+                    <select style="position:absolute;margin-top:17px;witdh:150px;font-size:14px;height:28px" id="isel_rechdesc" onchange="fill_id(this)"><option value="/" style="color#808080">Entrez la description</option></select><input type="text" value="" size="20" maxlength="200" id="iinp_rechdesc" style="witdh:150px" onkeyup="do_rechdesc(this)" />
+                </span>
+            </div>
         </form>
     </div>
 </div>

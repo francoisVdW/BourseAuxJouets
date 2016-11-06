@@ -35,26 +35,29 @@
     <fieldset><legend>D&eacute;p&ocirc;t</legend>
         <p id="a[var.mayDepotTbs;magnet=p]"><a href="?st=[var.eNouvDepotTbs]">Enregistrer des d&eacute;pots</a></p>
     </fieldset>
-
-    <fieldset><legend>Vente</legend>
-        <p id="b[var.mayCaisseTbs;magnet=p]">Caisses&nbsp;<img src="img/help.gif" border="0" style="cursor:pointer" title="Aide à propos des caisses" onclick="aide('caisse')">
-            <table border="0" cellspacing="0" cellpadding="3" id="iTblCaisse">
-              <tr>
-                <td width="40"><b>n&deg; [caisseTbs.num_caisse;block=tr;]</b></td>
-                <td><button onclick="document.location.href='[caisseTbs.action;magnet=button]'">[caisseTbs.lib]</button>&nbsp;</td>
-                <td><img src="[caisseTbs.stat;]" border="0" /></td>
-                <td class="detail">[caisseTbs.info;ifempty=&nbsp;]</td>
-              </tr>
-            </table>
-        </p>
-        <p id="d[var.mayGestionTbs;magnet=p]"><a href="?st=[var..cst.S_CLOTURE_VENTE]" title="Cloture des ventes">Cl&ocirc;ture des ventes &amp; listing</a></p>
-    </fieldset>
-
-    <fieldset><legend>Articles</legend>
-        <p><a href="?st=[var..cst.S_RECH_ART]" title="Recherche ">Recherche d'article</a></p>
-        <p><a href="?st=[var..cst.S_ARTICLE]" title="Recherche d'article, retour,...">Recherche d'article, retour,...</a></p>
-        <p><a href="?st=[var..cst.S_LST_RETOUR]" title="Liste des articles retournés">Liste des articles retournés</a></p>
-    </fieldset>
+	<div style="width:49%;margin-right:1%:display:inline-block;float:left">
+		<fieldset><legend>Vente</legend>
+			<p id="b[var.mayCaisseTbs;magnet=p]">Caisses&nbsp;<img src="img/help.gif" border="0" style="cursor:pointer" title="Aide à propos des caisses" onclick="aide('caisse')">
+				<table border="0" cellspacing="0" cellpadding="3" id="iTblCaisse">
+				  <tr>
+					<td width="40"><b>n&deg; [caisseTbs.num_caisse;block=tr;]</b></td>
+					<td><button onclick="document.location.href='[caisseTbs.action;magnet=button]'">[caisseTbs.lib]</button>&nbsp;</td>
+					<td><img src="[caisseTbs.stat;]" border="0" /></td>
+					<td class="detail">[caisseTbs.info;ifempty=&nbsp;]</td>
+				  </tr>
+				</table>
+			</p>
+			<p id="d[var.mayGestionTbs;magnet=p]"><a href="?st=[var..cst.S_CLOTURE_VENTE]" title="Cloture des ventes">Cl&ocirc;ture des ventes &amp; listing</a></p>
+		</fieldset>
+	</div>
+	<div style="width:49%;margin-right:1%:display:inline-block;float:left">
+		<fieldset><legend>Articles</legend>
+			<p><a href="?st=[var..cst.S_RECH_ART]" title="Recherche ">Recherche d'article</a></p>
+			<p><a href="?st=[var..cst.S_ARTICLE]" title="Recherche d'article, retour,...">Recherche d'article, retour,...</a></p>
+			<p><a href="?st=[var..cst.S_LST_RETOUR]" title="Liste des articles retournés">Liste des articles retournés</a></p>
+		</fieldset>
+	</div>
+	<div style="clear:both"></div>
 
     <fieldset><legend>Restitution</legend>
         <p id="c[var.mayRetraitTbs;magnet=p]"><a href="?st=[var..cst.S_RETRAIT]">Restitution</a></p>

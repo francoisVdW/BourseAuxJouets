@@ -12,8 +12,43 @@
      }
      tbody#ilist td.price:after {
          font-size:0.9em;
-         content:"€";
+         content:" €";
      }
+     table#itbl_sais_art {
+         margin: 0 10px;
+         font-size:14px;
+     }
+     table#itbl_sais_art td {
+         padding: 2px 0;
+         vertical-align:middle;
+     }
+     table#itbl_sais_art td.lbl {
+         text-align:right;
+     }
+     table#itbl_sais_art td input,
+     table#itbl_sais_art td select {
+            font-size:14px;
+     }
+
+     fieldset#ifs_label {
+         padding : 2%;
+         background-color:#FFFFA0;
+         font-size:22px;
+         vertical-align:middle;
+     }
+    #icouleur {
+        padding:2px;
+        position:absolute;
+        margin-left:280px;
+        margin-top:-2px;
+        background-color:White;
+        border:2px solid black;
+        width:81px;
+    }
+
+    #icouleur td {
+        cursor:pointer;
+    }
     </style>
     <title>Bourse : dépot</title>
     <link rel="stylesheet" type="text/css" href="css/bourse.css" />
@@ -25,9 +60,13 @@
 
     function loading(msg) {
         if(msg) {
-            $('itdmsg').update(msg);
-            $("imsg").show();
-        } else $("imsg").hide();
+            $('ispn_msg').update(msg);
+            $("ifs_msg").show();
+            $("ifs_sais_art").hide();
+        } else {
+            $("ifs_msg").hide();
+            $("ifs_sais_art").show();
+        }
     }
     function rnd(m) {
         m = Math.round(m*100);
@@ -68,7 +107,7 @@
         var pv = $('[var.idPvTbs]');
         var prix_achat=rnd(pv.value -(pv.value * [var.margeTbs]) );
         pa.value = prix_achat;
-        $('isp_pa').update("Achat: "+prix_achat+" &euro;");
+        $('itd_pa').update(prix_achat+" &euro;");
         pv.value=rnd(pv.value);
         return false;
     }
@@ -76,13 +115,14 @@
     function clr_form() {
         $('[var.idPrev_id_artTbs]').value="";
         $('[var.idCouleursTbs]').value = "";
+        $('[var.idHappy_hourTbs]').value = "0";
         $('iBtnCoul').style.backgroundColor = "";
         $('icouleur').hide();
         with ($('isais_art')){reset(); scrollTo();}
         $('[var.idDescTbs]').focus();
         $('[var.idDescTbs]').value="";
-        $('[var.idPvTbs]').value="0.00";
-        $('isp_pa').update("&nbsp;")
+        $('[var.idPvTbs]').value="";
+        $('itd_pa').update("&hellip;")
         $('ilegend').update('Nouvel article');
     }
 
@@ -97,9 +137,15 @@
         return false;
     }
 
-    function list_art(json) {
-      var bgcol="background-color:"+json.code_couleur;
-      return "<tr id=\"a"+json.id_art+"\"><td style=\""+bgcol+"\"><b>"+json.id_depot+"-"+json.id_art+"</b></td><td class='price'>"+json.MNT_O_pv+"</td><td>"+json.TXT_O_desc+"</td><td class='price'>"+json.HID_O_pa+"</td><td><img src='img/edit.gif' onclick='modif("+json.id_art+")' title='Modifier' /><img src='img/del.gif' onclick='suppr("+json.id_art+")' title='Supprimer' /></td></tr>";
+	function list_art(json) {
+		var bgcol="background-color:"+json.code_couleur;
+		var hh_img;
+		
+		if (typeof json.SEL_L_happy_hour != undefined && json.SEL_L_happy_hour) 
+			hh_img = "<img src=\"img/hh.gif\" class=\"no-action\" />";
+		else 
+			hh_img = "&nbsp;";
+		return "<tr id=\"a"+json.id_art+"\"><td style=\""+bgcol+"\"><b>"+json.id_depot+"-"+json.id_art+"</b></td><td class='price'>"+json.MNT_O_pv+"</td><td>"+json.TXT_O_desc+"</td><td>"+hh_img+"</td><td class='price'>"+json.HID_O_pa+"</td><td><img src='img/edit.gif' onclick='modif("+json.id_art+")' title='Modifier' /><img src='img/del.gif' onclick='suppr("+json.id_art+")' title='Supprimer' /></td></tr>";
     }
 
     function enreg() {
@@ -127,6 +173,7 @@
             var sArt = list_art(json);
             var x = new Insertion.Bottom("ilist", sArt);
             nbArt = nbArt+1;
+            show_label(json);
             clr_form();
         }
     }
@@ -152,7 +199,8 @@
             $('[var.idPaTbs]').value=json.MNT_O_pa;
             $('[var.idPvTbs]').value=json.MNT_O_pv;
             $('[var.idPrev_id_artTbs]').value=json.id_art;
-            $('iBtnCoul').style.backgroundColor = json.code_couleur;
+            $('[var.idHappy_hourTbs]').value=json.happy_hour;
+            $('iBtnCoul').style.backgroundColor = json.code_couleur;            
             $('[var.idCouleursTbs]').value = json.code_couleur;
             $('ilegend').update('Modification article n&deg '+json.id_art);
         }
@@ -168,6 +216,32 @@
             // alert("Modification enregistrée");
             clr_form();
         }
+    }
+
+    function show_label(js_obj_art)
+    {
+        $("ispn_label_art_num").update(js_obj_art.id_depot + '-' + js_obj_art.id_art);
+        $("ispn_label_art_price").update(js_obj_art.MNT_O_pv + " &euro;");
+        
+        if (js_obj_art.SEL_L_happy_hour) $("ispn_label_art_happy_hour").show();
+        else $("ispn_label_art_happy_hour").hide();
+
+        var div_label = $("ifs_label");
+        if (!div_label) {alert("Erreur DOM #ifs_label"); return false;}
+        var fs_sais_art = $("ifs_sais_art");
+        if (!fs_sais_art) {alert("Erreur DOM #ifs_sais_art"); return false;}
+        div_label.setStyle({minHeight:fs_sais_art.getHeight()});
+        fs_sais_art.hide();
+        div_label.show();
+
+        setTimeout('show_sais_art()', 15000);
+
+    }
+    function show_sais_art()
+    {
+        $("ifs_label").hide();
+        $("ifs_sais_art").show();
+        $("iTXT_O_desc").focus();
     }
 
     function suppr(id){
@@ -216,7 +290,7 @@
     }
     </script>
 </head>
-<body onload="$('[var.idDescTbs]').focus();$('ispdesc').makePositioned();">
+<body onload="$('[var.idDescTbs]').focus();">
 <div class="menu">
     <span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
     <button onclick="to_menu()"> Menu principal </button>
@@ -241,40 +315,63 @@
             <th style="width:90px;">N&deg;</th>
             <th style="width:90px;font-size:0.9em">Prix vente</th>
             <th>Description </th>
+            <th style="width:40px;">&nbsp;</th>
             <th style="width:90px;font-size:0.9em">Prix achat</th>
             <th style="width:90px;">&nbsp;</th>
         </tr>
         <tr>[articlesTbs.val;block=tr;htmlconv=no;magnet=tr]</tr>
     </tbody>
     </table>
-    <form name="sais_art" id="isais_art"><fieldset ><legend id="ilegend">Nouvel article</legend>
-    <table border="0">
-        <tr>
-            <td style="width:400px">
-                <div id="imsg" style='position:absolute;width:300px;border:solid 2px #909090;background-color:#F0F0F0;display:none;font-size:1.2em;padding:15px;'><table border="0"><tr >
-                    <td><img  border="0" src="img/loading.gif" /></td><td id='itdmsg'></td>
-                </tr></table></div>
-                <span id="ispdesc">Description [var.descTbs;htmlconv=no;]
-                </span>
-            </td>
-            <td style="text-align:center" rowspan="3" >
-                <button onclick="return enreg()" style="font-weight:bold;color:green;" tabindex="3"><img src="img/check.gif" alt="" title="" /> OK</button>&nbsp;&nbsp;
-                <button onclick="return annul()" style="color:red;"><img src="img/close_delete.gif" alt="" title="" /> Annuler</button>&nbsp;&nbsp;
-            </td>
-        </tr><tr>
-            <td >
-                Prix de Vente: [var.pvTbs;htmlconv=no;] &euro;&nbsp;
-                <img src="img/calc.gif" onclick="return calc()" title="Calculer" border="0" style="cursor:pointer"/>&nbsp;&nbsp;
-                <span id="isp_pa">&nbsp;&nbsp;</span>
-            </td>
-        </tr><tr>
-            <td>
-                <div id="icouleur" style="display:none;">[var.sTblCouleurs;htmlconv=no;]</div>
-                <button id="iBtnCoul" onclick="$('icouleur').toggle();return false">Couleur</button>
-            </td>
-        </tr>
-    </table>
-    </fieldset>[var.prev_id_artTbs;htmlconv=no][var.couleursTbs;htmlconv=no]</form>
+    <form name="sais_art" id="isais_art">
+        <fieldset id="ifs_sais_art"><legend id="ilegend">Nouvel article</legend>
+            <table border="0" id="itbl_sais_art">
+                <tr>
+                    <td class="lbl">
+                        Description :
+                    </td>
+                    <td>
+                        [var.descTbs;htmlconv=no;]&nbsp;
+                        <div id="icouleur" style="display:none;">[var.sTblCouleurs;htmlconv=no;]</div>
+                        <button id="iBtnCoul" onclick="$('icouleur').toggle();return false">Couleur</button>
+                    </td>
+                    <td style="text-align:center;padding:20px" rowspan="3" >
+                        <button onclick="return enreg()" style="font-weight:bold;color:green;" tabindex="4"><img src="img/check.gif" alt="" title="" /> OK </button>&nbsp;&nbsp;
+                        <button onclick="return annul()" style="color:red;"><img src="img/close_delete.gif" alt="" title="" /> Annuler </button>&nbsp;&nbsp;
+                    </td>
+                </tr><tr>
+                    <td class="lbl">
+                        <em>Happy Hour</em> :
+                    </td>
+                    <td>
+							[var.happyhourTbs;htmlconv=no;magnet=tr]
+					</td>
+                </tr><tr>
+                    <td class="lbl">
+                        Prix de Vente :
+                    </td>
+                    <td>
+                        [var.pvTbs;htmlconv=no;] &euro; <button onclick="return calc()" title="Calculer le prix d'achat" ><img src="img/calc.gif" style="height:22px"/></button>
+                    </td>
+                </tr><tr>
+                    <td class="lbl">Prix d'achat :</td>
+                    <td id="itd_pa" style="padding-left:20px;">&hellip;</td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset id="ifs_msg" style="display:none">
+            <div style="padding:5%;text-align:center">
+                <img  border="0" src="img/loading.gif" />
+                <span id="ispn_msg"></span>
+            </div>
+        </fieldset>
+        <fieldset id="ifs_label" style="display:none"><legend>Etiquette</legend>
+            <span id="ispn_label_art_num" style="padding-right:40px"></span>
+            <span id="ispn_label_art_price"></span> &nbsp; &nbsp; <span id="ispn_label_art_happy_hour" style="display:none;"><img src="img/hh_big.png" />  Happy Hour !</span>
+            <div style="padding:5px;text-align:center"><button onclick="show_sais_art();return false;"><img src="img/check.gif" alt="" title="" /> OK </button></div>
+        </fieldset>
+
+        [var.prev_id_artTbs;htmlconv=no][var.couleursTbs;htmlconv=no]
+    </form>
     <div align="center">
         <button onclick="return cloture()" style="font-size:1.2em"> Cloture du dépot </button>
     </div>

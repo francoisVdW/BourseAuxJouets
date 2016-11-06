@@ -110,25 +110,47 @@
 
 <div class="noprnt">
 <div class="block" >
-    <div id="imsg" style='position:absolute;width:300px;border:solid 2px #909090;background-color:#F0F0F0;display:none;font-size:1.2em;padding:15px;'><table border="0"><tr >
-        <td><img  border="0" src="img/loading.gif" /></td><td id='itdmsg'></td>
-    </tr></table>
+    <div id="imsg" style='position:absolute;width:300px;border:solid 2px #909090;background-color:#F0F0F0;display:none;font-size:1.2em;padding:15px;'>
+		<table border="0">
+			<tr >
+				<td><img  border="0" src="img/loading.gif" /></td>
+				<td id='itdmsg'></td>
+			</tr>
+		</table>
     </div>
     <div id="iinfo"  class="info" style="display:none;">
         <table border="0" cellpadding="2" cellspacing="0" width="100%">
-            <tr><th colspan="2">  Article trouvé</th><th align="right"><img src="img/close.gif" title="Annuler" onclick="annul_art()" /></th></tr>
-            <tr bgcolor="#C0C0C0"><td >N&deg;</td><td >Description</td><td>Prix</td></tr>
-            <tr><td id="info_n_art"></td><td id="info_desc_art"> </td><td id="info_prix_art"> </td></tr>
-            <tr><td colspan="3">&nbsp;</td></tr>
-            <tr><td colspan="3" style="border-top:1px solid black" align="center"><button onclick="conf_art()" id="iconfirm"> OK </button><br /></td></tr>
+            <tr>
+				<th colspan="2">  Article trouvé</th>
+				<th align="right"><img src="img/close.gif" title="Annuler" onclick="annul_art()" /></th>
+			</tr>
+            <tr bgcolor="#C0C0C0">
+				<td >N&deg;</td>
+				<td >Description</td>
+				<td>Prix</td></tr>
+            <tr>
+				<td id="info_n_art"></td>
+				<td id="info_desc_art"> </td>
+				<td id="info_prix_art"> </td>
+			</tr>
+            <tr>
+				<td colspan="3">&nbsp;</td>
+			</tr>
+            <tr>
+				<td colspan="3" style="border-top:1px solid black" align="center">
+					<button onclick="conf_art()" id="iconfirm"> OK </button><br />
+				</td>
+			</tr>
         </table>
     </div>
 
     <div id="idsaisie">
 		<p>Chercher un article &hellip;</p>
-        <form id="isaisie" autocomplete="off"  onsubmit="return cherche()">N&deg; article : [var.idArt.printField;htmlconv=no] <button class="btn" onclick="return cherche()"> Chercher </button>&nbsp;&nbsp;
-            <!-- button class="btn" onclick="cherche_desc();return false;"> Chercher par la description </button> <span id="isp_cherchdesc" style="display:none"> Description <select style="position:absolute;margin-top:22px;witdh:150px;" id="isel_rechdesc" onchange="fill_id(this)"><option value="/" style="color#808080">Entrez la description</option></select><input type="text" value="" size="20" maxlength="200" id="iinp_rechdesc" style="witdh:150px" onkeyup="do_rechdesc(this)" /></span -->
-            <button onclick="document.location.href='index.php?st=[onshow..cst.S_RECH_ART]';return false"> Chercher par la description </button>
+        <form id="isaisie" autocomplete="off"  onsubmit="return cherche()">
+			N&deg; article : [var.idArt.printField;htmlconv=no]
+			<button class="btn" onclick="return cherche()"><img src="img/search.gif"> Chercher </button>
+			&nbsp;&nbsp;
+            <button onclick="document.location.href='index.php?st=[onshow..cst.S_RECH_ART]';return false"><img src="img/search_plus.gif"> Chercher par la description </button>
         </form>
     </div>
 </div>
