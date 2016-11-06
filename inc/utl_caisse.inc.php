@@ -3,7 +3,7 @@
  * fonction communes page html & ajax pour caisse
  *
  * @package bourse
- * @version $Revision: 187 $
+ * @version $Id$
  * @author FVdW
  */
 if(defined('UTL_CAISSE')) return;
@@ -40,26 +40,60 @@ function ajax_lock_art()
     } elseif (!isset($_POST['id_vente']) || !is_numeric($_POST['id_vente'])) {
         $aRetValue['a_err'] = "/; POST[id_vente] invalide [{$_POST['id_vente']}]";
         logInfo("_POST['id_vente'] invalide ou non defini [{$_POST['id_vente']}]",__FILE__,__LINE__);
-    } else {
+    } else {      
+		$hh = empty($_POST['hh'])? false :true;
+		$set = "vente_idvente={$_POST['id_vente']}"; // prepare pose du lock
         // pose du lock
-        $sql = "UPDATE article SET vente_idvente={$_POST['id_vente']} WHERE idarticle={$_POST['id_art']} AND (vente_idvente IS NULL OR vente_idvente=0) AND NOT EXISTS (select 1 from depot where iddepot=article.depot_iddepot and date_retrait is not null )";
+        if (!$hh) {
+			// La caisse NE demande PAS d'appliquer happy hour 
+			$set .= ", prix_vente=prix_vente_ori, prix_achat=prix_achat_ori";
+		} else {
+			// La caisse demande d'appliquer happy hour 
+			//   --> article concerné ?
+			$article_is_hh = false;
+			$sql2 = "SELECT happy_hour FROM article WHERE idarticle={$_POST['id_art']}";
+			$r = $db->select_one($sql2);
+            if($r) {
+                $article_is_hh = empty($r['happy_hour'])? false:true;
+            } else {
+                // ERREUR ! ne retrouve pas l'article !
+                logInfo("Erreur article non trouvé pour id_art={$_POST['id_art']}, uid={$_SESSION['uid']}\n\$sql=$sql2",__FILE__, __LINE__);
+                $aRetValue['a_err'] = '/;Erreur Soft ! (voir log)';
+            }
+            if ($article_is_hh) {
+				// Appliquer happy hour : - 1-la caisse applique le happy hour cf POST[hh]   - 2-l'article est concerné
+				$set .= ", prix_vente=prix_vente_ori-(prix_vente_ori * {$_SESSION['bourse']['hh_rate']}), prix_achat=prix_achat_ori-(prix_achat_ori * {$_SESSION['bourse']['hh_rate']})";
+			} else {
+				// Ne pas appliquer
+				$set .= ", prix_vente=prix_vente_ori, prix_achat=prix_achat_ori";
+			}
+		}
+		$sql = "UPDATE article SET {$set} WHERE idarticle={$_POST['id_art']} AND IFNULL(vente_idvente,0)=0 AND NOT EXISTS (select 1 from depot where iddepot=article.depot_iddepot and date_retrait IS NOT NULL)";
         $n = $db->query($sql);
         if(!$n) {
             // pas de lock posé : verifie existance de l'article
             $sql = "SELECT * FROM article WHERE idarticle={$_POST['id_art']}";
             $r = $db->select_one($sql);
-            if($r) {
-                if($db->data[0]['vente_idvente']) {
+            if(!empty($r)) {
+                if($r['vente_idvente']) {
                     $aRetValue['a_err'] = "/;Attention cet article est deja vendu !\narticle {$db->data[0]['depot_iddepot']}-{$_POST['id_art']} : {$db->data[0]['description']}";
                 } else {
                     $aRetValue['a_err'] = "/;Attention cet article a ete retire !\narticle {$db->data[0]['depot_iddepot']}-{$_POST['id_art']} : {$db->data[0]['description']}";
                 }
+                // Article vendu ou retiré : messag d'erreur valorisé, on ajoute les info dans le JSON
+                $aRetValue['op'] = 'searchArt'; // indique aux JS : retour read
+                $aRetValue['id_art'] = $_POST['id_art'];
+                $aRetValue['id_depot'] = $r['depot_iddepot'];
+                $aRetValue['code_couleur'] = $r['code_couleur']? $r['code_couleur']:'white';
+                $aRetValue['description'] = stripslashes(utf8_encode($r['description']));
+                $aRetValue['prix_vente'] = sprintf("%.02f",$r['prix_vente']);
+                $aRetValue['prix_vente_ori'] = sprintf("%.02f",$r['prix_vente_ori']);
             } else {
                 $aRetValue['a_err'] = "/;Pas d'article trouve sous le n° {$_POST['id_art']}";
             }
         } elseif($n == 1) {
             // OK article 'locké' (réservé)
-            $sql = "SELECT * FROM article WHERE idarticle={$_POST['id_art']} AND vente_idvente={$_POST['id_vente']}";
+            $sql = "SELECT depot_iddepot, code_couleur,description,prix_vente,prix_vente_ori FROM article WHERE idarticle={$_POST['id_art']} AND vente_idvente={$_POST['id_vente']}";
             $r = $db->select_one($sql);
             if($r) {
                 $aRetValue['op'] = 'searchArt'; // indique aux JS : retour read
@@ -68,6 +102,8 @@ function ajax_lock_art()
                 $aRetValue['code_couleur'] = $r['code_couleur']? $r['code_couleur']:'white';
                 $aRetValue['description'] = stripslashes(utf8_encode($r['description']));
                 $aRetValue['prix_vente'] = sprintf("%.02f",$r['prix_vente']);
+                $aRetValue['apply_happy_hour'] = ($hh && $article_is_hh)? true : false;
+                $aRetValue['prix_vente_ori'] = sprintf("%.02f",$r['prix_vente_ori']);
             } else {
                 // ERREUR ! lock posé mais ne retrouve pas l'article !
                 logInfo("Erreur indeterminée !\nid_art={$_POST['id_art']}, \nid_vente={$_POST['id_vente']} uid={$_SESSION['uid']}\n\$sql=$sql",__FILE__, __LINE__);
@@ -97,9 +133,8 @@ function ajax_unlock_art()
         $aRetValue['a_err'] = "/; POST[id_vente] invalide [{$_POST['id_vente']}]";
         logInfo("_POST['id_vente'] invalide ou non defini [{$_POST['id_vente']}]",__FILE__,__LINE__);
     } else {
-
         // retire le lock
-        $sql = "UPDATE article SET vente_idvente=0 WHERE idarticle={$_POST['id_art']} AND vente_idvente={$_POST['id_vente']}";
+        $sql = "UPDATE article SET vente_idvente=0, prix_vente=prix_vente_ori, prix_achat=prix_achat_ori WHERE idarticle={$_POST['id_art']} AND vente_idvente={$_POST['id_vente']}";
         $n = $db->query($sql);
 
         if(!$n) {
@@ -342,7 +377,7 @@ function ajax_rech_desc()
         $pat = str_replace("'", "\\'", utf8_decode(trim($_POST['pat'])));
 
         // recherche simple
-        $sql = "SELECT idarticle, description, vente_idvente FROM article WHERE description LIKE '$pat%'";
+        $sql = "SELECT idarticle, description, depot_iddepot, vente_idvente FROM article WHERE description LIKE '$pat%'";
         $n = $db->query($sql);
         if(!$n) {
             // 2e tentative tous les mots dans l'ordre
@@ -365,8 +400,8 @@ function ajax_rech_desc()
             if($n==1) $a[] = "/==Un article trouve";
             else $a[] = "/==$n articles trouves";
             foreach ($db->data as $r) {
-                if($r['vente_idvente'] && $strict) $a[]= "/==".utf8_encode($r['description'])." (Vendu)";
-                else $a[]= $r['idarticle']."==".utf8_encode($r['description']);
+                if($r['vente_idvente'] && $strict) $a[]= "/==".$r['depot_iddepot'].'-'.$r['idarticle'].' : '.utf8_encode($r['description'])." ( Vendu !)";
+                else $a[]= $r['idarticle']."==".$r['depot_iddepot'].'-'.$r['idarticle'].' : '.utf8_encode($r['description']);
             }
             $aRetValue['opts']= join(';;',$a);
             $aRetValue['nb_opts']=$n+1;

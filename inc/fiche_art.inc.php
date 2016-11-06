@@ -4,7 +4,7 @@
  * 
  * @package: bourse
  * @author : FVdW
- * @version $Revision: 187 $
+ * @version $Id$
  *
  */
 // require_once 'inc/utl_article.inc.php';
@@ -30,7 +30,7 @@ function rech_art($idArt)
 	global $db;
 	$aRetValue = array();
 	
-	$sql = "SELECT a.code_couleur, a.description, a.idarticle, a.prix_achat, a.prix_vente, 
+	$sql = "SELECT a.code_couleur, a.description, a.idarticle, a.prix_achat, a.prix_vente, a.prix_vente_ori, a.happy_hour,
 	d.date_depot, d.date_retrait, d.iddepot, d.date_retrait,
 	dd.nom, dd.prenom, dd.tel, dd.email,
 	v.date_vente, p1.nom AS part_vente, v.idvente,
@@ -78,6 +78,9 @@ AND d.idparticipant_depot=p2.idparticipant";
     $aRetValue['date_retour'] = $db->date2str($r['date_retour'],1);
     $aRetValue['part_retour'] = $r['part_retour'];
     $aRetValue['motif_retour'] = stripcslashes($r['motif_retour']);
+    $aRetValue['happy_hour'] = $r['happy_hour']? " Happy Hour ". ($_SESSION['bourse']['hh_rate']*100) . "%" : null;
+    
+    
     
     return $aRetValue;	
 }
@@ -253,4 +256,4 @@ while($cnt < 3) {
 }
 $sTblCouleurs .= "</tr></table>\n";
 
-?>
+

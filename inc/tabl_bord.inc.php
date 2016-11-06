@@ -5,7 +5,7 @@
  *
  * @package: bourse
  * @author : FVdW
- * @version $Revision: 187 $
+ * @version $Id$
  *
  */
 
@@ -29,9 +29,10 @@ for($i=1; $i <= $_SESSION['bourse']['nombre_caisse']; $i++){
 }
 foreach($db->data as $r) {
   $aCaisse[$r['no_caisse']]['img'] = 'img/rouge.gif';
-  $aCaisse[$r['no_caisse']]['comment'] = 'En activité depuis '.Cdb::date2str($r['login_date'],true). ' sur IP:<i>'.$r['ip'].'</i>';
+  $aCaisse[$r['no_caisse']]['comment'] = 'En activité depuis '.$db->date2str($r['login_date'],true). ' sur IP:<i>'.$r['ip'].'</i>';
 }
 $TBS->MergeBlock('caisseTbs','array', $aCaisse);
+
 
 /** nbre de ventes/articles
 */
@@ -72,5 +73,13 @@ $nbDepotRestant = $nbDepot - $nbSolde;
 if($nbDepot) $pcSoldeTbs = round(($nbSolde * 100) / $nbDepot,0);
 else $pcSoldeTbs = 0;
 $pcDepotRestantTbs = 100-$pcSoldeTbs;
+
+if (!empty($_SESSION['bourse']['hh_start_date'])) {
+	$hhRateTbs = $_SESSION['bourse']['hh_rate']*100;
+	$hhStartDateTbs = $_SESSION['bourse']['hh_start_date'];
+} else {
+	$hhRateTbs = false;
+	$hhStartDateTbs = false;
+}
 
 ?>

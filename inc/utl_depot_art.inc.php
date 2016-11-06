@@ -5,7 +5,7 @@
  * Page de saisie des depots
  *
  * @package bourse
- * @version $Revision: 187 $
+ * @version $Id$
  * @author FVdW
  */
 if(defined('UTL_DEPOT_ART')) return;
@@ -18,6 +18,7 @@ $description	= new CChamp('TXT_O_desc', '', 255);
 $prix_achat		= new CChamp('HID_O_pa');
 $prix_vente		= new CChamp('MNT_O_pv',0,'','0.10|500');
 $prev_id_art    = new CChamp('HID_L_id_art');
+$happy_hour     = new CChamp('SEL_L_happy_hour', 0, 0, '0=Non|1=Oui');
 $code_couleur   = new CChamp('SEL_L_couleur', 'White',0,$_SESSION['optCouleur'] );
 
 /**
@@ -30,14 +31,18 @@ function save_art($insert)
 {
 	global $db;
 	$aRetValue = array();
-	global $description, $prix_achat, $prix_vente, $code_couleur, $prev_id_art;
+	global $description, $prix_achat, $prix_vente, $happy_hour, $code_couleur, $prev_id_art;
 	if (!$description->chkPost()) 		return array('a_err'=>$description->getErr());
 	elseif (!$prix_achat->chkPost()) 	return array('a_err'=>$prix_achat->getErr());
 	elseif (!$prix_vente->chkPost()) 	return array('a_err'=>$prix_vente->getErr());
 	elseif (!$code_couleur->chkPost()) 	return array('a_err'=>$code_couleur->getErr());
 	elseif (!is_numeric($_POST['id_depot'])) return array('a_err'=>"/;Erreur soft id_depot invalide ({$_POST['id_depot']})");
 	elseif (!is_numeric($prix_achat->getVal()) ) return array('a_err'=>"/;Erreur soft pa invalide (".$prix_achat->getVal().")");
-		
+	if (!empty($_SESSION['bourse']['hh_start_date'])) {
+		$happy_hour->chkPost();
+	} else {
+		$happy_hour->setVal(0);
+	}
 	// ctrl metier
 	$pa = round($prix_achat->getVal(),2);
 	$pv = round($prix_vente->getDbVal(),2);
@@ -54,11 +59,14 @@ function save_art($insert)
 	// les données sont valides	
 	if ($insert) {
 		// Insertion dans la DB
-		$sql = "INSERT INTO article (depot_iddepot, prix_achat, prix_vente, description, code_couleur) VALUES (
+		$sql = "INSERT INTO article (depot_iddepot, prix_achat, prix_achat_ori, prix_vente, prix_vente_ori, description, happy_hour, code_couleur) VALUES (
 	    {$_POST['id_depot']},
 	    ".round($prix_achat->getVal(),2).",
+	    ".round($prix_achat->getVal(),2).",
+	    ".round($prix_vente->getDbVal(),2).",
 	    ".round($prix_vente->getDbVal(),2).",
 	    ".utf8_decode($description->getDbVal()).",
+        ".$happy_hour->getDbVal().",    
 	    ".$code_couleur->getDbVal().")";
 		$id_art = $db->query($sql);
 		// Retour a appelant...
@@ -72,8 +80,12 @@ function save_art($insert)
 		// Update de la DB
 		if (!$prev_id_art->chkPost()) 	return array('a_err'=>$prev_id_art->getErr());
 		$sql = "UPDATE article SET
-		prix_achat = $pa, prix_vente = $pv,
+		prix_achat = $pa, 
+		prix_achat_ori = $pa,
+		prix_vente = $pv,
+		prix_vente_ori = $pv,
 		description = ".utf8_decode($description->getDbVal()).",
+		happy_hour = ".$happy_hour->getDbVal()."
 		code_couleur = ".$code_couleur->getDbVal()."
 		WHERE idarticle=".$prev_id_art->getDbVal();
 		$n = $db->query($sql);
@@ -88,6 +100,7 @@ function save_art($insert)
     $aRetValue[$description->getName()] = stripslashes($description->getVal());
     $aRetValue[$prix_achat->getName()] = sprintf("%.02f",$prix_achat->getVal());
     $aRetValue[$prix_vente->getName()] = sprintf("%.02f",$prix_vente->getVal());
+    $aRetValue[$happy_hour->getName()] = $happy_hour->getVal()? 1:0;
     $aRetValue['code_couleur'] = $code_couleur->getVal();
     $aRetValue['id_depot'] = $_POST['id_depot'];
 	
@@ -132,6 +145,7 @@ function ajax_read_art()
 		    $aRetValue[$description->getName()] = toUTF8(($r['description']));
 		    $aRetValue[$prix_achat->getName()] = sprintf("%.02f",$r['prix_achat']);
 		    $aRetValue[$prix_vente->getName()] = sprintf("%.02f",$r['prix_vente']);
+			$aRetValue['happy_hour']=$r['happy_hour'];
 			$aRetValue['code_couleur']=$r['code_couleur'];
 			$aRetValue['id_depot'] = $r['depot_iddepot'];
 		}

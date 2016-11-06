@@ -5,7 +5,7 @@
  * fonction communes page html & ajax pour retrait
  *
  * @package bourse
- * @version $Revision: 187 $
+ * @version $Id$
  * @author FVdW
  */
 if(defined('UTL_RETRAIT')) return;

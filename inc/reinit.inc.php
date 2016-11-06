@@ -5,7 +5,7 @@
  * traitement : re initialisation de la db
  *
  * @package bourse
- * @version $Revision: 692 $
+ * @version $Id$
  * @author FVdW
  */
 
@@ -22,18 +22,19 @@ function ctrl_nom($post_var_name, $lbl='')
 
 function ctrl_num($post_var_name, $lbl='')
 {
-		if(!$lbl) $lbl ="La variable $post_var_name";
-    if(!empty($_POST[$post_var_name]))  {
-    	$v = trim($_POST[$post_var_name]);
-      if(is_numeric($v)) return $v; 
-      else {
-      	$msg = "n'est pas numérique";    
-      }
-    } else {                                             
-    	$msg = "doit être spéifié";
-    }
-   	echo "<html><body><h1>Erreur de données</h1>$lbl $msg<br><a href='?st='". S_MAIN ."'>Retour au menu</a></body></html>";        
-    exit();     
+	if (!$lbl) $lbl ="La variable $post_var_name";
+    if (!empty($_POST[$post_var_name])) {
+		$v = str_replace(',', '.', trim($_POST[$post_var_name]));
+		if (is_numeric($v)) {
+			return $v; 
+		} else {
+			$msg = "n'est pas numérique";    
+		}
+	} else {                                             
+		$msg = "doit être spéifié";
+	}
+	echo "<html><body><h1>Erreur de données</h1>$lbl $msg<br><a href='?st='". S_MAIN ."'>Retour au menu</a></body></html>";        
+	exit();     
 }
 
 /** Verification droit "gestion"
@@ -49,7 +50,30 @@ $marge = ctrl_num('marge', 'La marge');
 $nb_caisse = ctrl_num('nombre_caisse', 'La nombre de caisses');
 $nom_assoc = ctrl_nom('nom_assoc', 'Le nom de l\'association');
 $nom_bourse = ctrl_nom('nom_bourse', 'Le nom de la bourse');
- 
+
+// Happy Hour
+if (empty($_POST['fr_hh_start_date'])) {
+	$hh_rate = 0;
+	$hh_start_date = '';
+} else {
+	$hh_rate = ctrl_num('hh_rate', 'Le taux de réduction <em></em>Happy Hour</em>');
+	$fr_hh_start_date = trim($_POST['fr_hh_start_date']);
+	if (empty($fr_hh_start_date)) {
+		$hh_start_date = false;
+	} else {
+		// ctrl validité
+		if (!preg_match('/^\d+[\/]\d+[\/]\d+/', $fr_hh_start_date)) {
+			echo "<html><body><h1>Erreur Ctrl date/heure <em>Happy Hour</em></h1>La date/heure de début du <em>happy hour</em> est invalide !<br><a href='?st='". S_MAIN ."'>Retour au menu</a>\n<!-- $hh_start_date vs ".date('Y-m-d H:i:59')." --></body></html>";
+			exit();
+		}
+		$hh_start_date = preg_replace('/^(\d+).(\d+).(\d+)/', '$3-$2-$1', $fr_hh_start_date). ' '. $_POST['hh_start_time'].':00';
+		if ($hh_start_date < date('Y-m-d H:i:59') ) {
+			echo "<html><body><h1>Erreur Ctrl date/heure <em>Happy Hour</em></h1>La date/heure de début du <em>happy hour</em> ($hh_start_date) est dépassée !<br><a href='?st='". S_MAIN ."'>Retour au menu</a>\n<!-- $hh_start_date vs ".date('Y-m-d H:i:59')." --></body></html>";
+			exit();
+		}
+		}
+}
+
   
 /** Controle pwd
 */
@@ -85,13 +109,18 @@ if(!empty($_POST['ventes'])) {
         }     
     }
 }    
+
 if(!empty($_POST['nom_bourse'])){
     $nom = $db->quote($_POST['nom_bourse']);
     $nom_assoc = $db->quote($nom_assoc);
     $adr_assoc = $db->quote($_POST['adr_assoc']);
     $nom_bourse = $db->quote($nom_bourse);
     $msg_fin_depot = $db->quote($_POST['msg_fin_depot']);
-    
+    if (!$hh_start_date) {
+		$hh_start_date = 'Null';
+	} else {
+		$hh_start_date = "'$hh_start_date'";
+	}
     $sql = "UPDATE bourse SET 
     	date_cloture_ventes=NULL,
       nom_assoc=$nom_assoc,
@@ -100,9 +129,12 @@ if(!empty($_POST['nom_bourse'])){
       marge=$marge, 
       nombre_caisse=$nb_caisse, 
       fond_de_caisses='', 
-      msg_fin_depot=$msg_fin_depot 
+      msg_fin_depot=$msg_fin_depot,
+      hh_rate = $hh_rate,
+      hh_start_date = $hh_start_date,
+      hh_started = 0
     WHERE idbourse={$_SESSION['bourse']['idbourse']} LIMIT 1;";   
-    $n = $db->query($sql);
+    $n = $db->query($sql); 
 } 
 
 /** Recuperation parametrage bourse (idbourse) apres connexion validee
@@ -111,3 +143,4 @@ $sql = "SELECT * FROM bourse WHERE idbourse={$_SESSION['bourse']['idbourse']}";
 $r = $db->select_one($sql);
 if(empty($r)) exit("<html><body><h1>Erreur idbourse !</h1>\$n=$n<br><pre>sql=$sql</pre></body></html>");
 $_SESSION['bourse'] = $r;
+// EoF

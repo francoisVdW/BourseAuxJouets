@@ -5,7 +5,7 @@
  * Page de saisie des ventes : la caisse !
  *
  * @package bourse
- * @version $Revision: 187 $
+ * @version $Id$
  * @author FVdW
  */
 require_once 'inc/utl_caisse.inc.php';
@@ -135,6 +135,7 @@ $adr4Tbs      = $adr4->printField();
 $idAdr4Tbs    = $adr4->getId();
 
 $paramFactTbs = "'&id_vente=$id_vente'+".getCChampAjaxParam($nomCli)."+".getCChampAjaxParam($adr1)."+".getCChampAjaxParam($adr2)."+".getCChampAjaxParam($adr3)."+".getCChampAjaxParam($adr4);
+
 
 // tbs standards
 $dateTbs = date('d/m/Y');

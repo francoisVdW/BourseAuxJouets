@@ -3,13 +3,13 @@
  * fonction communes page html & ajax pour caisse
  *
  * @package bourse
- * @version $Revision: 187 $
+ * @version $Id$
  * @author FVdW
  */
 if(defined('UTL_ARTICLE')) return;
 define('UTL_ARTICLE',1);
 require_once 'fwlib/cchamp.class.php';
-$idArt 		= new CChamp('NUM_O_idart');
+$idArt = new CChamp('NUM_O_idart');
 
 
 /**
@@ -29,6 +29,3 @@ function ajax_rech_info_art()
 	}	
 	return $aRetValue;	
 }
-
-
-?>

@@ -5,7 +5,7 @@
  * Page de saisie des depots
  * @package: bourse
  * @author : FVdW
- * @version $Revision: 187 $
+ * @version $Id$
  *
  */
 
@@ -78,6 +78,7 @@ if($id_depot === FALSE) {
         "<td style='background-color:".$r['code_couleur']."'><b>".$r['depot_iddepot'].'-'.$r['idarticle']."</b></td>".
         "<td class=\"price\">".sprintf('%0.2f', $r['prix_vente'])."</td>".
         "<td>".$r['description']."</td>".
+        "<td>".(empty($r['happy_hour'])? '&nbsp;': '<img src="img/hh.gif" class="no-action" alt="Happy Hour" title="Happy Hour" />')."</td>".
         "<td class=\"price\">". sprintf('%0.2f', $r['prix_achat'])."</td>".
         "<td><img src='img/edit.gif' onclick='modif(".$r['idarticle'].")' title='Modifier' />".
         "<img src='img/del.gif' onclick='suppr(".$r['idarticle'].")' title='Supprimer' /></td></tr>";
@@ -135,7 +136,14 @@ $sTblCouleurs .= "</tr></table>\n";
 
 $descTbs        = $description->printField("onchange='this.value=this.value.clrText()' tabindex='1'");
 $paTbs          = $prix_achat->printField();
-$pvTbs          = $prix_vente->printField("onchange=\"calc()\" tabindex='2'");
+if (empty($_SESSION['bourse']['hh_start_date'])) {
+	$happyhourTbs = false;
+	$next_tab = 2;
+} else {
+	$happyhourTbs = $happy_hour->printField("tabindex='2'");
+	$next_tab = 3;
+}
+$pvTbs          = $prix_vente->printField("onchange=\"calc()\" tabindex='{$next_tab}'");
 $prev_id_artTbs = $prev_id_art->printField();
 $couleursTbs    = $code_couleur->printHidden();
 
@@ -143,12 +151,15 @@ $idPaTbs            = $prix_achat->getId();
 $idPvTbs            = $prix_vente->getId();
 $idDescTbs          = $description->getId();
 $idPrev_id_artTbs   = $prev_id_art->getId();
+$idHappy_hourTbs	= $happy_hour->getId();
 $idCouleursTbs      = $code_couleur->getId();
+
 
 $margeTbs   = $_SESSION['bourse']['marge'];
 // pour Ajax
 $a =array();
 $a[] = getCChampAjaxParam($description);
+$a[] = getCChampAjaxParam($happy_hour);
 $a[] = getCChampAjaxParam($code_couleur);
 $a[] = getCChampAjaxParam($prix_achat);
 $a[] = getCChampAjaxParam($prix_vente);

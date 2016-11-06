@@ -1,23 +1,16 @@
 <?php
 /**
- * Include file: caisse
+ * Include file: article
  *
- * Page de saisie des ventes : la caisse !
+ * Page : affichage détail article
  *
  * @package: bourse
- * @version $Revision: 187 $
+ * @version $Id$
  * @author FVdW
  */
-
 require_once 'inc/utl_article.inc.php';
 
-/** Verification droit "caisse"
- *
-if($user->get_field('may_caisse') != 'T') {
-    echo "<html><body><h1>Erreur de droits</h1>Vous n'avez pas accès au stand <b><i>Caisse</i></b><br><a href='?st='". S_MAIN ."'>Retour au menu</a></body></html>";
-    exit();
-}
-*/
+
 /** Variables TBS
  */
 // Etats
