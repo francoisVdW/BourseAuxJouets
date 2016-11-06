@@ -2,7 +2,7 @@
 /**
  * @package: bourse
  * @author : FVdW
- * @version $Revision: 692 $
+ * @version $Id$
  *
  */
 
@@ -105,13 +105,37 @@ if (!isset($_SESSION['logged']) || !$_SESSION['logged'] || !$user->uid) {
     /** Si pas connecte : <form> de login puis ctrl
     */
     require 'inc/login_form.inc.php';
+}
+if (empty($_SESSION['bourse'])) {
     /** Recuperation parametrage bourse (idbourse) apres connexion validee
     */
     $sql = "SELECT * FROM bourse WHERE idbourse=".$user->get_field('bourse_idbourse');
     $n = $db->query($sql);
     if($n != 1) exit("<html><body><h1>Erreur idbourse !</h1>\$n=$n<br><pre>sql=$sql</pre></body></html>");
     $_SESSION['bourse'] = $db->data[0];
-    }
+}
+
+// Traitement Happy Hour
+$hhTimeBeforeTbs = false;
+if (!empty($_SESSION['bourse']['hh_start_date'])) {
+	if ($_SESSION['bourse']['hh_start_date'] <= date('Y-m-d H:i:s')) {
+		// l'heure de départ du HH est passée
+		if (empty($_SESSION['bourse']['hh_started'])) {
+			// $sql = "UPDATE article SET prix_vente = (prix_vente_ori * {$_SESSION['bourse']['hh_rate']}), prix_achat = (prix_achat_ori * {$_SESSION['bourse']['hh_rate']}) WHERE prix_vente = prix_vente_ori AND IFNULL(vente_idvente, 0) = 0 AND happy_hour = 1";
+			// $n = $db->query($sql);
+			$sql = "UPDATE bourse SET hh_started = 1 WHERE idbourse = {$_SESSION['bourse']['idbourse']} LIMIT 1";
+			$n = $db->query($sql);
+			$_SESSION['bourse']['hh_started'] = true;
+		}
+	} else {
+		$diff_sec = strtotime($_SESSION['bourse']['hh_start_date'], 0) - time();
+		$h = floor($diff_sec / 3600);
+		$i = floor(($diff_sec - ($h*3600)) / 60);
+		$hhTimeBeforeTbs = sprintf('%dh %02dm', $h, $i).'  '.date("H:i:s");
+	}
+}
+
+//echo "<hr>DEBUG<br>".__FILE__.':'.__LINE__.'<pre>'.print_r($_SESSION['bourse'],1)."</pre><hr><br />";
 
 $participTbs = ($user->get_field('prenom')? $user->get_field('prenom').' ':'').$user->get_field('nom');
 $bourseTbs = $_SESSION['bourse']['nom_bourse'];
@@ -136,6 +160,7 @@ $mayGestionTbs  = $user->get_field('may_gestion')=='T'? true:false;
 
 $dateTbs = date('d/m/Y');
 
+$hhStartedTBS = empty($_SESSION['bourse']['hh_started'])? false:true;
 
 /** Preparation de la machine d'etats
  */
