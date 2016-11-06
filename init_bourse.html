@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!-- $Revision: 692 $ -->
+<head>
+[onload;file=tbs/meta.txt]
+	<title>[var.bourseTbs] : Re-Initialisation des dépôts et ventes</title>
+	<link rel="stylesheet" type="text/css" href="css/bourse.css" />
+	<script type="text/javascript" src="js/prototype151.js"></script>
+	<script type="text/javascript" src="js/date-picker.js"></script>
+	<style type="text/css">
+		div.calendar_widget { position: absolute; float: left; top: 0px; left: 0px; width:140px; height: 200px; display: none; }
+		form#ifrm_init > div {
+			margin: 10px 0;
+		}
+		form#ifrm_init label {
+			width: 300px;
+		}
+	</style>
+    <script type="text/javascript">
+    function chk(form) {
+        if(form.nom_bourse.value.blank()) {alert("Le nom de l'évènement (bourse) doit être renseigné"); return false;}
+        if(form.pwd.value.blank()) {alert("Vous devez confirmer votre mot de passe"); return false;}
+        if(!form.depots.checked && form.ventes.checked ) { alert("Il est nécessaire de reinitialiser les ventes si on désire réinitilaliser les dépots et articles"); return false;}
+        return confirm("Confirmez la re-initialisation des donnée de la bourse ?");
+    }
+    
+    function activateHH() 
+    {
+		var cb = $("icb_hh");
+		if (cb.checked) {
+			$("idiv_hh").show();
+		} else {
+			$("idiv_hh").hide();
+			$("it_hh_start").value = "";
+		}
+	}
+    </script>
+</head>
+
+<body>
+<div  class="menu">
+	<span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
+	<button onclick="document.location.href='?st=[var..cst.S_MAIN]'">Menu principal</button>
+	<button onclick="document.location.href='?st=[var.eGestionTbs]'">Menu gestion </button>
+</div>
+<div class="block">
+<h1>Re-Initialisation des dépôts et ventes</h1>
+<form method="post" action="index.php?st=[var..cst.T_REINIT]" onsubmit="return chk(this)" id="ifrm_init">
+	<div>
+		<label for="ic_depots" style="color: red;font-weight: bolder;">Dépôts, Déposants et Articles</label>
+		<input type="checkbox" name="depots" value="depots" id='ic_depots' />
+	</div>
+	<div style="clear:both"></div>
+	<div>
+		<label for="ic_ventes" style="color: red;font-weight: bolder;">Ventes, Factures et Opérations caisses </label>
+		<input type="checkbox" name="ventes" value="ventes" id='ic_ventes' />
+	</div>
+	<div style="clear:both"></div>
+	<div>
+		<label for="ii_nom_assoc">Nom de l'association</label>
+		<input type="text" size="50" maxlength="50" name="nom_assoc" id="ii_nom_assoc" value="[var.nom_assocTbs]" />
+	</div>
+	<div style="clear:both"></div>
+	<div>
+		<label for="ia_adr_assoc">Adresse de l'association</label>
+		<textarea id="ia_adr_assoc" name="adr_assoc" cols="40">[var.adr_assocTbs;htmlconv=no]</textarea>
+	</div>
+	<div style="clear:both"></div>
+	<div>
+		<label for="ii_nom_bourse">Nom de la bourse (événement)</label>
+		<input type="text" size="50" maxlength="50" name="nom_bourse" id="ii_nom_bourse" value="[var.nom_bourseTbs]" />
+	</div>
+	<div style="clear:both"></div>
+	<div>
+		<label for="is_marge">Marge</label>
+		<select name="marge" id="is_marge">[var.margeTbs;htmlconv=no]</select>
+	</div>
+	<div style="clear:both"></div>
+	<div>
+		<label for="is_nombre_caisse">Nombre de caisses</label>
+		<select name="nombre_caisse" id="is_nombre_caisse">[var.nombre_caisseTbs;htmlconv=no]</select>
+	</div>
+	<div style="clear:both"></div>
+	<div>
+		<input type="checkbox" id="icb_hh" onclick="activateHH()" [var.hh_checkedTbs]>
+		<label for="icb_hh">Activer le <em>Happy Hour</em></label>
+	</div>
+	<div style="clear:both"></div>	
+	<div id="idiv_hh">
+		<label for="it_hh_start">Date et heure début du Happy Hour</label>
+		<input type="text" size="10" maxlength="10" placeholder="jj/mm/AAAA" name="fr_hh_start_date" id="it_hh_start" value="[var.fr_hh_start_date]" class="calendar"/>
+		<a href="#" onclick="javascript:show_calendar_widget(this);" id="date_link" class="calendar-link" style="text-decoration:none">&#128197;</a>
+		&nbsp;&nbsp;<select name="hh_start_time">[var.tbs_select_times;htmlconv=no]</select>
+		<br />
+		<label for="is_hh_rate">Taux de réduction Happy Hour</label>
+		<select name="hh_rate" id="is_hh_rate">[var.hh_ratesTbs;htmlconv=no]</select>
+	</div>
+	<div style="clear:both"></div>
+	<div>
+		<label for="ia_msg_fin_depot">Texte imprimé au bas<br />du reçu déposant</label>
+		<textarea id="ia_msg_fin_depot" name="msg_fin_depot" cols="40">[var.msg_fin_depotTBS;htmlconv=no]</textarea>
+	</div>
+	<div>
+		<label for="ii_pwd">Confirmez votre mot de passe</label><input type="password" size="30" maxlength="50" name="pwd" id="ii_pwd" /><br />
+		<div style="width:100%;text-align:center;padding:15px"><input type="submit" value="Valider" /></div>
+	</div>
+</form>
+</div>
+
+<div class="calendar_widget" id="calendar_widget">
+	<iframe id='calendar_widget_iframe' name='calendar_widget_iframe' style="border: none;" width=100% height=100% src="calendar_widget.html"></iframe>
+</div>
+
+<script type="text/javascript">
+	activateHH()
+</script>
+
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+[onload;file=tbs/meta.txt]
+    <link rel="stylesheet" type="text/css" href="css/bourse.css" />
+    <script type="text/javascript" src="js/prototype151.js"></script>
+    <script type="text/javascript" src="js/cchamp.js"></script>
+    <script type="text/javascript">
+    function save_desc(frm) {
+        var v=$F('[var.description.getId]');
+        if (v.blank()) {
+            alert('La descrition doit être valorisée');
+            $('[var.description.getId]').focus();
+            return false;
+        }
+        if(typeof parent.loading=='function') parent.loading("Enregistrement de la description...");
+        return true;
+    }
+    function setCol(coul) {
+        if(typeof parent.loading=='function') parent.loading("Enregistrement de la couleur...");
+        document.location.href="?st=[var..cst.S_FICHE_ART]&id_art=[var.idArt]&op=setColArt&col="+coul;
+    }
+    </script>
+    <script type="text/javascript">
+    function save_retour_vente(frm){
+        var v=$F('[var.comment.getId]');
+        if (v.blank()) {
+            alert('Le motif doit être valorisée');
+            $('[var.comment.getId]').focus();
+            return false;
+        }
+        if(typeof parent.loading=='function') parent.loading("Enregistrement du retour...");
+        return true;
+    }
+    function displ_annul(){
+        $('ifannul').show();
+        $('iTXT_O_comment').focus();
+    }
+    function alert_msg() {
+        var msg = "[var.sTbsMsg;htmlconv=no;]";
+        if (!msg.blank()) {
+            alert(msg);
+        }
+    }
+    </script>
+    <style>
+    table.info_art {
+        vertical-align:top;
+        font-size: 12px;
+    }
+    table.info_art td {
+        border: dotted 1px #b0b0b0;
+        padding:2px;
+    }
+    table.info_art td.blank {
+            border-color:transparent;
+    }
+    table.info_art th {
+        padding-right: 5px;
+        text-align: right;
+        background-color: #b0b0b0;
+        font-weight: bold;
+    }
+    </style>
+</head>
+
+<body onload="if(typeof parent.loading=='function')parent.loading(false);alert_msg()">
+    <table border="0" class='info_art'>
+        <tr>
+            <th>N° article</th>
+            <td id="no_art" style="width:150px;background-color:[var.r.code_couleur];font-size:1.3em">[var.r.no_art]&nbsp;<span style="float:right;"><image src="img/hh.gif" title="[var.r.happy_hour;magnet=span]" style="vertical-align:middle;" /</span></td>
+            <td colspan="3" style="text-align:center"><span style="font-size:1.2em;font-weight:bold">Article Vendu<!-- [var.r.no_vente;magnet=span] --></span>&nbsp;</td>
+            <td>
+				<button id="iBtnCoul" onclick="$('icouleur').toggle();return false" title="Modifier la couleur">Couleur</button>
+                <div id="icouleur" style="position:absolute;z-index:10;display:none;">[var.sTblCouleurs;htmlconv=no;]</div>
+            </td>
+        </tr><tr>
+            <th>Description</th>
+            <td colspan="5">
+				<div id='itxt_desc' style="width:100%;">
+					<span id='idesc'>[var.r.desc_art]</span>&nbsp;&nbsp;&nbsp;
+					<button onclick='$("itxt_desc").hide();$("iedit_desc").show();$("iTXT_O_desc").focus()' title="Modifier cette description">Modifier</button>
+				</div>
+				<div id='iedit_desc' style="width:100%;display:none;">
+					<form method="post" onsubmit="return save_desc(this)" action='?st=[var..cst.S_FICHE_ART]&id_art=[var.idArt]&op=updDescArt' style='display:inline'>
+					[var.description.printField;htmlconv=no]
+					<input type="submit" value='Enregister' title="Enregistre la nouvelle description" />
+					<input type="reset" onclick='$("iedit_desc").hide();$("itxt_desc").show()' value="Annuler" title="Abandonne cette opération" />
+					</form>
+				</div>
+				<script>$("idesc").innerHTML = $("iTXT_O_desc").value;</script>
+            </td>
+        </tr><tr>
+            <td  class="blank" colspan="6">&nbsp;</td>
+        </tr><tr>
+            <th>Déposant</th>
+            <td colspan="5">
+                [var.r.nom_depos]&nbsp; [var.r.prenom_depos]<br />
+                <span>Téléphone: [var.r.tel_depos;magnet=span]</span>  <span>email: [var.r.email_depos;magnet=span]</span>
+            </td>
+        </tr><tr>
+            <th style="width: 110px">N° Dépôt</th><td style="width: 100px">[var.r.no_depot]</td>
+            <th style="width: 110px">Date</th><td style="width: 170px">[var.r.date_depot;htmlconv=no]</td>
+            <th style="width: 110px">Par</th><td style="width: 170px">[var.r.part_depot]</td>
+        </tr><tr>
+            <th>Prix de vente</th><td >[var.r.px_vente] &euro;</td>
+            <th>Prix d'achat</th><td >[var.r.px_achat] &euro;</td>
+            <td colspan="2">[var.r.happy_hour;magnet=span]</span>&nbsp;</td>
+        </tr><tr>
+            <td  class="blank" colspan="6">&nbsp;</td>
+        </tr><tr>
+            <th>N° Vente</th><td>[var.r.no_vente]&nbsp;</td>
+            <th>Date</th><td>[var.r.date_vente;htmlconv=no]&nbsp;</td>
+            <th>Par</th><td>[var.r.part_vente]&nbsp;</td>
+        </tr><tr>
+            <!-- [var.r.flgMayAnnulTbs;magnet=tr] -->
+            <td style="text-align:center""><button onclick='displ_annul()' title="Retour de l'article ! annulation de la vente" style="font-weight:bold;color:red;">Retour</button></td>
+            <td colspan="5"><form id='ifannul' style="display:none" method="post" onsubmit="return save_retour_vente(this)" action='?st=[var..cst.S_FICHE_ART]&id_art=[var.idArt]&op=retourVente'>Motif : [var.comment.printField;htmlconv=no] <input type='reset' onclick="$('ifannul').hide();" value="Annuler" title="Abandon de cete opération">&nbsp;<input type='submit' value='Valider' title="Enregistre l'annulation de la vente"/></form></td>
+        </tr><tr>
+            <!-- [var.r.date_retour;magnet=tr] -->
+            <th rowspan="2"><span style='color:red'>Retourné !</span></th><td colspan='5'>[var.r.motif_retour]</td>
+        </tr><tr>
+            <td >&nbsp;</td>
+            <th>Date</th><td>[var.r.date_retour;magnet=tr;htmlconv=no]</td>
+            <th>Par</th><td>[var.r.part_retour]</td>
+        </tr><tr>
+            <th>Restitution</th><td >&nbsp;</td>
+            <th>Date</th><td id="date_retrait">[var.r.date_retrait;magnet=tr;htmlconv=no]</td>
+            <th>Par</th><td id="part_retrait">[var.r.part_retrait]</td>
+        </tr>
+    </table>
+</body>
+</html>
