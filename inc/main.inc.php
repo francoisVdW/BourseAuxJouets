@@ -5,7 +5,7 @@
  * Page d'affichage du menu / accueil
  *
  * @package bourse
- * @version $Revision: 187 $
+ * @version $Id$
  * @author FVdW
  */
  
@@ -65,4 +65,4 @@ if ($n) {
 		$alertClotureTbs .= "<tr><td colspan='2'>Dépot n&deg;{$r['iddepot']} : $s</td><tr>\n";
 	}
 }
-?>
+// EoF

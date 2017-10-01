@@ -5,7 +5,7 @@
  * Page du solde des articles
  *
  * @package bourse
- * @version $Revision: 187 $
+ * @version $Id$
  * @author FVdW
  */
 
@@ -131,4 +131,4 @@ $uidTbs = $user->uid;
 $dateTbs = date('d/m/Y');
 
 
-?>
+// EoF

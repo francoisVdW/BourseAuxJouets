@@ -140,10 +140,10 @@ if (empty($_SESSION['bourse']['hh_start_date'])) {
 	$happyhourTbs = false;
 	$next_tab = 2;
 } else {
-	$happyhourTbs = $happy_hour->printField("tabindex='2'");
+	$happyhourTbs = $happy_hour->printField("tabindex='2' onchange='calc()'  style=\"display:none\"");
 	$next_tab = 3;
 }
-$pvTbs          = $prix_vente->printField("onchange=\"calc()\" tabindex='{$next_tab}'");
+$pvTbs          = $prix_vente->printField("onchange=\"calc()\" tabindex='{$next_tab}'" );
 $prev_id_artTbs = $prev_id_art->printField();
 $couleursTbs    = $code_couleur->printHidden();
 
@@ -159,7 +159,9 @@ $margeTbs   = $_SESSION['bourse']['marge'];
 // pour Ajax
 $a =array();
 $a[] = getCChampAjaxParam($description);
-$a[] = getCChampAjaxParam($happy_hour);
+if ($happyhourTbs) {
+	$a[] = getCChampAjaxParam($happy_hour);
+}
 $a[] = getCChampAjaxParam($code_couleur);
 $a[] = getCChampAjaxParam($prix_achat);
 $a[] = getCChampAjaxParam($prix_vente);
@@ -169,4 +171,4 @@ $paramUpdaterUpdTbs = "var param='op=updArt&id_depot=$id_depot'+".implode('+', $
 
 $js_all_errTbs = get_JS_a_all_err($aErr);
 $idBourseTbs = $_SESSION['bourse']['idbourse'];
-?>
+// EoF

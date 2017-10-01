@@ -5,7 +5,7 @@
  * Page de retrait des articles
  *
  * @package bourse
- * @version $Revision: 187 $
+ * @version $Id$
  * @author FVdW
  */
 
@@ -32,4 +32,4 @@ $nNoDepotTbs    = $noDepot->getName();
 $dateTbs = date('d/m/Y');
 $nom_bourseTbs  = $_SESSION['bourse']['nom_bourse'];
 
-?>
+// EoF

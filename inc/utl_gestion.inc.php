@@ -3,7 +3,7 @@
  * fonctions utiles pour factures (ajax)
  *
  * @package bourse
- * @version $Revision: 187 $
+ * @version $Id$
  * @author FVdW
  */
 if(defined('UTL_FACT')) return;
@@ -105,4 +105,4 @@ function ajax_assist_depot()
  	}
 	return $aRetValue;
 }
-?>
+// EoF

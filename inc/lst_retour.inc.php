@@ -4,7 +4,7 @@
  * 
  * @package: bourse
  * @author : FVdW
- * @version $Revision:$
+ * @version $Id$
  *
  */
 $sql = 'SELECT 
@@ -36,3 +36,5 @@ if ($n < 1) {
 }
 $nowTbs = date("d/m/y à H:i:s");
 $TBS->MergeBlock('main', $db->data);
+
+// EoF

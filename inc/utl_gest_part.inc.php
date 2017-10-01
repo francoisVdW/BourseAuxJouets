@@ -5,7 +5,7 @@
  * Page de saisie des depots
  *
  * @package bourse
- * @version $Revision: 469 $
+ * @version $Id$
  * @author FVdW
  */
 
@@ -171,4 +171,4 @@ function delete_part()
    		return false;
 	} else return true;
 }
-?>
+// EoF

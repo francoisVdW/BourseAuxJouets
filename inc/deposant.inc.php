@@ -4,7 +4,7 @@
  *
  * @package: bourse
  * @author : FVdW
- * @version $Revision: 187 $
+ * @version $Id$
  *
  */
  
@@ -44,4 +44,4 @@ switch ($_SESSION['bourse']['adresse_deposant']) {
 $stTbs = T_SAUV_DEPOSANT;
 $js_all_errTbs = get_JS_a_all_err($aErr);
 
-?>
+// EoF

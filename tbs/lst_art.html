@@ -5,7 +5,13 @@
 <title>[var.bourseTbs] : Liste des articles</title>
 <link rel="stylesheet" type="text/css" href="css/bourse.css" />
 <style type="text/css">
-
+table#itbl_lst td {
+	text-align:left;
+	vertical-align:top;
+}
+table#itbl_lst .amnt {
+	text-align:right;
+}
 </style>
 </head>
 
@@ -15,7 +21,7 @@
     <button onclick="document.location.href='?st=[var..cst.S_MAIN]'">Menu principal</button>&nbsp;&nbsp;
     <button onclick="document.location.href='?st=[var.eGestionTbs]'">Menu gestion</button>&nbsp;&nbsp;
     <button onclick="window.print();return false"> Imprimer </button>
-    <button onclick="window.open('xls.php?doc=lst_art', 'id999');return false"> Export XLS </button>        
+    <button onclick="window.open('xls.php?doc=lst_art', 'id999');return false"> Export XLS </button>
 </div>
 <h1>[var.bourseTbs]</h1>
 
@@ -27,18 +33,20 @@
 	</span>
 	Déposant: <b>[main.nom]</b><span> [main.prenom;magnet=span]</span><span> - Tél. [main.tel;magnet=span]</span><br />
 	Date dépot: [main.date_depot;frm='dd/mm/yy à hh:nn']
-	<table border="0" cellpadding="0" cellspacing="0">
+	<table border="0" cellpadding="0" cellspacing="0" id="itbl_lst">
 	<tr>
-		<th width="60">&nbsp;</th>
-		<th align="left">Description</th>
-		<th align="right" width="70">P.A.</th>
-		<th align="right" width="120">Date vente</th>
+		<th style="width:60px">&nbsp;</th>
+		<th style="text-align:left">Description</th>
+		<th style="width:30px">HH</th>
+		<th style="width:70px" class="amnt">P.A.</th>
+		<th style="width:120px" class="amnt">Date vente</th>
 	</tr>
 	<tr>
-		<td valign="top" style="background-color:[sub.code_couleur];">[sub.depot_iddepot;block=tr;p1=[main.iddepot]]-<b>[sub.idarticle]</b></td>
-		<td valign="top">[sub.description]</td>
-		<td valign="top" align="right">[sub.prix_achat;frm='0.00'] &euro;</td>
-		<td valign="top" align="right">[sub.date_vente;ifempty=~;frm='dd/mm/yy à hh:nn']</td>
+		<td style="background-color:[sub.code_couleur];text-align:left">[sub.depot_iddepot;block=tr;p1=[main.iddepot]]-<b>[sub.idarticle]</b></td>
+		<td>[sub.description]</td>
+		<td>[sub.happy_hour;.if[sub.happy_hour]=1;then'Oui';else'Non']</td>
+		<td class="amnt">[sub.prix_achat;frm='0.00'] &euro;</td>
+		<td class="amnt">[sub.date_vente;ifempty=~;frm='dd/mm/yy à hh:nn']</td>
 	</tr>
 	</table><br />
 	</div>

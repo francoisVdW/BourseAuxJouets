@@ -14,7 +14,7 @@ class CXLS {
 	private $row=0;
 	private $col=0;
 	private $nbCol = false;
-	
+
 
   /**
    * CXLS::__construct()
@@ -26,7 +26,7 @@ class CXLS {
 	{
 	    $this->nbCol = ($nb_cols > 0)? $nb_cols : false;
 	}
-	
+
   /**
    * CXLS::xlsBOF() ;  begin of file header
    *
@@ -44,9 +44,9 @@ class CXLS {
 	private function xlsEOF() {
 	    return  pack("ss", 0x0A, 0x00);
 	}
-	
+
   /**
-   * CXLS::writeNumber() : Function to write a Number (double) 
+   * CXLS::writeNumber() : Function to write a Number (double)
    *
    * @param mixed $Value
    * @return void
@@ -56,7 +56,7 @@ class CXLS {
 	    $this->s .=pack("d", $Value);
 	    $this->next();
 	}
-	
+
   /**
    * CXLS::writeText() ; Function to write a text (xls label)
    *
@@ -69,8 +69,8 @@ class CXLS {
 	    $this->s .=$Value;
 	    $this->next();
 	}
-	
-	
+
+
   /**
    * CXLS::next() : passe à la case suivante ... si nb_col defini
    *
@@ -90,7 +90,7 @@ class CXLS {
 	public function getRow() {return $this->r;}
 	public function getCol() {return $this->c;}
 	// ----- end of function library -----
-	
+
   /**
    * CXLS::output()
    *
@@ -100,9 +100,9 @@ class CXLS {
 	    $sO = $this->xlsBOF();
 	    $sO.= $this->s;
 	    $sO.= $this->xlsEOF();
-	    
+
 	    $fileName = preg_replace('/\.xls$/i', '', basename($fileName)); // pas de path !
-	    
+
         header("Expires: Mon, 01 Jan 2001 01:00:00 GMT");
         header("Cache-Control: no-cache");
         header("Cache-Control: post-check=0,pre-check=0");
@@ -119,6 +119,8 @@ class CXLS {
 
 /*
  * @param Cdb object reference sur $db
+ * colInfo['type'] = 1 à 5 :numeric
+ *                 = 12 : datetime
  */
 function do_xls(&$db)
 {
@@ -127,13 +129,13 @@ function do_xls(&$db)
 
 	// entetes : nom des colonnes
 	foreach($db->col_info as $col) {
-		$xls->writeText($col['name'] );
+		$xls->writeText($col['name']);
 	}
 	// données
 	foreach($db->data as $r) {
 	    for($i=0; $i<$nb_cols; $i++){
 	        $colInfo = $db->col_info[$i];
-	        if($colInfo['type']=='int' || $colInfo['type']=='long') $xls->writeNumber( $r[$colInfo['name']] );
+	        if($colInfo['type'] >= 1 && $colInfo['type'] <= 5) $xls->writeNumber( $r[$colInfo['name']] );
 	        else $xls->writeText( $r[$colInfo['name']] );
 		}
 	}

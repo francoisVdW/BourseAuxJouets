@@ -81,5 +81,4 @@ if (!empty($_SESSION['bourse']['hh_start_date'])) {
 	$hhRateTbs = false;
 	$hhStartDateTbs = false;
 }
-
-?>
+// EoF

@@ -5,7 +5,7 @@
  * Page de saisie des depots
  *
  * @package bourse
- * @version $Revision: 469 $
+ * @version $Id$
  * @author FVdW
  */
 
@@ -81,4 +81,4 @@ function sav_deposant()
 	    return FALSE;
 	}
 }
-?>
+// EoF

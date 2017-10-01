@@ -2,7 +2,7 @@
 /**
  * @package: bourse
  * @author : FVdW
- * @version $Revision: 187 $
+ * @version $Id$
  *
  */
 

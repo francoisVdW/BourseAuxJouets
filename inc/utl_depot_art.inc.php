@@ -17,16 +17,16 @@ require_once 'fwlib/cchamp.class.php';
 $description	= new CChamp('TXT_O_desc', '', 255);
 $prix_achat		= new CChamp('HID_O_pa');
 $prix_vente		= new CChamp('MNT_O_pv',0,'','0.10|500');
-$prev_id_art    = new CChamp('HID_L_id_art');
-$happy_hour     = new CChamp('SEL_L_happy_hour', 0, 0, '0=Non|1=Oui');
-$code_couleur   = new CChamp('SEL_L_couleur', 'White',0,$_SESSION['optCouleur'] );
+$prev_id_art	= new CChamp('HID_L_id_art');
+$happy_hour		= new CChamp('SEL_L_happy_hour', 0, 0, '0=Non|1=Oui');
+$code_couleur	= new CChamp('SEL_L_couleur', 'White',0,$_SESSION['optCouleur'] );
 
 /**
  * save_art : upate/insert article dans la DB
- * 
+ *
  * Effectue ctrl métier
  * @param bool $insert true=insert false=update
- */    
+ */
 function save_art($insert)
 {
 	global $db;
@@ -40,8 +40,9 @@ function save_art($insert)
 	elseif (!is_numeric($prix_achat->getVal()) ) return array('a_err'=>"/;Erreur soft pa invalide (".$prix_achat->getVal().")");
 	if (!empty($_SESSION['bourse']['hh_start_date'])) {
 		$happy_hour->chkPost();
+		$is_h_h = $happy_hour->getVal()? '1' : '0';
 	} else {
-		$happy_hour->setVal(0);
+		$is_h_h = '0';
 	}
 	// ctrl metier
 	$pa = round($prix_achat->getVal(),2);
@@ -55,45 +56,45 @@ function save_art($insert)
 	elseif ($pv <= $pa) {
 	  	return array('a_err'=>"/;Attention le prix de vente ne peut etre <= au prix d'achat'");
 	}
-	// 	
-	// les données sont valides	
+	//
+	// les données sont valides
 	if ($insert) {
 		// Insertion dans la DB
-		$sql = "INSERT INTO article (depot_iddepot, prix_achat, prix_achat_ori, prix_vente, prix_vente_ori, description, happy_hour, code_couleur) VALUES (
-	    {$_POST['id_depot']},
-	    ".round($prix_achat->getVal(),2).",
-	    ".round($prix_achat->getVal(),2).",
-	    ".round($prix_vente->getDbVal(),2).",
-	    ".round($prix_vente->getDbVal(),2).",
-	    ".utf8_decode($description->getDbVal()).",
-        ".$happy_hour->getDbVal().",    
-	    ".$code_couleur->getDbVal().")";
+		$sql = "INSERT INTO article SET
+			depot_iddepot={$_POST['id_depot']},
+			prix_achat={$pa},
+			prix_achat_ori={$pa},
+			prix_vente={$pv},
+			prix_vente_ori={$pv},
+			description=".utf8_decode($description->getDbVal()).",
+			happy_hour={$is_h_h},
+			code_couleur=".$code_couleur->getDbVal();
 		$id_art = $db->query($sql);
 		// Retour a appelant...
 		if ($id_art <= 0) {
-		    logInfo("save_art(INSERT) : nouvel article n=$n\nsql=$sql",__FILE__,__LINE__);
+		    logInfo("save_art(INSERT) : nouvel article\nsql=$sql",__FILE__,__LINE__);
 		    return array('a_err'=>"/;Erreur insert dans la DB");
-		} 
+		}
 	    $aRetValue['op'] = 'insArt'; // indique aux JS : ajouter
    		$aRetValue['id_art'] = $id_art;
 	} else {
 		// Update de la DB
 		if (!$prev_id_art->chkPost()) 	return array('a_err'=>$prev_id_art->getErr());
 		$sql = "UPDATE article SET
-		prix_achat = $pa, 
-		prix_achat_ori = $pa,
-		prix_vente = $pv,
-		prix_vente_ori = $pv,
-		description = ".utf8_decode($description->getDbVal()).",
-		happy_hour = ".$happy_hour->getDbVal()."
-		code_couleur = ".$code_couleur->getDbVal()."
-		WHERE idarticle=".$prev_id_art->getDbVal();
+			prix_achat = $pa,
+			prix_achat_ori = $pa,
+			prix_vente = $pv,
+			prix_vente_ori = $pv,
+			description = ".utf8_decode($description->getDbVal()).",
+			happy_hour = {$is_h_h},
+			code_couleur = ".$code_couleur->getDbVal()."
+			WHERE idarticle=".$prev_id_art->getDbVal();
 		$n = $db->query($sql);
 		// Retour a appelant...
 		if ($n < 0) {
 		    logInfo("save_art(UPDATE) : MaJ article n=$n\nsql=$sql",__FILE__,__LINE__);
    		    return array('a_err'=>"/;Erreur update dans la DB");
-		} 
+		}
 	    $aRetValue['op'] = 'updArt'; // indique aux JS : MaJ
 	    $aRetValue['id_art'] = $prev_id_art->getVal();
 	}
@@ -103,7 +104,7 @@ function save_art($insert)
     $aRetValue[$happy_hour->getName()] = $happy_hour->getVal()? 1:0;
     $aRetValue['code_couleur'] = $code_couleur->getVal();
     $aRetValue['id_depot'] = $_POST['id_depot'];
-	
+
 	return $aRetValue;
 }
 
@@ -177,4 +178,4 @@ function ajax_del_art()
 	}
 	return $aRetValue;
 }
-?>
+// EoF

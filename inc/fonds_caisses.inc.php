@@ -3,6 +3,7 @@
 /**
  * @author Francois VAN DE WEERDT
  * @copyright 2011
+ * @version $Id$
  */
 
 function unserial($s) {
@@ -74,4 +75,4 @@ foreach($db->data as $r) {
 $TBS->MergeBlock('caisseTbs','array', $aCaisse);
 
 
-?>
+// EoF

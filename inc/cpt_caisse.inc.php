@@ -4,7 +4,7 @@
  *
  * @package: bourse
  * @author : FVdW
- * @version $Revision: 692 $
+ * @version $Id$
  *
  */
 
@@ -81,4 +81,4 @@ else {
  */
 $nbr = $TBS->MergeBlock('caisseTbs','array', 'aCaisse');
 if ($nbr > 0) $TBS->MergeBlock('subTbs','array', 'aCaisse[%p1%][aChq]');
-?>
+// EoF

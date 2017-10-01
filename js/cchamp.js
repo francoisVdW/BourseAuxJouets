@@ -2,8 +2,8 @@
  JavaScript
  vendredi 3 juin 2005 12:00:36
  HAPedit 3.1.11.111
- $RCSfile: cchamp.js $ 
- $Revision: 2.3 $
+
+ $Id: $
 
  IMPORTANT need prototype.js included !
  - - - - - - - - - - - - - - - - - - - - - - - */
@@ -351,6 +351,5 @@ function alert_e(indx) {
 	}
 	return false;
 }
-// End of $RCSfile$
 
-
+// EoF

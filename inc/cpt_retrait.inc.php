@@ -4,7 +4,7 @@
  *
  * @package: bourse
  * @author : FVdW
- * @version $Revision: 187 $
+ * @version $Id$
  *
  */
 
@@ -50,4 +50,4 @@ if(count($aArt)) {
  */
 $TBS->MergeBlock('retraitTbs','array', $aDepot);
 $TBS->MergeBlock('subTbs','array', 'aDepot[%p1%][art]');
-?>
+// EoF

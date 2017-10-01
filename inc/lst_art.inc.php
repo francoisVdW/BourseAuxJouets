@@ -4,7 +4,7 @@
  * 
  * @package: bourse
  * @author : FVdW
- * @version $Revision: 187 $
+ * @version $Id$
  *
  */
 
@@ -27,3 +27,4 @@ $nowTbs = date("d/m/y à H:i:s");
 
 $TBS->MergeBlock('main',$db->get_link(),'SELECT d.iddepot, dd.nom, dd.prenom, dd.tel, d.date_depot FROM depot d, deposant dd WHERE d.deposant_iddeposant=dd.iddeposant AND d.bourse_idbourse='.$_SESSION['bourse']['idbourse'].' ORDER BY d.iddepot');
 $TBS->MergeBlock('sub',$db->get_link(),"SELECT v.date_vente, a.* FROM article a LEFT OUTER JOIN vente v ON v.idvente=a.vente_idvente WHERE (a.depot_iddepot='%p1%') ORDER BY a.idarticle");
+// EoF

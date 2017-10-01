@@ -5,7 +5,7 @@
  * Page de gestion des participants
  *
  * @package bourse
- * @version $Revision: 187 $
+ * @version $Id$
  * @author FVdW
  */
 
@@ -27,4 +27,4 @@ $sql = "SELECT * FROM participant WHERE bourse_idbourse=".$_SESSION['bourse']['i
 $n = $db->query($sql);
 
 $TBS->MergeBlock('participantsTbs','array', $db->data);
-?>
+// EoF

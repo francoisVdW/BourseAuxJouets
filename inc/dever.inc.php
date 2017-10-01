@@ -6,7 +6,7 @@
  *
  * @package: bourse
  * @author : FVdW
- * @version $Revision: 187 $
+ * @version $Id$
  *
  */
 
@@ -48,4 +48,4 @@ for($i=1; $i <= $_SESSION['bourse']['nombre_caisse']; $i++) {
   $aCaisse[] = $caisse;
 }
 $TBS->MergeBlock('caisseTbs','array', $aCaisse);
-?>
+// EoF

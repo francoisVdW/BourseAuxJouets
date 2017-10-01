@@ -25,6 +25,17 @@ $adr3 = new CChamp('TXT_L_adr3','',35);
 $adr4 = new CChamp('TXT_L_adr4','',35);
 
 /**
+* round_price
+* Calcule prix arrondi (arrondi à 5 ct)
+*/
+function round_price($v)
+{
+	$d = $v - (int)$v; // d <-- partie decimale
+	$d = round($d * 2, 1); // arrondi à 0/5
+	return (int)$v + ($d / 2);
+}
+
+/**
  * ajax_lock_art
  *
  * Update sur article demandé : vente_idvente <-- id_vente en cours
@@ -51,7 +62,7 @@ function ajax_lock_art()
 			// La caisse demande d'appliquer happy hour 
 			//   --> article concerné ?
 			$article_is_hh = false;
-			$sql2 = "SELECT happy_hour FROM article WHERE idarticle={$_POST['id_art']}";
+			$sql2 = "SELECT happy_hour, prix_vente_ori, prix_achat_ori FROM article WHERE idarticle={$_POST['id_art']}";
 			$r = $db->select_one($sql2);
             if($r) {
                 $article_is_hh = empty($r['happy_hour'])? false:true;
@@ -61,8 +72,10 @@ function ajax_lock_art()
                 $aRetValue['a_err'] = '/;Erreur Soft ! (voir log)';
             }
             if ($article_is_hh) {
-				// Appliquer happy hour : - 1-la caisse applique le happy hour cf POST[hh]   - 2-l'article est concerné
-				$set .= ", prix_vente=prix_vente_ori-(prix_vente_ori * {$_SESSION['bourse']['hh_rate']}), prix_achat=prix_achat_ori-(prix_achat_ori * {$_SESSION['bourse']['hh_rate']})";
+				// Appliquer happy hour : -1- la caisse applique le happy hour cf POST[hh]   - 2- l'article est concerné
+				$pv = round_price($r['prix_vente_ori']-($r['prix_vente_ori'] * $_SESSION['bourse']['hh_rate']));
+				$pa = round_price($r['prix_achat_ori']-($r['prix_achat_ori'] * $_SESSION['bourse']['hh_rate']));
+				$set .= ", prix_vente=$pv, prix_achat=$pa";
 			} else {
 				// Ne pas appliquer
 				$set .= ", prix_vente=prix_vente_ori, prix_achat=prix_achat_ori";
@@ -80,7 +93,7 @@ function ajax_lock_art()
                 } else {
                     $aRetValue['a_err'] = "/;Attention cet article a ete retire !\narticle {$db->data[0]['depot_iddepot']}-{$_POST['id_art']} : {$db->data[0]['description']}";
                 }
-                // Article vendu ou retiré : messag d'erreur valorisé, on ajoute les info dans le JSON
+                // Article vendu ou retiré : message d'erreur valorisé, on ajoute les info dans le JSON
                 $aRetValue['op'] = 'searchArt'; // indique aux JS : retour read
                 $aRetValue['id_art'] = $_POST['id_art'];
                 $aRetValue['id_depot'] = $r['depot_iddepot'];
@@ -510,4 +523,4 @@ function cloture_vente()
 }
 
 
-?>
+// EoF

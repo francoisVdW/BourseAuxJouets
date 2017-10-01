@@ -6,7 +6,7 @@
  * @author FVdW (vdw.francois@gmail.com)
  * @copyright 2009
  * @date 23/9/2009
- * @version $Revision: 187 $
+ * @version $Id$
  */
 
 class Caisse {
@@ -210,4 +210,4 @@ class Caisse {
 
 
 
-?>
+// EoF

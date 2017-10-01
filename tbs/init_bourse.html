@@ -23,8 +23,8 @@
         if(!form.depots.checked && form.ventes.checked ) { alert("Il est nécessaire de reinitialiser les ventes si on désire réinitilaliser les dépots et articles"); return false;}
         return confirm("Confirmez la re-initialisation des donnée de la bourse ?");
     }
-    
-    function activateHH() 
+
+    function activateHH()
     {
 		var cb = $("icb_hh");
 		if (cb.checked) {
@@ -36,7 +36,6 @@
 	}
     </script>
 </head>
-
 <body>
 <div  class="menu">
 	<span style="float:right;padding-right:10px;font-weight:bolder;font-size:0.7em">Paricipant : [var.participTbs]</span>
@@ -81,21 +80,23 @@
 		<select name="nombre_caisse" id="is_nombre_caisse">[var.nombre_caisseTbs;htmlconv=no]</select>
 	</div>
 	<div style="clear:both"></div>
-	<div>
-		<input type="checkbox" id="icb_hh" onclick="activateHH()" [var.hh_checkedTbs]>
-		<label for="icb_hh">Activer le <em>Happy Hour</em></label>
-	</div>
-	<div style="clear:both"></div>	
-	<div id="idiv_hh">
-		<label for="it_hh_start">Date et heure début du Happy Hour</label>
-		<input type="text" size="10" maxlength="10" placeholder="jj/mm/AAAA" name="fr_hh_start_date" id="it_hh_start" value="[var.fr_hh_start_date]" class="calendar"/>
-		<a href="#" onclick="javascript:show_calendar_widget(this);" id="date_link" class="calendar-link" style="text-decoration:none">&#128197;</a>
-		&nbsp;&nbsp;<select name="hh_start_time">[var.tbs_select_times;htmlconv=no]</select>
-		<br />
-		<label for="is_hh_rate">Taux de réduction Happy Hour</label>
-		<select name="hh_rate" id="is_hh_rate">[var.hh_ratesTbs;htmlconv=no]</select>
-	</div>
-	<div style="clear:both"></div>
+	<fieldset style="border:1px solid #666">
+		<legend>
+			<input type="checkbox" id="icb_hh" onclick="activateHH()" [var.hh_checkedTbs]>
+			<label for="icb_hh" style="width:auto">Activer le <em>Happy Hour</em></label>
+		</legend>
+		<div style="clear:both"></div>
+		<div id="idiv_hh">
+			<label for="it_hh_start">Date et heure début du Happy Hour</label>
+			<input type="text" size="10" maxlength="10" placeholder="jj/mm/AAAA" name="fr_hh_start_date" id="it_hh_start" value="[var.fr_hh_start_date]" class="calendar"/>
+			<a href="#" onclick="javascript:show_calendar_widget(this);" id="date_link" class="calendar-link" style="text-decoration:none">&#128197;</a>
+			&nbsp;&nbsp;<select name="hh_start_time">[var.tbs_select_times;htmlconv=no]</select>
+			<br />
+			<label for="is_hh_rate">Taux de réduction Happy Hour</label>
+			<select name="hh_rate" id="is_hh_rate">[var.hh_ratesTbs;htmlconv=no]</select>
+		</div>
+		<div style="clear:both"></div>
+	</fieldset>
 	<div>
 		<label for="ia_msg_fin_depot">Texte imprimé au bas<br />du reçu déposant</label>
 		<textarea id="ia_msg_fin_depot" name="msg_fin_depot" cols="40">[var.msg_fin_depotTBS;htmlconv=no]</textarea>

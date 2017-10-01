@@ -6,7 +6,7 @@
  * @author FVdW (vdw.francois@gmail.com)
  * @copyright 2009
  * @date 22/9/2009
- * @version $Revision: 187 $
+ * @version $Id$
  */
  
 /** Etat des caisses
@@ -54,4 +54,4 @@ if($canClotureVente) {
 } else {
 	$tbsBtnCloture=false;	
 }
-?>
+// EoF

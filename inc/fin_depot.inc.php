@@ -5,13 +5,13 @@
  * Affiche le bon de dépot des articles
  *
  * @package bourse
- * @version $Revision: 692 $
+ * @version $Id$
  * @author FVdW
  */
 include('fwlib/bpdf.php');
 
 
- 
+
 /** Verification droit d'enregistrer les dépots
  */
 if($user->get_field('may_depot') != 'T' && $user->get_field('may_gestion') != 'T' ) {
@@ -50,7 +50,7 @@ if(!isset($_GET['reprint'])) {
 	if (!$r) {
 		logInfo("Erreur SELECT count()... retourne 0 rec\n\$sql=$sql",__FILE__,__LINE__ );
 		exit ("<html><body><h1>Erreur Soft</h1>Problème DB voir log<br><a href='?st='". S_MAIN ."'>Retour au menu</a></body></html>");
-		
+
 	}
 	if ($r['cnt']) {
 		// le retrait a été effectué !
@@ -105,10 +105,13 @@ if (!$n) {
 	$msgTbs = "Il n'y a pas d'article enregistré pour ce dépot !";
 } else {
 	foreach($db->data as $r) {
-    	$pa = sprintf("%.02f &euro;", $r['prix_achat']);      // prix de cession
-        
-    	$articles[] = "<td><b>{$r['depot_iddepot']}-{$r['idarticle']}</b></td><td>".str_replace(array('à','é','è','ê','ë','î','ô','ù'), array('&agrave;','&eacute;','&egrave;','&ecric;','&euml;','&icirc;','&ocirc;','&ugrave;'), $r['description'])."</td><td align='right'>{$pa}</td>";
-    }
+		if ($r['happy_hour'] && is_numeric($_SESSION['bourse']['hh_rate'])) {
+			$pa = sprintf("%.02f &euro; / %.02f &euro;", $r['prix_achat'], round($r['prix_achat'] * (1-$_SESSION['bourse']['hh_rate']), 2));
+		} else {
+			$pa = sprintf("%.02f &euro;", $r['prix_achat']);      // prix de cession
+		}
+		$articles[] = "<td><b>{$r['depot_iddepot']}-{$r['idarticle']}</b></td><td>".str_replace(array('à','é','è','ê','ë','î','ô','ù'), array('&agrave;','&eacute;','&egrave;','&ecric;','&euml;','&icirc;','&ocirc;','&ugrave;'), $r['description'])."</td><td align='right'>{$pa}</td>";
+	}
 }
 
 $nbArtTbs = $n;
@@ -122,75 +125,80 @@ $msg_fin_depotTBS = $_SESSION['bourse']['msg_fin_depot'];
 
 // Sortie PDF ==================================================================
 if(defined('PDF_DIR') && PDF_DIR) {
-	    
-    // Format tableau
-    $hd = array( 
-      array('text'=>'N°', 'w'=>18, 'align'=>'C', 'col'=>0, 'barre'=>true), 	// id Article 
-      array('text'=>'Description', 'w'=>152, 'align'=>'L', 'col'=>1),	// desc 
-      array('text'=>'Prix Vente', 'w'=>20, 'align'=>'R', 'col'=>2),	// prix
-    );
 
-    $adr = trim($adr1Tbs.' '.$adr2Tbs);
-    if(!empty($cpTbs) || !empty($communeTbs))
-    	$adr .= "\n".trim($cpTbs.' '.$communeTbs);
-      
-    $articles = array();
-    $i = 0;
-    foreach($db->data as $r) {
-      $i++;    	
-      $articles[] = array("{$r['depot_iddepot']}-{$r['idarticle']}",$r['description'],  sprintf('%.02f €', $r['prix_vente']));
-    }
+	// Format tableau
+	$hd = array(
+		array('text'=>'N°', 'w'=>18, 'align'=>'C', 'col'=>0, 'barre'=>true), 	// id Article
+		array('text'=>'Description', 'w'=>140, 'align'=>'L', 'col'=>1),	// desc
+		array('text'=>'Prix de Cession', 'w'=>32, 'align'=>'R', 'col'=>2),	// prix
+	);
 
-    $ttl = 'TOTAL : '. $i . ' article'. ($i > 1? 's':'');  
+	$adr = trim($adr1Tbs.' '.$adr2Tbs);
+	if(!empty($cpTbs) || !empty($communeTbs))
+		$adr .= "\n".trim($cpTbs.' '.$communeTbs);
 
-    $pdf=new bPDF();
-    $pdf->setDepot($id_depot, $nomTbs, $prenomTbs, $telTbs, $adr, $date_depotTbs, $nom_partTbs);
+	$articles = array();
+	$i = 0;
+	foreach($db->data as $r) {
+		$i++;
+		if ($r['happy_hour'] && is_numeric($_SESSION['bourse']['hh_rate'])) {
+			$pa = sprintf("%.02f € / %.02f €", $r['prix_achat'], round($r['prix_achat'] * (1-$_SESSION['bourse']['hh_rate']), 2));
+		} else {
+			$pa = sprintf("%.02f €", $r['prix_achat']);      // prix de cession
+		}
+		$articles[] = array("{$r['depot_iddepot']}-{$r['idarticle']}",$r['description'],  $pa);
+	}
 
-    // Page à conserver ----------------------------------------------  
-    $pdf->StartPageGroup();  
-    $assoc = empty($_SESSION['bourse']['nom_assoc'])? 'Association': $_SESSION['bourse']['nom_assoc'];
-    $pdf->setDestinataire($assoc);                                    
-    $pdf->AddPage();
-    
-    // articles
-    $pdf->Table($hd, $articles, array('', $ttl, ''));
-    $pdf->ln();
-    // Info participant
-    $pdf->multiCell(0,5,"Dépôt enregistré par {$nom_partTbs} le {$date_depotTbs}.");
-    $pdf->ln();
-    $pdf->multiCell(0,5,"Le vendeur déclare avoir pris connaissance du règlement en vigueur.");
-    
-    $pdf->ln();
-    // Signature déposant
-    $pdf->SetFont('','I',9);
-    $pdf->setX(120);
-    $pdf->SetDrawColor(80);
-    $pdf->multiCell(80,6,"Signature du vendeur\n\n\n\n\n\n", 1, 'L');
-    $pdf->SetDrawColor(0);
-    $pdf->ln();
-    $pdf->SetFont('','',10);
-    // 
+	$ttl = 'TOTAL : '. $i . ' article'. ($i > 1? 's':'');
 
-    // Page à donner au deposant --------------------------------------  
-    $pdf->StartPageGroup();
-    $pdf->setDestinataire("Déposant");
-    $pdf->AddPage();
-    
-    // articles
-    $pdf->Table($hd, $articles, array('',$ttl, ''));
-    // Info participant
-    $pdf->ln();
-    $pdf->multiCell(0,5,"Dépôt enregistré par {$nom_partTbs} le {$date_depotTbs}.");
-    $pdf->ln();
-    $pdf->multiCell(0,5,"Le vendeur déclare avoir pris connaissance du règlement en vigueur.");
-    $pdf->ln();
-    $pdf->multiCell(0,5,$msg_fin_depotTBS);  // horaires de vente et restitution
+	$pdf=new bPDF();
+	$pdf->setDepot($id_depot, $nomTbs, $prenomTbs, $telTbs, $adr, $date_depotTbs, $nom_partTbs);
 
-    $pdf->Output(PDF_DIR.'D'.sprintf('%03d',$id_depot).'.pdf'); 
-    
-    $onloadTbs = 'alert(\'Document en phase d\\\'impression\')';
+	// Page à conserver ----------------------------------------------
+	$pdf->StartPageGroup();
+	$assoc = empty($_SESSION['bourse']['nom_assoc'])? 'Association': $_SESSION['bourse']['nom_assoc'];
+	$pdf->setDestinataire($assoc);
+	$pdf->AddPage();
+
+	// articles
+	$pdf->Table($hd, $articles, array('', $ttl, ''));
+	$pdf->ln();
+	// Info participant
+	$pdf->multiCell(0,5,"Dépôt enregistré par {$nom_partTbs} le {$date_depotTbs}.");
+	$pdf->ln();
+	$pdf->multiCell(0,5,"Le vendeur déclare avoir pris connaissance du règlement en vigueur.");
+
+	$pdf->ln();
+	// Signature déposant
+	$pdf->SetFont('','I',9);
+	$pdf->setX(120);
+	$pdf->SetDrawColor(80);
+	$pdf->multiCell(80,6,"Signature du vendeur\n\n\n\n\n\n", 1, 'L');
+	$pdf->SetDrawColor(0);
+	$pdf->ln();
+	$pdf->SetFont('','',10);
+	//
+
+	// Page à donner au deposant --------------------------------------
+	$pdf->StartPageGroup();
+	$pdf->setDestinataire("Déposant");
+	$pdf->AddPage();
+
+	// articles
+	$pdf->Table($hd, $articles, array('',$ttl, ''));
+	// Info participant
+	$pdf->ln();
+	$pdf->multiCell(0,5,"Dépôt enregistré par {$nom_partTbs} le {$date_depotTbs}.");
+	$pdf->ln();
+	$pdf->multiCell(0,5,"Le vendeur déclare avoir pris connaissance du règlement en vigueur.");
+	$pdf->ln();
+	$pdf->multiCell(0,5,$msg_fin_depotTBS);  // horaires de vente et restitution
+
+	$pdf->Output(PDF_DIR.'D'.sprintf('%03d',$id_depot).'.pdf');
+
+	$onloadTbs = 'alert(\'Document en phase d\\\'impression\')';
 } else {
 	$onloadTbs = 'window.print()';
-    
+
 }
-?>
+// EoF

@@ -34,11 +34,11 @@
 	<div align="center" style="font-size:1.2em;margin:20px;"><b><u>FACTURE</u></b></div>
 	<p>Facture n&deg; [var.idfacture]<br />
 	<span  style="font-size:0.9em">Date : [var.dateVenteTbs;frm=dd/mm/YYYY] - Vente n&deg; [var.idvente] - Caisse n&deg; [var.noCaisseTbs]</span>
-	<table width="100%" align="center" border="1" id="itbl_fact">
+	<table style="width:100%;min-height:400px" align="center" border="1" id="itbl_fact">
 		<tr><th width="60">n&deg; </th> <th>Description</th><th width="30">Q<sup>té</sup></th><th width="80">Prix</th></tr>
 		<tr><td>[articlesTbs.depot_iddepot;block=tr]-[articlesTbs.idarticle]</td><td>[articlesTbs.description]</td><td>1</td><td align="right">[articlesTbs.prix_vente;frm=0,00] &euro;</td></tr>
-		<tr><td colspan="3"><b>TOTAL</b></td><td align="right"><b>[var.ttlTbs;frm=0,00] &euro;</b></td></tr>
-	</table>  
+		<tr><td colspan="3"><b>TOTAL TTC</b></td><td align="right"><b>[var.ttlTbs;frm=0,00] &euro;</b></td></tr>
+	</table>
   <p>TVA non applicable, article 293B du CGI.</p>
 	<br  />
 </div>

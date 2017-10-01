@@ -5,7 +5,7 @@
  * Formulaire de login
  *
  * @package bourse
- * @version $Revision: 187 $
+ * @version $Id$
  * @author FVdW
  */
 require_once 'fwlib/cchamp.class.php';
@@ -36,3 +36,4 @@ $TBS = new clsTinyButStrong ;
 $TBS->LoadTemplate('tbs/login.html') ;
 $TBS->Show(TBS_OUTPUT) ;
 exit();
+// EoF

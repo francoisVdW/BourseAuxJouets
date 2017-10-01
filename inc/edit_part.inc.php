@@ -5,7 +5,7 @@
  * Page de gestion des participants
  *
  * @package bourse
- * @version $Revision: 187 $
+ * @version $Id$
  * @author FVdW
  */
 
@@ -123,4 +123,4 @@ switch ($_GET['act']) {
 $idPwdTbs  		= $pwd->getId();
 $idPwd2Tbs		= $pwd2->getId();
 $idPwdOldTbs	= $pwdOld->getId();
-?>
+// EoF
